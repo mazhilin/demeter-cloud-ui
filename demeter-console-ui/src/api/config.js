@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function listConfig(query) {
+export function list(query) {
   return request({
     url: '/config/list',
     method: 'get',
@@ -8,7 +8,7 @@ export function listConfig(query) {
   })
 }
 
-export function createConfig(data) {
+export function create(data) {
   return request({
     url: '/config/create',
     method: 'post',
@@ -16,15 +16,15 @@ export function createConfig(data) {
   })
 }
 
-export function readConfig(data) {
+export function show(data) {
   return request({
-    url: '/config/read',
+    url: '/config/show',
     method: 'get',
     data
   })
 }
 
-export function updateConfig(data) {
+export function update(data) {
   return request({
     url: '/config/update',
     method: 'post',
@@ -32,7 +32,7 @@ export function updateConfig(data) {
   })
 }
 
-export function deleteConfig(data) {
+export function remove(data) {
   return request({
     url: '/config/delete',
     method: 'post',

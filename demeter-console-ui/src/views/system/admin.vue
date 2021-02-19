@@ -51,13 +51,13 @@
         <el-form-item label="管理员账户" prop="account">
           <el-input v-model="dataForm.account"/>
         </el-form-item>
-        <el-form-item label="管理员名称" prop="name">
-          <el-input v-model="dataForm.username"/>
+        <el-form-item label="管理员姓名" prop="name">
+          <el-input v-model="dataForm.name"/>
         </el-form-item>
         <el-form-item label="管理员密码" prop="password">
           <el-input v-model="dataForm.password" type="password" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="管理员头像" prop="avatar">
+        <el-form-item label="管理员头像" prop="profilePicture">
           <el-upload
             :headers="headers"
             :action="uploadPath"
@@ -65,7 +65,7 @@
             :on-success="uploadAvatar"
             class="avatar-uploader"
             accept=".jpg,.jpeg,.png,.gif">
-            <img v-if="dataForm.avatar" :src="dataForm.avatar" class="avatar">
+            <img v-if="dataForm.profilePicture" :src="dataForm.profilePicture" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
@@ -157,6 +157,7 @@ export default {
         page: 1,
         limit: 20,
         name: undefined,
+        nickname: undefined,
         sort: 'create_time',
         order: 'desc'
       },
@@ -164,6 +165,7 @@ export default {
         id: undefined,
         account: undefined,
         name: undefined,
+        nickname: undefined,
         password: undefined,
         profilePicture: undefined,
         roleIds: []

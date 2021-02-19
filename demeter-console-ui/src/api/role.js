@@ -54,22 +54,6 @@ export function remove(data) {
   })
 }
 
-export function permissions(query) {
-  return request({
-    url: '/role/permissions',
-    method: 'get',
-    params: query
-  })
-}
-
-export function updatePermission(data) {
-  return request({
-    url: '/role/updatePermission',
-    method: 'post',
-    data
-  })
-}
-
 export function options(query) {
   return request({
     url: '/role/options',

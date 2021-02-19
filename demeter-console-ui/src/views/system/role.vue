@@ -76,7 +76,7 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;">
         <el-form-item label="角色编码" prop="code">
-          <el-input v-model="dataForm.name"/>
+          <el-input v-model="dataForm.code"/>
         </el-form-item>
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="dataForm.name"/>
@@ -123,7 +123,8 @@
 </template>
 
 <script>
-import { list, create, remove, update, getPermission, updatePermission } from '@/api/role'
+import { list, create, remove, update } from '@/api/role'
+import { permissionList, updatePermission } from '@/api/permission'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -282,7 +283,7 @@ export default {
     handlePermission(row) {
       this.permissionDialogFormVisible = true
       this.permissionForm.roleId = row.id
-      getPermission({ roleId: row.id })
+      permissionList({ roleId: row.id })
         .then(response => {
           this.systemPermissions = response.data.data.systemPermissions
           this.assignedPermissions = response.data.data.assignedPermissions

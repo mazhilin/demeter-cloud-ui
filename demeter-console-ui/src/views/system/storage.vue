@@ -79,7 +79,7 @@ export default {
         limit: 20,
         key: undefined,
         name: undefined,
-        sort: 'add_time',
+        sort: 'create_time',
         order: 'desc'
       },
       createDialogVisible: false,

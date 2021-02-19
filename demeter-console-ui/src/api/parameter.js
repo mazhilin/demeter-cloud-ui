@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function listParameter(query) {
+export function list(query) {
   return request({
     url: '/parameter/list',
     method: 'get',
@@ -8,7 +8,7 @@ export function listParameter(query) {
   })
 }
 
-export function createParameter(data) {
+export function create(data) {
   return request({
     url: '/parameter/create',
     method: 'post',
@@ -16,15 +16,23 @@ export function createParameter(data) {
   })
 }
 
-export function readParameter(data) {
+export function show(data) {
   return request({
-    url: '/parameter/read',
+    url: '/parameter/show',
     method: 'get',
     data
   })
 }
 
-export function updateParameter(data) {
+export function edit(data) {
+  return request({
+    url: '/parameter/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function update(data) {
   return request({
     url: '/parameter/update',
     method: 'post',
@@ -32,7 +40,7 @@ export function updateParameter(data) {
   })
 }
 
-export function deleteParameter(data) {
+export function remove(data) {
   return request({
     url: '/parameter/delete',
     method: 'post',

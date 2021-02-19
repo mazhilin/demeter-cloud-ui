@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function listDictionary(query) {
+export function list(query) {
   return request({
     url: '/dictionary/list',
     method: 'get',
@@ -8,7 +8,7 @@ export function listDictionary(query) {
   })
 }
 
-export function createDictionary(data) {
+export function create(data) {
   return request({
     url: '/dictionary/create',
     method: 'post',
@@ -16,15 +16,14 @@ export function createDictionary(data) {
   })
 }
 
-export function readDictionary(data) {
+export function show(data) {
   return request({
-    url: '/dictionary/read',
+    url: '/dictionary/show',
     method: 'get',
     data
   })
 }
-
-export function updateDictionary(data) {
+export function update(data) {
   return request({
     url: '/dictionary/update',
     method: 'post',
@@ -32,7 +31,15 @@ export function updateDictionary(data) {
   })
 }
 
-export function deleteDictionary(data) {
+export function edit(data) {
+  return request({
+    url: '/dictionary/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function remove(data) {
   return request({
     url: '/dictionary/delete',
     method: 'post',
