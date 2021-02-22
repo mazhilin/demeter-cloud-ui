@@ -30,7 +30,7 @@
       border
       fit
       highlight-current-row>
-      <el-table-column width="100px" align="center" label="序号" prop="id" sortable show-overflow-tooltip="true"/>
+      <el-table-column width="80px" align="center" label="序号" prop="id" sortable/>
       <el-table-column align="center" label="角色编码" prop="code"/>
       <el-table-column align="center" label="角色名称" prop="name"/>
       <el-table-column align="center" label="角色描述" prop="desc"/>
@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import { list, create, remove, update } from '@/api/role'
+import { create, list, remove, update } from '@/api/role'
 import { permissionList, updatePermission } from '@/api/permission'
 import Pagination from '@/components/Pagination'
 

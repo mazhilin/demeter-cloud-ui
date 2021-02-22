@@ -1,5 +1,5 @@
-import { login, logout, getUserInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getUserInfo, login, logout } from '@/api/login'
+import { getToken, removeToken, setToken, setTokenExpires } from '@/utils/auth'
 
 const user = {
   state: {
@@ -56,6 +56,7 @@ const user = {
           const token = response.data.data
           commit('SET_TOKEN', token)
           setToken(token)
+          setTokenExpires(token, userInfo.remember ? 30 : 1)
           resolve()
         }).catch(error => {
           reject(error)

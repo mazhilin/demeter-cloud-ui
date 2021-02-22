@@ -51,6 +51,10 @@
         @click.native.prevent="handleLogin">登录
       </el-button>
 
+      <el-form-item prop="remember">
+        <el-checkbox v-model="loginForm.remember">自动登录</el-checkbox>
+      </el-form-item>
+
       <div class="link-box">
         <a class="link" href="javascript:;"/>
         <a class="link" href="javascript:;"/>
@@ -83,7 +87,8 @@ export default {
     return {
       loginForm: {
         account: '',
-        password: ''
+        password: '',
+        remember: false
       },
       loginRules: {
         account: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -127,7 +132,7 @@ export default {
           }).catch(response => {
             this.$notify.error({
               title: '失败',
-              message: response.data
+              message: response.message
             })
             this.loading = false
           })

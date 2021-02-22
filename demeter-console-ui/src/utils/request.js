@@ -5,7 +5,7 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  headers: 'Access-Control-Allow-Origin: *',
+  headers: { 'Access-Control-Allow-Origin': '*' },
   baseURL: process.env.BASE_API, // api 的 base_url
   timeout: 36000 * 10000, // request timeout
   maxContentLength: 4096
