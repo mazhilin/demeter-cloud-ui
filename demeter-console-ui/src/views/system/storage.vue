@@ -11,28 +11,51 @@
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      border
+      element-loading-text="正在查询中。。。"
+      fit
+      highlight-current-row
+      size="small">
 
-      <el-table-column align="center" label="对象KEY" prop="key"/>
+      <el-table-column align="center" label="序号" prop="id" sortable="true"/>
 
-      <el-table-column align="center" label="对象名称" prop="name"/>
+      <el-table-column align="center" label="存储方式" prop="storageMode"/>
 
-      <el-table-column align="center" label="对象类型" prop="type"/>
+      <el-table-column align="center" label="存储文件名" prop="key"/>
 
-      <el-table-column align="center" label="对象大小" prop="size"/>
+      <el-table-column align="center" label="原始文件名" prop="name"/>
 
-      <el-table-column align="center" property="url" label="图片">
+      <el-table-column align="center" label="内容类型" prop="contentType"/>
+
+      <el-table-column align="center" label="文件大小" prop="size"/>
+
+      <el-table-column align="center" label="文件资源" property="url">
         <template slot-scope="scope">
           <img :src="scope.row.url" width="40">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="图片链接" prop="url"/>
+      <el-table-column align="center" label="存储链接" prop="url"/>
+
+      <el-table-column align="center" label="存储时间" prop="createTime"/>
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/storage/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-permission="['POST /admin/storage/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button
+            v-permission="['POST /admin/storage/update']"
+            size="mini"
+            type="primary"
+            @click="handleUpdate(scope.row)">编辑
+          </el-button>
+          <el-button
+            v-permission="['POST /admin/storage/delete']"
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.row)">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -63,7 +86,7 @@
 </template>
 
 <script>
-import { listStorage, createStorage, updateStorage, deleteStorage } from '@/api/storage'
+import { create, list, remove, update } from '@/api/storage'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
@@ -100,7 +123,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      listStorage(this.listQuery).then(response => {
+      list(this.listQuery).then(response => {
         this.list = response.data.data.items
         this.total = response.data.data.total
         this.listLoading = false
@@ -126,7 +149,7 @@ export default {
     handleUpload(item) {
       const formData = new FormData()
       formData.append('file', item.file)
-      createStorage(formData).then(response => {
+      create(formData).then(response => {
         this.list.unshift(response.data.data)
         this.createDialogVisible = false
         this.$notify.success({
@@ -147,7 +170,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          updateStorage(this.dataForm).then(() => {
+          update(this.dataForm).then(() => {
             for (const v of this.list) {
               if (v.id === this.dataForm.id) {
                 const index = this.list.indexOf(v)
@@ -163,14 +186,14 @@ export default {
           }).catch(response => {
             this.$notify.error({
               title: '失败',
-              message: response.data.errmsg
+              message: response.data.message
             })
           })
         }
       })
     },
     handleDelete(row) {
-      deleteStorage(row).then(response => {
+      remove(row).then(response => {
         this.$notify.success({
           title: '成功',
           message: '删除成功'
@@ -180,7 +203,7 @@ export default {
       }).catch(response => {
         this.$notify.error({
           title: '失败',
-          message: response.data.errmsg
+          message: response.data.message
         })
       })
     },

@@ -6,14 +6,14 @@
       <el-input v-model="listQuery.code" clearable class="filter-item" style="width: 200px;" placeholder="请输入角色编码"/>
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入角色名称"/>
       <el-button
-        v-permission="['GET /console/role/list']"
+        v-permission="['GET /admin/role/list']"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
         @click="handleFilter">查找
       </el-button>
       <el-button
-        v-permission="['POST /console/role/create']"
+        v-permission="['POST /admin/role/create']"
         class="filter-item"
         type="primary"
         icon="el-icon-edit"
@@ -37,19 +37,19 @@
       <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-            v-permission="['POST /console/role/update']"
+            v-permission="['POST /admin/role/update']"
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)">编辑
           </el-button>
           <el-button
-            v-permission="['POST /console/role/delete']"
+            v-permission="['POST /admin/role/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)">删除
           </el-button>
           <el-button
-            v-permission="['GET /console/role/permissions']"
+            v-permission="['GET /admin/permission/list']"
             type="primary"
             size="mini"
             @click="handlePermission(scope.row)">授权

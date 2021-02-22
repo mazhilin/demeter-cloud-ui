@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function listStorage(query) {
+export function list(query) {
   return request({
     url: '/storage/list',
     method: 'get',
@@ -8,7 +8,7 @@ export function listStorage(query) {
   })
 }
 
-export function createStorage(data) {
+export function create(data) {
   return request({
     url: '/storage/create',
     method: 'post',
@@ -16,15 +16,23 @@ export function createStorage(data) {
   })
 }
 
-export function readStorage(data) {
+export function show(data) {
   return request({
-    url: '/storage/read',
+    url: '/storage/show',
     method: 'get',
     data
   })
 }
 
-export function updateStorage(data) {
+export function edit(data) {
+  return request({
+    url: '/storage/edit',
+    method: 'post',
+    data
+  })
+}
+
+export function update(data) {
   return request({
     url: '/storage/update',
     method: 'post',
@@ -32,7 +40,7 @@ export function updateStorage(data) {
   })
 }
 
-export function deleteStorage(data) {
+export function remove(data) {
   return request({
     url: '/storage/delete',
     method: 'post',

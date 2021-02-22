@@ -12,19 +12,26 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" width="100px" label="区域ID" prop="id" sortable/>
+      <el-table-column align="center" min-width="30px" label="区域ID" prop="id" sortable/>
 
-      <el-table-column align="center" min-width="100px" label="区域父ID" prop="pid"/>
+      <el-table-column align="center" min-width="50px" label="区域编码" prop="code"/>
 
-      <el-table-column align="center" min-width="200px" label="区域名称" prop="name"/>
+      <el-table-column align="center" min-width="80px" label="区域名称" prop="name"/>
 
-      <el-table-column align="center" min-width="100px" label="区域类型" prop="type">
+      <el-table-column align="center" min-width="50px" label="区域等级" prop="level"/>
+
+      <el-table-column align="center" min-width="50px" label="区域类型" prop="type">
         <template slot-scope="scope">
           {{ scope.row.type | typeFilter }}
         </template>
       </el-table-column>
+      <el-table-column align="center" min-width="50px" label="区域父ID" prop="parentId"/>
 
-      <el-table-column align="center" min-width="100px" label="区域编码" prop="code"/>
+      <el-table-column align="center" min-width="50px" label="来源类型" prop="sourceType">
+        <template slot-scope="scope">
+          {{ scope.row.sourceType | sourceTypeFilter }}
+        </template>
+      </el-table-column>
 
     </el-table>
 
@@ -48,7 +55,16 @@ export default {
         '3': '区'
       }
       return typeMap[status]
+    },
+    sourceTypeFilter(sourceType) {
+      const sourceTypeMap = {
+        '0': '系统设置',
+        '1': '系统新增',
+        '2': '接口拉取'
+      }
+      return sourceTypeMap[sourceType]
     }
+
   },
   data() {
     return {

@@ -175,6 +175,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/operation/region'),
         name: 'region',
         meta: {
+          perms: ['GET /admin/region/list', 'GET /admin/region/detail', 'POST /admin/order/region', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
           title: '行政区域',
           icon: 'region-center',
           noCache: true
@@ -265,7 +266,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/config/config'),
         name: 'config',
         meta: {
-          perms: ['GET /console/config/list', 'POST /console/config/create', 'POST /console/config/show', 'POST /console/config/edit', 'POST /console/config/update', 'POST /console/config/delete'],
+          perms: ['GET /admin/config/list', 'POST /admin/config/create', 'POST /admin/config/show', 'POST /admin/config/edit', 'POST /admin/config/update', 'POST /admin/config/delete'],
           title: '配置管理',
           icon: 'config-center',
           noCache: true
@@ -482,7 +483,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/system/admin'),
         name: 'admin',
         meta: {
-          perms: ['GET /console/user/list', 'POST /console/user/create', 'POST /console/user/edit', 'POST /console/user/update', 'POST /console/user/delete'],
+          perms: ['GET /admin/user/list', 'POST /admin/user/create', 'POST /admin/user/edit', 'POST /admin/user/update', 'POST /admin/user/delete'],
           title: '用户管理',
           icon: 'user',
           noCache: true
@@ -493,7 +494,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/system/role'),
         name: 'role',
         meta: {
-          perms: ['GET /console/role/list', 'POST /console/role/create', 'POST /console/role/show', 'POST /console/role/update', 'POST /console/role/edit', 'POST /console/role/delete', 'GET /console/permission/list', 'POST /console/permission/update'],
+          perms: ['GET /admin/role/list', 'POST /admin/role/create', 'POST /admin/role/show', 'POST /admin/role/update', 'POST /admin/role/edit', 'POST /console/role/delete', 'GET /admin/permission/list', 'POST /admin/permission/update'],
           title: '角色管理',
           icon: 'team',
           noCache: true
@@ -504,7 +505,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/system/storage'),
         name: 'storage',
         meta: {
-          perms: ['GET /console/storage/list', 'POST /console/storage/create', 'POST /console/storage/update', 'POST /console/storage/delete'],
+          perms: ['GET /admin/storage/list', 'POST /admin/storage/create', 'POST /admin/storage/update', 'POST /admin/storage/delete'],
           title: '文件管理',
           icon: 'cloud',
           noCache: true

@@ -5,8 +5,8 @@
     <div class="filter-container">
       <el-input v-model="listQuery.account" clearable class="filter-item" style="width: 200px;" placeholder="请输入管理员账户"/>
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入管理员名称"/>
-      <el-button v-permission="['GET /console/user/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
-      <el-button v-permission="['POST /console/user/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button v-permission="['GET /admin/user/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
+      <el-button v-permission="['POST /admin/user/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
       <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
@@ -37,8 +37,8 @@
 
       <el-table-column align="center" label="操作列表" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['POST /console/user/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-permission="['POST /console/user/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-permission="['POST /admin/user/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button v-permission="['POST /admin/user/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -260,13 +260,13 @@ export default {
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
-                message: '添加管理员成功'
+                message: '添加成功'
               })
             })
             .catch(response => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }

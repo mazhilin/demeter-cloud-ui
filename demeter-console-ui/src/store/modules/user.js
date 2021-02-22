@@ -1,4 +1,4 @@
-import { loginByUsername, logout, getUserInfo } from '@/api/login'
+import { login, logout, getUserInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -49,10 +49,10 @@ const user = {
 
   actions: {
     // 用户名登录
-    LoginByUsername({ commit }, userInfo) {
+    Login({ commit }, userInfo) {
       const account = userInfo.account.trim()
       return new Promise((resolve, reject) => {
-        loginByUsername(account, userInfo.password).then(response => {
+        login(account, userInfo.password).then(response => {
           const token = response.data.data
           commit('SET_TOKEN', token)
           setToken(token)
@@ -67,18 +67,18 @@ const user = {
     GetUserInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getUserInfo(state.token).then(response => {
-          const data = response.data.data
+          const result = response.data.data
 
-          if (data.perms && data.perms.length > 0) { // 验证返回的perms是否是一个非空数组
-            commit('SET_PERMS', data.perms)
+          if (result.perms && result.perms.length > 0) { // 验证返回的perms是否是一个非空数组
+            commit('SET_PERMS', result.perms)
           } else {
             reject('getInfo: perms must be a non-null array !')
           }
 
-          commit('SET_ROLES', data.roles)
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
+          commit('SET_ROLES', result.roles)
+          commit('SET_NAME', result.name)
+          commit('SET_AVATAR', result.avatar)
+          commit('SET_INTRODUCTION', result.introduction)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -130,13 +130,13 @@ const user = {
         commit('SET_TOKEN', role)
         setToken(role)
         getUserInfo(role).then(response => {
-          const data = response.data
-          commit('SET_ROLES', data.roles)
-          commit('SET_PERMS', data.perms)
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
-          dispatch('GenerateRoutes', data) // 动态修改权限后 重绘侧边菜单
+          const result = response.data.data
+          commit('SET_ROLES', result.roles)
+          commit('SET_PERMS', result.perms)
+          commit('SET_NAME', result.name)
+          commit('SET_AVATAR', result.avatar)
+          commit('SET_INTRODUCTION', result.introduction)
+          dispatch('GenerateRoutes', result) // 动态修改权限后 重绘侧边菜单
           resolve()
         })
       })
