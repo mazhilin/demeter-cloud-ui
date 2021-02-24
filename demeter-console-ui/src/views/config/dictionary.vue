@@ -6,14 +6,14 @@
       <el-input v-model="listQuery.code" clearable class="filter-item" style="width: 200px;" placeholder="请输入配置Code"/>
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入配置名称"/>
       <el-button
-        v-permission="['GET /console/dictionary/list']"
+        v-permission="['GET /admin/dictionary/list']"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
         @click="handleFilter">查找
       </el-button>
       <el-button
-        v-permission="['POST /console/dictionary/create']"
+        v-permission="['POST /admin/dictionary/create']"
         class="filter-item"
         type="primary"
         icon="el-icon-edit"
@@ -49,13 +49,13 @@
       <el-table-column align="center" label="操作列表" width="400" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-            v-permission="['POST /console/dictionary/update']"
+            v-permission="['POST /admin/dictionary/update']"
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)">编辑
           </el-button>
           <el-button
-            v-permission="['POST /console/dictionary/delete']"
+            v-permission="['POST /admin/dictionary/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)">删除

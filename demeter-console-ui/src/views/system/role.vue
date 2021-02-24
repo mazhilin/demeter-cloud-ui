@@ -296,7 +296,7 @@ export default {
           this.permissionDialogFormVisible = false
           this.$notify.success({
             title: '成功',
-            message: '授权成功'
+            message: response.data.message
           })
         })
         .catch(response => {

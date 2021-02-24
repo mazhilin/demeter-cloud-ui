@@ -12,7 +12,7 @@
         <img class="login-logo" src="@/assets/logo/pivotal-cloud.png" alt="">
       </div>
       <div class="title-container">
-        <h3 class="title" style="font-size:large">DemeterCloud投票管控平台</h3>
+        <h3 class="title" style="font-size:x-large">Dcloud投票管控平台</h3>
       </div>
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">

@@ -171,17 +171,6 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'region',
-        component: () => import('@/views/operation/region'),
-        name: 'region',
-        meta: {
-          perms: ['GET /admin/region/list', 'GET /admin/region/detail', 'POST /admin/order/region', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
-          title: '行政区域',
-          icon: 'region-center',
-          noCache: true
-        }
-      },
-      {
         path: 'order',
         component: () => import('@/views/operation/order'),
         name: 'order',
@@ -508,6 +497,17 @@ export const asyncRouterMap = [
           perms: ['GET /admin/storage/list', 'POST /admin/storage/create', 'POST /admin/storage/update', 'POST /admin/storage/delete'],
           title: '文件管理',
           icon: 'cloud',
+          noCache: true
+        }
+      },
+      {
+        path: 'region',
+        component: () => import('@/views/system/region'),
+        name: 'region',
+        meta: {
+          perms: ['GET /admin/region/list', 'GET /admin/region/detail', 'POST /admin/order/region', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
+          title: '区域管理',
+          icon: 'region-center',
           noCache: true
         }
       }

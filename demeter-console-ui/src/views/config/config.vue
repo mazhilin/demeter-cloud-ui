@@ -6,14 +6,14 @@
       <el-input v-model="listQuery.code" clearable class="filter-item" style="width: 200px;" placeholder="请输入配置Code"/>
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入配置名称"/>
       <el-button
-        v-permission="['GET /console/config/list']"
+        v-permission="['GET /admin/config/list']"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
         @click="handleFilter">查找
       </el-button>
       <el-button
-        v-permission="['POST /console/config/create']"
+        v-permission="['POST /admin/config/create']"
         class="filter-item"
         type="primary"
         icon="el-icon-edit"
@@ -46,13 +46,13 @@
       <el-table-column align="center" label="操作列表" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-            v-permission="['POST /console/config/update']"
+            v-permission="['POST /admin/config/update']"
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)">编辑
           </el-button>
           <el-button
-            v-permission="['POST /console/config/delete']"
+            v-permission="['POST /admin/config/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)">删除
