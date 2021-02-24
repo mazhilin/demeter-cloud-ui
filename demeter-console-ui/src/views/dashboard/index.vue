@@ -49,25 +49,25 @@
     </el-row>
     <el-row :gutter="40">
       <el-col :span="12">
-        <div class="chart-wrapper">
-          <line-chart :chart-data="lineChartData" />
+        <div class="chart-wrapper"><span align="center">系统日志分析图</span>
+          <line-chart :chart-data="lineChartData"/>
         </div>
       </el-col>
       <el-col :span="12">
-        <div class="chart-wrapper">
-          <line-chart :chart-data="lineChartData" />
+        <div class="chart-wrapper"><span align="center">系统订单分析图</span>
+          <line-chart :chart-data="lineChartData"/>
         </div>
       </el-col>
     </el-row>
     <el-row :gutter="32">
       <el-col :span="12">
-        <div class="chart-wrapper">
-          <pie-chart />
+        <div class="chart-wrapper"><span align="center">系统日志饼图</span>
+          <pie-chart/>
         </div>
       </el-col>
       <el-col :span="12">
-        <div class="chart-wrapper">
-          <pie-chart />
+        <div class="chart-wrapper"><span align="center">系统订单饼图</span>
+          <pie-chart/>
         </div>
       </el-col>
     </el-row>
