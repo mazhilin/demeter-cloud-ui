@@ -47,26 +47,60 @@
         </div>
       </el-col>
     </el-row>
+    <el-row :gutter="40">
+      <el-col :span="12">
+        <div class="chart-wrapper">
+          <line-chart :chart-data="lineChartData" />
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div class="chart-wrapper">
+          <line-chart :chart-data="lineChartData" />
+        </div>
+      </el-col>
+    </el-row>
+    <el-row :gutter="32">
+      <el-col :span="12">
+        <div class="chart-wrapper">
+          <pie-chart />
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div class="chart-wrapper">
+          <pie-chart />
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 import { info } from '@/api/dashboard'
 import CountTo from 'vue-count-to'
+import LineChart from './components/LineChart'
+import PieChart from './components/PieChart'
 
 export default {
   components: {
-    CountTo
+    CountTo,
+    LineChart,
+    PieChart
   },
   data() {
     return {
       userTotal: 0,
       goodsTotal: 0,
       productTotal: 0,
-      orderTotal: 0
+      orderTotal: 0,
+      lineChartData: {
+        expectedData: [100, 120, 161, 134, 105, 160, 165],
+        actualData: [120, 82, 91, 154, 162, 140, 145]
+      }
     }
   },
   created() {
+    console.log('rrr')
+    return
     info().then(response => {
       this.userTotal = response.data.data.userTotal
       this.goodsTotal = response.data.data.goodsTotal
