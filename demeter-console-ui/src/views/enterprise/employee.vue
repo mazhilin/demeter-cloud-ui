@@ -157,7 +157,7 @@ export default {
         page: 1,
         limit: 20,
         username: undefined,
-        sort: 'add_time',
+        sort: 'create_time',
         order: 'desc'
       },
       dataForm: {

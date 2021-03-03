@@ -40,7 +40,7 @@
       border
       fit
       highlight-current-row>
-      <el-table-column :show-overflow-tooltip="true" width="100px" align="center" label="序号" prop="id" sortable/>
+      <el-table-column width="100px" align="center" label="序号" prop="id" sortable/>
       <el-table-column align="center" label="模板编码" prop="templateCode"/>
       <el-table-column align="center" label="模板名称" prop="templateName"/>
       <el-table-column align="center" label="模板内容" prop="content"/>
@@ -102,6 +102,7 @@
             show-word-limit
             placeholder="请输入内容"/>
         </el-form-item>
+
         <el-form-item label="配送区域" prop="area">
           <el-select
             v-model="provinceValue"
@@ -130,6 +131,7 @@
             />
           </el-select>
         </el-form-item>
+
         <el-form-item label="模板排序" prop="sort">
           <el-input v-model="dataForm.sort" auto-complete="off"/>
         </el-form-item>
@@ -339,6 +341,7 @@ export default {
           })
         })
     },
+
     getRegionList() {
       regionList()
         .then(response => {

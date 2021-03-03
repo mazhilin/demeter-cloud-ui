@@ -483,7 +483,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/system/role'),
         name: 'role',
         meta: {
-          perms: ['GET /admin/role/list', 'POST /admin/role/create', 'POST /admin/role/show', 'POST /admin/role/update', 'POST /admin/role/edit', 'POST /console/role/delete', 'GET /admin/permission/list', 'POST /admin/permission/update'],
+          perms: ['GET /admin/role/list', 'POST /admin/role/create', 'POST /admin/role/show', 'POST /admin/role/update', 'POST /admin/role/edit', 'POST /admin/role/delete', 'GET /admin/permission/list', 'POST /admin/permission/update'],
           title: '角色管理',
           icon: 'team',
           noCache: true
@@ -532,6 +532,17 @@ export const asyncRouterMap = [
           perms: ['GET /admin/employee/list', 'POST /admin/employee/create', 'POST /admin/employee/update', 'POST /admin/employee/delete'],
           title: '员工管理',
           icon: 'user',
+          noCache: true
+        }
+      },
+      {
+        path: 'company',
+        component: () => import('@/views/enterprise/company'),
+        name: 'company',
+        meta: {
+          perms: ['GET /admin/company/list', 'POST /admin/company/create', 'POST /admin/company/update', 'POST /admin/company/delete'],
+          title: '公司管理',
+          icon: 'nested',
           noCache: true
         }
       },

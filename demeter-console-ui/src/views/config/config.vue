@@ -46,7 +46,7 @@
       <el-table-column align="center" label="操作列表" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
-            v-permission="['POST /admin/config/update']"
+            v-permission="['POST /admin/config/edit']"
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)">编辑

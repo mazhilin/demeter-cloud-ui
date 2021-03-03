@@ -31,6 +31,19 @@
           <el-tag >{{ scope.row.type | formatAdminType }}</el-tag>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="用户状态" prop="status">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.status"
+            :active-value="1"
+            :inactive-value="0"
+            active-color="#409eff"
+            inactive-color="#c0ccda"
+            @change="updateStatus($event,scope.row)">
+            >
+          </el-switch>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="上次登录" prop="lastLoginTime" />
       <el-table-column align="center" label="登录IP" prop="lastLoginIp" />
@@ -197,7 +210,6 @@ export default {
   },
   created() {
     this.getList()
-
     options()
       .then(response => {
         this.options = response.data.data
@@ -236,12 +248,12 @@ export default {
         account: undefined,
         username: undefined,
         password: undefined,
-        avatar: undefined,
+        profilePicture: undefined,
         roleIds: []
       }
     },
     uploadAvatar: function(response) {
-      this.dataForm.avatar = response.data.url
+      this.dataForm.profilePicture = response.data.url
     },
     handleCreate() {
       this.resetForm()
@@ -280,10 +292,43 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
+    updateStatus(status, row) {
+      const data = {
+        status: status,
+        id: row.id
+      }
+      if (status === 1) {
+        update(data).then(response => {
+          this.$notify.success({
+            title: '温馨提示',
+            message: '启用成功'
+          })
+        })
+          .catch(response => {
+            this.$notify.error({
+              title: '温馨提示',
+              message: response.message
+            })
+          })
+      } else {
+        update(data).then(response => {
+          this.$notify.success({
+            title: '温馨提示',
+            message: '禁用成功'
+          })
+        })
+          .catch(response => {
+            this.$notify.error({
+              title: '温馨提示',
+              message: response.data.message
+            })
+          })
+      }
+    },
     updateData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
-          update(this.dataForm)
+          edit(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
@@ -294,14 +339,14 @@ export default {
               }
               this.dialogFormVisible = false
               this.$notify.success({
-                title: '成功',
-                message: '更新管理员成功'
+                title: '温馨提示',
+                message: '更新成功'
               })
             })
             .catch(response => {
               this.$notify.error({
-                title: '失败',
-                message: response.data.errmsg
+                title: '温馨提示',
+                message: response.data.message
               })
             })
         }
@@ -311,16 +356,16 @@ export default {
       remove(row)
         .then(response => {
           this.$notify.success({
-            title: '成功',
-            message: '删除管理员成功'
+            title: '温馨提示',
+            message: '删除成功'
           })
           const index = this.list.indexOf(row)
           this.list.splice(index, 1)
         })
         .catch(response => {
           this.$notify.error({
-            title: '失败',
-            message: response.data.errmsg
+            title: '温馨提示',
+            message: response.data.message
           })
         })
     },

@@ -24,6 +24,14 @@ export function show(data) {
   })
 }
 
+export function edit(data) {
+  return request({
+    url: '/config/edit',
+    method: 'post',
+    data
+  })
+}
+
 export function update(data) {
   return request({
     url: '/config/update',

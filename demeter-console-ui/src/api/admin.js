@@ -19,7 +19,7 @@ export function create(data) {
 export function edit(data) {
   return request({
     url: '/user/edit',
-    method: 'get',
+    method: 'post',
     data
   })
 }
