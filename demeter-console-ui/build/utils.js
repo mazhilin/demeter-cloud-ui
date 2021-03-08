@@ -1,38 +1,38 @@
-'use strict'
-const path = require('path')
-const config = require('../config')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const packageConfig = require('../package.json')
+"use strict";
+const path = require("path");
+const config = require("../config");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const packageConfig = require("../package.json");
 
-exports.assetsPath = function(_path) {
+exports.assetsPath = function (_path) {
   const assetsSubDirectory =
-    process.env.NODE_ENV === 'production'
+    process.env.NODE_ENV === "production"
       ? config.build.assetsSubDirectory
-      : config.dev.assetsSubDirectory
+      : config.dev.assetsSubDirectory;
 
-  return path.posix.join(assetsSubDirectory, _path)
-}
+  return path.posix.join(assetsSubDirectory, _path);
+};
 
-exports.cssLoaders = function(options) {
-  options = options || {}
+exports.cssLoaders = function (options) {
+  options = options || {};
 
   const cssLoader = {
-    loader: 'css-loader',
+    loader: "css-loader",
     options: {
-      sourceMap: options.sourceMap
-    }
-  }
+      sourceMap: options.sourceMap,
+    },
+  };
 
   const postcssLoader = {
-    loader: 'postcss-loader',
+    loader: "postcss-loader",
     options: {
-      sourceMap: options.sourceMap
-    }
-  }
+      sourceMap: options.sourceMap,
+    },
+  };
 
   // generate loader string to be used with extract text plugin
   function generateLoaders(loader, loaderOptions) {
-    const loaders = []
+    const loaders = [];
 
     // Extract CSS when that option is specified
     // (which is the case during production build)
@@ -42,74 +42,74 @@ exports.cssLoaders = function(options) {
         loader: MiniCssExtractPlugin.loader,
         options: {
           // 解决css中backgroud-url资源在编译后的路径问题
-          publicPath: '../../'
-        }
-      })
+          publicPath: "../../",
+        },
+      });
     } else {
-      loaders.push('vue-style-loader')
+      loaders.push("vue-style-loader");
     }
 
-    loaders.push(cssLoader)
+    loaders.push(cssLoader);
 
     if (options.usePostCSS) {
-      loaders.push(postcssLoader)
+      loaders.push(postcssLoader);
     }
 
     if (loader) {
       loaders.push({
-        loader: loader + '-loader',
+        loader: loader + "-loader",
         options: Object.assign({}, loaderOptions, {
-          sourceMap: options.sourceMap
-        })
-      })
+          sourceMap: options.sourceMap,
+        }),
+      });
     }
 
-    return loaders
+    return loaders;
   }
   // https://vue-loader.vuejs.org/en/configurations/extract-css.html
   return {
     css: generateLoaders(),
     postcss: generateLoaders(),
-    less: generateLoaders('less'),
-    sass: generateLoaders('sass', {
-      indentedSyntax: true
+    less: generateLoaders("less"),
+    sass: generateLoaders("sass", {
+      indentedSyntax: true,
     }),
-    scss: generateLoaders('sass'),
-    stylus: generateLoaders('stylus'),
-    styl: generateLoaders('stylus')
-  }
-}
+    scss: generateLoaders("sass"),
+    stylus: generateLoaders("stylus"),
+    styl: generateLoaders("stylus"),
+  };
+};
 
 // Generate loaders for standalone style files (outside of .vue)
-exports.styleLoaders = function(options) {
-  const output = []
-  const loaders = exports.cssLoaders(options)
+exports.styleLoaders = function (options) {
+  const output = [];
+  const loaders = exports.cssLoaders(options);
 
   for (const extension in loaders) {
-    const loader = loaders[extension]
+    const loader = loaders[extension];
     output.push({
-      test: new RegExp('\\.' + extension + '$'),
-      use: loader
-    })
+      test: new RegExp("\\." + extension + "$"),
+      use: loader,
+    });
   }
 
-  return output
-}
+  return output;
+};
 
 exports.createNotifierCallback = () => {
-  const notifier = require('node-notifier')
+  const notifier = require("node-notifier");
 
   return (severity, errors) => {
-    if (severity !== 'error') return
+    if (severity !== "error") return;
 
-    const error = errors[0]
-    const filename = error.file && error.file.split('!').pop()
+    const error = errors[0];
+    const filename = error.file && error.file.split("!").pop();
 
     notifier.notify({
       title: packageConfig.name,
-      message: severity + ': ' + error.name,
-      subtitle: filename || '',
-      icon: path.join(__dirname, 'logo.png')
-    })
-  }
-}
+      message: severity + ": " + error.name,
+      subtitle: filename || "",
+      icon: path.join(__dirname, "logo.png"),
+    });
+  };
+};

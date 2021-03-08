@@ -1,50 +1,50 @@
-import Vue from 'vue'
+import Vue from "vue";
 
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
 
-import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+import "normalize.css/normalize.css"; // A modern alternative to CSS resets
 
-import Element from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-import VueLazyload from 'vue-lazyload'
-Vue.use(VueLazyload)
+import Element from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
+import VueLazyload from "vue-lazyload";
+Vue.use(VueLazyload);
 // 图片放大组件
-import VueDirectiveImagePreviewer from 'vue-directive-image-previewer'
-import 'vue-directive-image-previewer/dist/assets/style.css'
-Vue.use(VueDirectiveImagePreviewer)
+import VueDirectiveImagePreviewer from "vue-directive-image-previewer";
+import "vue-directive-image-previewer/dist/assets/style.css";
+Vue.use(VueDirectiveImagePreviewer);
 
-import '@/styles/index.scss' // global css
+import "@/styles/index.scss"; // global css
 
-import App from './App'
-import router from './router'
-import store from './store'
+import App from "./App";
+import router from "./router";
+import store from "./store";
 
-import i18n from './lang' // Internationalization
-import './icons' // icon
-import './permission' // permission control
+import i18n from "./lang"; // Internationalization
+import "./icons"; // icon
+import "./permission"; // permission control
 
-import * as filters from './filters' // global filters
+import * as filters from "./filters"; // global filters
 
-import permission from '@/directive/permission/index.js' // 权限判断指令
+import permission from "@/directive/permission/index.js"; // 权限判断指令
 
 Vue.use(Element, {
-  size: Cookies.get('size') || 'medium', // set element-ui default size
-  i18n: (key, value) => i18n.t(key, value)
-})
+  size: Cookies.get("size") || "medium", // set element-ui default size
+  i18n: (key, value) => i18n.t(key, value),
+});
 
-Vue.directive('permission', permission)
+Vue.directive("permission", permission);
 
 // register global utility filters.
-Object.keys(filters).forEach(key => {
-  Vue.filter(key, filters[key])
-})
+Object.keys(filters).forEach((key) => {
+  Vue.filter(key, filters[key]);
+});
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
-  el: '#app',
+  el: "#app",
   router,
   store,
   i18n,
-  render: h => h(App)
-})
+  render: (h) => h(App),
+});

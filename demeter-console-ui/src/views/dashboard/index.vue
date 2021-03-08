@@ -1,6 +1,5 @@
 <template>
   <div class="dashboard-editor-container">
-
     <el-row :gutter="40" class="panel-group">
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
@@ -9,7 +8,12 @@
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">用户数量</div>
-            <count-to :start-val="0" :end-val="userTotal" :duration="2600" class="card-panel-num"/>
+            <count-to
+              :start-val="0"
+              :end-val="userTotal"
+              :duration="2600"
+              class="card-panel-num"
+            />
           </div>
         </div>
       </el-col>
@@ -20,7 +24,12 @@
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">作品数量</div>
-            <count-to :start-val="0" :end-val="goodsTotal" :duration="3000" class="card-panel-num"/>
+            <count-to
+              :start-val="0"
+              :end-val="goodsTotal"
+              :duration="3000"
+              class="card-panel-num"
+            />
           </div>
         </div>
       </el-col>
@@ -31,7 +40,12 @@
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">报名数量</div>
-            <count-to :start-val="0" :end-val="productTotal" :duration="3200" class="card-panel-num"/>
+            <count-to
+              :start-val="0"
+              :end-val="productTotal"
+              :duration="3200"
+              class="card-panel-num"
+            />
           </div>
         </div>
       </el-col>
@@ -42,32 +56,41 @@
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">投票数量</div>
-            <count-to :start-val="0" :end-val="orderTotal" :duration="3600" class="card-panel-num"/>
+            <count-to
+              :start-val="0"
+              :end-val="orderTotal"
+              :duration="3600"
+              class="card-panel-num"
+            />
           </div>
         </div>
       </el-col>
     </el-row>
     <el-row :gutter="40">
       <el-col :span="12">
-        <div class="chart-wrapper"><span align="center">系统日志分析图</span>
-          <line-chart :chart-data="lineChartData"/>
+        <div class="chart-wrapper">
+          <span align="center">系统日志分析图</span>
+          <line-chart :chart-data="lineChartData" />
         </div>
       </el-col>
       <el-col :span="12">
-        <div class="chart-wrapper"><span align="center">系统订单分析图</span>
-          <line-chart :chart-data="lineChartData"/>
+        <div class="chart-wrapper">
+          <span align="center">系统订单分析图</span>
+          <line-chart :chart-data="lineChartData" />
         </div>
       </el-col>
     </el-row>
     <el-row :gutter="32">
       <el-col :span="12">
-        <div class="chart-wrapper"><span align="center">系统日志饼图</span>
-          <pie-chart/>
+        <div class="chart-wrapper">
+          <span align="center">系统日志饼图</span>
+          <pie-chart />
         </div>
       </el-col>
       <el-col :span="12">
-        <div class="chart-wrapper"><span align="center">系统订单饼图</span>
-          <pie-chart/>
+        <div class="chart-wrapper">
+          <span align="center">系统订单饼图</span>
+          <pie-chart />
         </div>
       </el-col>
     </el-row>
@@ -75,16 +98,16 @@
 </template>
 
 <script>
-import { info } from '@/api/dashboard'
-import CountTo from 'vue-count-to'
-import LineChart from './components/LineChart'
-import PieChart from './components/PieChart'
+import { info } from "@/api/dashboard";
+import CountTo from "vue-count-to";
+import LineChart from "./components/LineChart";
+import PieChart from "./components/PieChart";
 
 export default {
   components: {
     CountTo,
     LineChart,
-    PieChart
+    PieChart,
   },
   data() {
     return {
@@ -94,26 +117,26 @@ export default {
       orderTotal: 0,
       lineChartData: {
         expectedData: [100, 120, 161, 134, 105, 160, 165],
-        actualData: [120, 82, 91, 154, 162, 140, 145]
-      }
-    }
+        actualData: [120, 82, 91, 154, 162, 140, 145],
+      },
+    };
   },
   created() {
-    console.log('rrr')
-    return
-    info().then(response => {
-      this.userTotal = response.data.data.userTotal
-      this.goodsTotal = response.data.data.goodsTotal
-      this.productTotal = response.data.data.productTotal
-      this.orderTotal = response.data.data.orderTotal
-    })
+    console.log("rrr");
+    return;
+    info().then((response) => {
+      this.userTotal = response.data.data.userTotal;
+      this.goodsTotal = response.data.data.goodsTotal;
+      this.productTotal = response.data.data.productTotal;
+      this.orderTotal = response.data.data.orderTotal;
+    });
   },
   methods: {
     handleSetLineChartData(type) {
-      this.$emit('handleSetLineChartData', type)
-    }
-  }
-}
+      this.$emit("handleSetLineChartData", type);
+    },
+  },
+};
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
@@ -130,7 +153,7 @@ export default {
 .panel-group {
   margin-top: 18px;
 
-  .card-panel-col{
+  .card-panel-col {
     margin-bottom: 32px;
   }
   .card-panel {
@@ -141,14 +164,14 @@ export default {
     overflow: hidden;
     color: #666;
     background: #fff;
-    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-    border-color: rgba(0, 0, 0, .05);
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.05);
     &:hover {
       .card-panel-icon-wrapper {
         color: #fff;
       }
       .icon-people {
-         background: #40c9c6;
+        background: #40c9c6;
       }
       .icon-message {
         background: #36a3f7;
@@ -157,7 +180,7 @@ export default {
         background: #f4516c;
       }
       .icon-shoppingCard {
-        background: #34bfa3
+        background: #34bfa3;
       }
     }
     .icon-people {
@@ -170,7 +193,7 @@ export default {
       color: #f4516c;
     }
     .icon-shoppingCard {
-      color: #34bfa3
+      color: #34bfa3;
     }
     .card-panel-icon-wrapper {
       float: left;

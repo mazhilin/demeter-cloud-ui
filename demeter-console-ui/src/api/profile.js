@@ -1,9 +1,9 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 
 export function changePassword(data) {
   return request({
-    url: '/profile/password',
-    method: 'post',
-    data
-  })
+    url: "/profile/password",
+    method: "post",
+    data,
+  });
 }

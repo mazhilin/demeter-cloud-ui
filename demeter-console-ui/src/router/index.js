@@ -1,10 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+Vue.use(Router);
 
 /* Layout */
-import Layout from '@/views/layout/Layout'
+import Layout from "@/views/layout/Layout";
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -26,619 +26,675 @@ import Layout from '@/views/layout/Layout'
 **/
 export const constantRouterMap = [
   {
-    path: '/redirect',
+    path: "/redirect",
     component: Layout,
     hidden: true,
     children: [
       {
-        path: '/redirect/:path*',
-        component: () => import('@/views/redirect/index')
-      }
-    ]
+        path: "/redirect/:path*",
+        component: () => import("@/views/redirect/index"),
+      },
+    ],
   },
   {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
+    path: "/login",
+    component: () => import("@/views/login/index"),
+    hidden: true,
   },
   {
-    path: '/auth-redirect',
-    component: () => import('@/views/login/authredirect'),
-    hidden: true
+    path: "/auth-redirect",
+    component: () => import("@/views/login/authredirect"),
+    hidden: true,
   },
   {
-    path: '/404',
-    component: () => import('@/views/errorPage/404'),
-    hidden: true
+    path: "/404",
+    component: () => import("@/views/errorPage/404"),
+    hidden: true,
   },
   {
-    path: '/401',
-    component: () => import('@/views/errorPage/401'),
-    hidden: true
+    path: "/401",
+    component: () => import("@/views/errorPage/401"),
+    hidden: true,
   },
   {
-    path: '',
+    path: "",
     component: Layout,
-    redirect: 'dashboard',
+    redirect: "dashboard",
     children: [
       {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
-      }
-    ]
-  }
-]
+        path: "dashboard",
+        component: () => import("@/views/dashboard/index"),
+        name: "Dashboard",
+        meta: { title: "dashboard", icon: "dashboard", noCache: true },
+      },
+    ],
+  },
+];
 
 export default new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRouterMap
-})
+  routes: constantRouterMap,
+});
 
 export const asyncRouterMap = [
   /** 会员中心*/
   {
-    path: '/user',
+    path: "/creation",
     component: Layout,
-    redirect: 'noredirect',
+    redirect: "noredirect",
     alwaysShow: true,
-    name: 'userCenter',
+    name: "creation-center",
     meta: {
-      title: '会员中心',
-      icon: 'service'
+      title: "作品中心",
+      icon: "service",
     },
     children: [
       {
-        path: 'user',
-        component: () => import('@/views/user/user'),
-        name: 'user',
+        path: "customer",
+        component: () => import("@/views/creation/customer"),
+        name: "customer",
         meta: {
-          perms: ['GET /admin/user/list', 'POST /admin/user/create', 'POST /admin/user/read'],
-          title: '会员管理',
-          icon: 'customer',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/user/list",
+            "POST /admin/user/create",
+            "POST /admin/user/read",
+          ],
+          title: "作者管理",
+          icon: "customer",
+          noCache: true,
+        },
       },
       {
-        path: 'address',
-        component: () => import('@/views/user/address'),
-        name: 'address',
+        path: "works",
+        component: () => import("@/views/creation/works"),
+        name: "works",
         meta: {
-          perms: ['GET /admin/address/list'],
-          title: '会员地址',
-          icon: 'map',
-          noCache: true
-        }
+          perms: ["GET /admin/address/list"],
+          title: "作品管理",
+          icon: "map",
+          noCache: true,
+        },
       },
       {
-        path: 'collect',
-        component: () => import('@/views/user/collect'),
-        name: 'collect',
+        path: "vote",
+        component: () => import("@/views/creation/vote"),
+        name: "vote",
         meta: {
-          perms: ['GET /admin/collect/list'],
-          title: '会员收藏',
-          icon: 'operation',
-          noCache: true
-        }
+          perms: ["GET /admin/address/list"],
+          title: "投票管理",
+          icon: "map",
+          noCache: true,
+        },
       },
-      {
-        path: 'footprint',
-        component: () => import('@/views/user/footprint'),
-        name: 'footprint',
-        meta: {
-          perms: ['GET /admin/footprint/list'],
-          title: '会员足迹',
-          icon: 'browse',
-          noCache: true
-        }
-      },
-      {
-        path: 'history',
-        component: () => import('@/views/user/history'),
-        name: 'history',
-        meta: {
-          perms: ['GET /admin/history/list'],
-          title: '搜索历史',
-          icon: 'history',
-          noCache: true
-        }
-      },
-      {
-        path: 'feedback',
-        component: () => import('@/views/user/feedback'),
-        name: 'feedback',
-        meta: {
-          perms: ['GET /admin/feedback/list'],
-          title: '意见反馈',
-          icon: 'survey',
-          noCache: true
-        }
-      }
-    ]
+    ],
   },
   /** 运营中心*/
   {
-    path: '/operation',
+    path: "/operation",
     component: Layout,
-    redirect: 'noredirect',
+    redirect: "noredirect",
     alwaysShow: true,
-    name: 'operationCenter',
+    name: "operationCenter",
     meta: {
-      title: '运营中心',
-      icon: 'operation-center'
+      title: "运营中心",
+      icon: "operation-center",
     },
     children: [
       {
-        path: 'order',
-        component: () => import('@/views/operation/order'),
-        name: 'order',
+        path: "comment",
+        component: () => import("@/views/operation/comment"),
+        name: "comment",
         meta: {
-          perms: ['GET /admin/order/list', 'GET /admin/order/detail', 'POST /admin/order/ordership', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
-          title: '订单管理',
-          icon: 'order-center',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/comment/list",
+            "POST /admin/comment/add",
+            "POST /admin/comment/edit",
+            "GET /admin/comment/show",
+            "POST /admin/order/update",
+            "POST /admin/order/delete",
+          ],
+          title: "评论管理",
+          icon: "product-comment",
+          noCache: true,
+        },
       },
       {
-        path: 'express',
-        component: () => import('@/views/operation/express'),
-        name: 'express',
+        path: "browse",
+        component: () => import("@/views/operation/browse"),
+        name: "browse",
         meta: {
-          perms: ['GET /admin/express/list', 'GET /admin/express/read', 'POST /admin/express/create', 'POST /admin/express/update', 'POST /admin/express/delete'],
-          title: '快递管理',
-          icon: 'order-center',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/browse/list",
+            "GET /admin/browse/read",
+            "POST /admin/browse/create",
+            "POST /admin/browse/update",
+            "POST /admin/browse/delete",
+          ],
+          title: "浏览管理",
+          icon: "order-center",
+          noCache: true,
+        },
       },
       {
-        path: 'freight',
-        component: () => import('@/views/operation/freight'),
-        name: 'freight',
+        path: "like",
+        component: () => import("@/views/operation/like"),
+        name: "like",
         meta: {
-          perms: ['GET /admin/freight/list', 'GET /admin/freight/read', 'POST /admin/freight/create', 'POST /admin/freight/update', 'POST /admin/freight/delete'],
-          title: '运费管理',
-          icon: 'order-center',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/like/list",
+            "GET /admin/like/read",
+            "POST /admin/like/create",
+            "POST /admin/like/update",
+            "POST /admin/like/delete",
+          ],
+          title: "点赞管理",
+          icon: "order-center",
+          noCache: true,
+        },
       },
       {
-        path: 'template',
-        component: () => import('@/views/operation/template'),
-        name: 'template',
+        path: "collect",
+        component: () => import("@/views/user/collect"),
+        name: "collect",
         meta: {
-          perms: ['GET /admin/template/list', 'GET /admin/template/read', 'POST /admin/template/create', 'POST /admin/template/update', 'POST /admin/template/delete'],
-          title: '运费模板',
-          icon: 'order-center',
-          noCache: true
-        }
+          perms: ["GET /admin/collect/list"],
+          title: "收藏管理",
+          icon: "operation",
+          noCache: true,
+        },
       },
-      {
-        path: 'logistics',
-        component: () => import('@/views/operation/logistics'),
-        name: 'logistics',
-        meta: {
-          perms: ['GET /admin/logistics/list', 'GET /admin/logistics/detail'],
-          title: '物流管理',
-          icon: 'order-center',
-          noCache: true
-        }
-      },
-      {
-        path: 'issue',
-        component: () => import('@/views/operation/issue'),
-        name: 'issue',
-        meta: {
-          perms: ['GET /admin/issue/list', 'POST /admin/issue/create', 'GET /admin/issue/read', 'POST /admin/issue/update', 'POST /admin/issue/delete'],
-          title: '咨询管理',
-          icon: 'help-center',
-          noCache: true
-        }
-      }
-    ]
+    ],
   },
   /** 配置中心*/
   {
-    path: '/config',
+    path: "/config",
     component: Layout,
-    redirect: 'noredirect',
+    redirect: "noredirect",
     alwaysShow: true,
-    name: 'configCenter',
+    name: "config-center",
     meta: {
-      title: '配置中心',
-      icon: 'config-center'
+      title: "配置中心",
+      icon: "config-center",
     },
     children: [
       {
-        path: 'config',
-        component: () => import('@/views/config/config'),
-        name: 'config',
+        path: "config",
+        component: () => import("@/views/config/config"),
+        name: "config",
         meta: {
-          perms: ['GET /admin/config/list', 'POST /admin/config/create', 'POST /admin/config/show', 'POST /admin/config/edit', 'POST /admin/config/update', 'POST /admin/config/delete'],
-          title: '配置管理',
-          icon: 'config-center',
-          noCache: true
-        }
-      },
-      {
-        path: 'parameter',
-        component: () => import('@/views/config/parameter'),
-        name: 'parameter',
-        meta: {
-          perms: ['GET /admin/parameter/list', 'POST /admin/parameter/create', 'POST /admin/parameter/update', 'POST /admin/parameter/delete'],
-          title: '参数管理',
-          icon: 'parameter-center',
-          noCache: true
-        }
-      },
-      {
-        path: 'dictionary',
-        component: () => import('@/views/config/dictionary'),
-        name: 'dictionary',
-        meta: {
-          perms: ['GET /admin/parameter/list', 'POST /admin/parameter/create', 'POST /admin/parameter/update', 'POST /admin/parameter/delete'],
-          title: '数据字典',
-          icon: 'dictionary-center',
-          noCache: true
-        }
-      },
-      {
-        path: 'dictionaryitem',
-        component: () => import('@/views/config/dictionaryitem'),
-        name: 'dictionaryitem',
-        meta: {
-          perms: ['GET /admin/dictionary/item/list', 'POST /admin/dictionary/item/create', 'POST /admin/dictionary/item/update', 'POST /admin/dictionary/item/delete'],
-          title: '字典项管理',
-          icon: 'dictionary-item',
-          noCache: true
-        }
-      }
-    ]
-  },
-  {
-    path: '/goods',
-    component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'goodsManage',
-    meta: {
-      title: '商品中心',
-      icon: 'product-list'
-    },
-    children: [
-      {
-        path: 'brand',
-        component: () => import('@/views/mall/brand'),
-        name: 'brand',
-        meta: {
-          perms: ['GET /admin/brand/list', 'POST /admin/brand/create', 'GET /admin/brand/read', 'POST /admin/brand/update', 'POST /admin/brand/delete'],
-          title: '品牌管理',
-          icon: 'barand',
-          noCache: true
-        }
-      },
-      {
-        path: 'list',
-        component: () => import('@/views/goods/list'),
-        name: 'goodsList',
-        meta: {
-          perms: ['GET /admin/goods/list', 'POST /admin/goods/delete'],
-          title: '产品管理',
-          icon: 'product',
-          noCache: true
-        }
-      },
-      {
-        path: 'create',
-        component: () => import('@/views/goods/create'),
-        name: 'goodsCreate',
-        meta: {
-          perms: ['POST /admin/goods/create'],
-          title: '商品上架',
-          icon: 'goods-create',
-          noCache: true
-        }
-      },
-      {
-        path: 'edit',
-        component: () => import('@/views/goods/edit'),
-        name: 'goodsEdit',
-        meta: {
-          perms: ['GET /admin/goods/detail', 'POST /admin/goods/update', 'POST /admin/goods/catAndBrand'],
-          title: '商品编辑',
-          noCache: true
+          perms: [
+            "GET /admin/config/list",
+            "POST /admin/config/create",
+            "POST /admin/config/show",
+            "POST /admin/config/edit",
+            "POST /admin/config/update",
+            "POST /admin/config/delete",
+          ],
+          title: "配置管理",
+          icon: "config-center",
+          noCache: true,
         },
-        hidden: true
       },
       {
-        path: 'category',
-        component: () => import('@/views/goods/category'),
-        name: 'category',
+        path: "parameter",
+        component: () => import("@/views/config/parameter"),
+        name: "parameter",
         meta: {
-          perms: ['GET /admin/category/list', 'POST /admin/category/create', 'GET /admin/category/read', 'POST /admin/category/update', 'POST /admin/category/delete'],
-          title: '类目管理',
-          icon: 'product-category',
-          noCache: true
-        }
-      },
-      {
-        path: 'keyword',
-        component: () => import('@/views/goods/keyword'),
-        name: 'keyword',
-        meta: {
-          perms: ['GET /admin/keyword/list', 'POST /admin/keyword/create', 'GET /admin/keyword/read', 'POST /admin/keyword/update', 'POST /admin/keyword/delete'],
-          title: '搜索关键词',
-          icon: 'keyword',
-          noCache: true
-        }
-      },
-      {
-        path: 'comment',
-        component: () => import('@/views/goods/comment'),
-        name: 'goodsComment',
-        meta: {
-          perms: ['GET /admin/comment/list', 'POST /admin/comment/create', 'POST /admin/comment/delete'],
-          title: '评价管理',
-          icon: 'product-comment',
-          noCache: true
-        }
-      }
-    ]
-  },
-  {
-    path: '/promotion',
-    component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'promotionCenter',
-    meta: {
-      title: '活动中心',
-      icon: 'guide'
-    },
-    children: [
-      {
-        path: 'articleList',
-        component: () => import('@/views/promotion/articleList'),
-        name: 'articleList',
-        meta: {
-          perms: ['GET /admin/article/list', 'POST /admin/article/delete', 'POST /admin/article/create'],
-          title: '通告管理',
-          icon: 'tips',
-          noCache: true
-        }
-      },
-      {
-        path: 'articleCreate',
-        component: () => import('@/views/promotion/articleCreate'),
-        name: 'articleCreate',
-        meta: {
-          perms: ['POST /admin/article/create'],
-          title: '发布公告',
-          icon: 'tips',
-          noCache: true
+          perms: [
+            "GET /admin/parameter/list",
+            "POST /admin/parameter/create",
+            "POST /admin/parameter/update",
+            "POST /admin/parameter/delete",
+          ],
+          title: "参数管理",
+          icon: "parameter-center",
+          noCache: true,
         },
-        hidden: true
       },
       {
-        path: 'articleEdit',
-        component: () => import('@/views/promotion/articleEdit'),
-        name: 'articleEdit',
+        path: "dictionary",
+        component: () => import("@/views/config/dictionary"),
+        name: "dictionary",
         meta: {
-          perms: ['GET /admin/article/detail', 'POST /admin/article/update'],
-          title: '广告管理',
-          icon: 'chart',
-          noCache: true
+          perms: [
+            "GET /admin/parameter/list",
+            "POST /admin/parameter/create",
+            "POST /admin/parameter/update",
+            "POST /admin/parameter/delete",
+          ],
+          title: "数据字典",
+          icon: "dictionary-center",
+          noCache: true,
         },
-        hidden: true
       },
       {
-        path: 'ad',
-        component: () => import('@/views/promotion/ad'),
-        name: 'ad',
+        path: "dictionaryitem",
+        component: () => import("@/views/config/dictionaryitem"),
+        name: "dictionaryitem",
         meta: {
-          perms: ['GET /admin/ad/list', 'POST /admin/ad/create', 'GET /admin/ad/read', 'POST /admin/ad/update', 'POST /admin/ad/delete'],
-          title: '广告管理',
-          icon: 'ad',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/dictionary/item/list",
+            "POST /admin/dictionary/item/create",
+            "POST /admin/dictionary/item/update",
+            "POST /admin/dictionary/item/delete",
+          ],
+          title: "字典项管理",
+          icon: "dictionary-item",
+          noCache: true,
+        },
       },
-      {
-        path: 'topic',
-        component: () => import('@/views/promotion/topic'),
-        name: 'topic',
-        meta: {
-          perms: ['GET /admin/topic/list', 'POST /admin/topic/create', 'GET /admin/topic/read', 'POST /admin/topic/update', 'POST /admin/topic/delete'],
-          title: '专题管理',
-          icon: 'libra',
-          noCache: true
-        }
-      }
-    ]
+    ],
   },
+  /**商城中心*/
   {
-    path: '/system',
+    path: "/mall",
     component: Layout,
-    redirect: 'noredirect',
+    redirect: "noredirect",
     alwaysShow: true,
-    name: 'systemCenter',
+    name: "mall-center",
     meta: {
-      title: '系统中心',
-      icon: 'setting'
+      title: "商城中心",
+      icon: "product-list",
     },
     children: [
       {
-        path: 'admin',
-        component: () => import('@/views/system/admin'),
-        name: 'admin',
+        path: "product",
+        component: () => import("@/views/mall/product"),
+        name: "goodsList",
         meta: {
-          perms: ['GET /admin/user/list', 'POST /admin/user/create', 'POST /admin/user/edit', 'POST /admin/user/update', 'POST /admin/user/delete'],
-          title: '用户管理',
-          icon: 'user',
-          noCache: true
-        }
+          perms: ["GET /admin/goods/list", "POST /admin/goods/delete"],
+          title: "商品管理",
+          icon: "product",
+          noCache: true,
+        },
       },
       {
-        path: 'role',
-        component: () => import('@/views/system/role'),
-        name: 'role',
+        path: "category",
+        component: () => import("@/views/mall/category"),
+        name: "category",
         meta: {
-          perms: ['GET /admin/role/list', 'POST /admin/role/create', 'POST /admin/role/show', 'POST /admin/role/update', 'POST /admin/role/edit', 'POST /admin/role/delete', 'GET /admin/permission/list', 'POST /admin/permission/update'],
-          title: '角色管理',
-          icon: 'team',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/category/list",
+            "POST /admin/category/create",
+            "GET /admin/category/read",
+            "POST /admin/category/update",
+            "POST /admin/category/delete",
+          ],
+          title: "类目管理",
+          icon: "product-category",
+          noCache: true,
+        },
       },
       {
-        path: 'storage',
-        component: () => import('@/views/system/storage'),
-        name: 'storage',
+        path: "comment",
+        component: () => import("@/views/mall/comment"),
+        name: "goodsComment",
         meta: {
-          perms: ['GET /admin/storage/list', 'POST /admin/storage/create', 'POST /admin/storage/update', 'POST /admin/storage/delete'],
-          title: '文件管理',
-          icon: 'cloud',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/comment/list",
+            "POST /admin/comment/create",
+            "POST /admin/comment/delete",
+          ],
+          title: "商品评价",
+          icon: "product-comment",
+          noCache: true,
+        },
       },
       {
-        path: 'region',
-        component: () => import('@/views/system/region'),
-        name: 'region',
+        path: "order",
+        component: () => import("@/views/mall/order"),
+        name: "order-center",
         meta: {
-          perms: ['GET /admin/region/list', 'GET /admin/region/detail', 'POST /admin/order/region', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
-          title: '区域管理',
-          icon: 'region-center',
-          noCache: true
-        }
-      }
-    ]
+          perms: [
+            "GET /admin/comment/list",
+            "POST /admin/comment/create",
+            "POST /admin/comment/delete",
+          ],
+          title: "订单管理",
+          icon: "product-comment",
+          noCache: true,
+        },
+      },
+    ],
   },
+  /**礼品中心*/
   {
-    path: '/enterprise',
+    path: "/logistics",
     component: Layout,
-    redirect: 'noredirect',
+    redirect: "noredirect",
     alwaysShow: true,
-    name: 'enterprise-center',
+    name: "logistics-center",
     meta: {
-      title: '企业中心',
-      icon: 'enterprise-center'
+      title: "礼品中心",
+      icon: "guide",
     },
     children: [
       {
-        path: 'employee',
-        component: () => import('@/views/enterprise/employee'),
-        name: 'employee',
+        path: "prize",
+        component: () => import("@/views/logistics/prize"),
+        name: "prize",
         meta: {
-          perms: ['GET /admin/employee/list', 'POST /admin/employee/create', 'POST /admin/employee/update', 'POST /admin/employee/delete'],
-          title: '员工管理',
-          icon: 'user',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/topic/list",
+            "POST /admin/topic/create",
+            "GET /admin/topic/read",
+            "POST /admin/topic/update",
+            "POST /admin/topic/delete",
+          ],
+          title: "奖项管理",
+          icon: "libra",
+          noCache: true,
+        },
       },
       {
-        path: 'company',
-        component: () => import('@/views/enterprise/company'),
-        name: 'company',
+        path: "award",
+        component: () => import("@/views/logistics/award"),
+        name: "award",
         meta: {
-          perms: ['GET /admin/company/list', 'POST /admin/company/create', 'POST /admin/company/update', 'POST /admin/company/delete'],
-          title: '公司管理',
-          icon: 'nested',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/topic/list",
+            "POST /admin/topic/create",
+            "GET /admin/topic/read",
+            "POST /admin/topic/update",
+            "POST /admin/topic/delete",
+          ],
+          title: "奖品管理",
+          icon: "libra",
+          noCache: true,
+        },
       },
       {
-        path: 'information',
-        component: () => import('@/views/enterprise/information'),
-        name: 'information',
+        path: "lottery",
+        component: () => import("@/views/logistics/lottery"),
+        name: "lottery",
         meta: {
-          perms: ['GET /admin/information/list', 'POST /admin/information/create', 'POST /admin/information/update', 'POST /admin/information/delete'],
-          title: '信息管理',
-          icon: 'nested',
-          noCache: true
-        }
-      }
-    ]
+          perms: [
+            "GET /admin/topic/list",
+            "POST /admin/topic/create",
+            "GET /admin/topic/read",
+            "POST /admin/topic/update",
+            "POST /admin/topic/delete",
+          ],
+          title: "开奖管理",
+          icon: "libra",
+          noCache: true,
+        },
+      },
+      {
+        path: "distribute",
+        component: () => import("@/views/logistics/distribute"),
+        name: "distribute",
+        meta: {
+          perms: [
+            "GET /admin/topic/list",
+            "POST /admin/topic/create",
+            "GET /admin/topic/read",
+            "POST /admin/topic/update",
+            "POST /admin/topic/delete",
+          ],
+          title: "颁奖管理",
+          icon: "libra",
+          noCache: true,
+        },
+      },
+    ],
   },
+  /**活动中心*/
   {
-    path: '/report',
+    path: "/community",
     component: Layout,
-    redirect: 'noredirect',
+    redirect: "noredirect",
     alwaysShow: true,
-    name: 'reportCenter',
+    name: "community-center",
     meta: {
-      title: '报表中心',
-      icon: 'report-center'
+      title: "活动中心",
+      icon: "guide",
     },
     children: [
       {
-        path: 'achievement',
-        component: () => import('@/views/report/achievement'),
-        name: 'reportAchievement',
+        path: "template",
+        component: () => import("@/views/community/template"),
+        name: "template-center",
         meta: {
-          perms: ['GET /admin/report/achievement'],
-          title: '员工业绩',
-          icon: 'achievement-list',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/topic/list",
+            "POST /admin/topic/create",
+            "GET /admin/topic/read",
+            "POST /admin/topic/update",
+            "POST /admin/topic/delete",
+          ],
+          title: "模板管理",
+          icon: "libra",
+          noCache: true,
+        },
       },
       {
-        path: 'distribution',
-        component: () => import('@/views/report/distribution'),
-        name: 'reportDistribution',
+        path: "activity",
+        component: () => import("@/views/community/activity"),
+        name: "activity",
         meta: {
-          perms: ['GET /admin/report/distribution'],
-          title: '会员佣金',
-          icon: 'distribution-list',
-          noCache: true
-        }
-      }
-    ]
+          perms: [
+            "GET /admin/topic/list",
+            "POST /admin/topic/create",
+            "GET /admin/topic/read",
+            "POST /admin/topic/update",
+            "POST /admin/topic/delete",
+          ],
+          title: "活动管理",
+          icon: "libra",
+          noCache: true,
+        },
+      },
+      {
+        path: "enroll",
+        component: () => import("@/views/community/enroll"),
+        name: "enroll",
+        meta: {
+          perms: [
+            "GET /admin/topic/list",
+            "POST /admin/topic/create",
+            "GET /admin/topic/read",
+            "POST /admin/topic/update",
+            "POST /admin/topic/delete",
+          ],
+          title: "报名管理",
+          icon: "libra",
+          noCache: true,
+        },
+      },
+    ],
   },
   {
-    path: '/stat',
+    path: "/system",
     component: Layout,
-    redirect: 'noredirect',
+    redirect: "noredirect",
     alwaysShow: true,
-    name: 'statManage',
+    name: "system-center",
     meta: {
-      title: '数据中心',
-      icon: 'data'
+      title: "系统中心",
+      icon: "setting",
     },
     children: [
       {
-        path: 'user',
-        component: () => import('@/views/stat/user'),
-        name: 'statUser',
+        path: "admin",
+        component: () => import("@/views/system/admin"),
+        name: "admin",
         meta: {
-          perms: ['GET /admin/stat/user'],
-          title: '会员统计',
-          icon: 'bussiness-card',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/user/list",
+            "POST /admin/user/create",
+            "POST /admin/user/edit",
+            "POST /admin/user/update",
+            "POST /admin/user/delete",
+          ],
+          title: "用户管理",
+          icon: "user",
+          noCache: true,
+        },
       },
       {
-        path: 'order',
-        component: () => import('@/views/stat/order'),
-        name: 'statOrder',
+        path: "role",
+        component: () => import("@/views/system/role"),
+        name: "role",
         meta: {
-          perms: ['GET /admin/stat/order'],
-          title: '订单统计',
-          icon: 'chart',
-          noCache: true
-        }
+          perms: [
+            "GET /admin/role/list",
+            "POST /admin/role/create",
+            "POST /admin/role/show",
+            "POST /admin/role/update",
+            "POST /admin/role/edit",
+            "POST /admin/role/delete",
+            "GET /admin/permission/list",
+            "POST /admin/permission/update",
+          ],
+          title: "角色管理",
+          icon: "team",
+          noCache: true,
+        },
       },
       {
-        path: 'goods',
-        component: () => import('@/views/stat/goods'),
-        name: 'statGoods',
+        path: "storage",
+        component: () => import("@/views/system/storage"),
+        name: "storage",
         meta: {
-          perms: ['GET /admin/stat/goods'],
-          title: '商品统计',
-          icon: 'excel',
-          noCache: true
-        }
-      }
-    ]
+          perms: [
+            "GET /admin/storage/list",
+            "POST /admin/storage/create",
+            "POST /admin/storage/update",
+            "POST /admin/storage/delete",
+          ],
+          title: "文件管理",
+          icon: "cloud",
+          noCache: true,
+        },
+      },
+      {
+        path: "region",
+        component: () => import("@/views/system/region"),
+        name: "region",
+        meta: {
+          perms: [
+            "GET /admin/region/list",
+            "GET /admin/region/detail",
+            "POST /admin/order/region",
+            "POST /admin/order/orderrefund",
+            "POST /admin/order/orderreply",
+          ],
+          title: "区域管理",
+          icon: "region-center",
+          noCache: true,
+        },
+      },
+    ],
+  },
+  {
+    path: "/enterprise",
+    component: Layout,
+    redirect: "noredirect",
+    alwaysShow: true,
+    name: "enterprise-center",
+    meta: {
+      title: "企业中心",
+      icon: "enterprise-center",
+    },
+    children: [
+      {
+        path: "employee",
+        component: () => import("@/views/enterprise/employee"),
+        name: "employee",
+        meta: {
+          perms: [
+            "GET /admin/employee/list",
+            "POST /admin/employee/create",
+            "POST /admin/employee/update",
+            "POST /admin/employee/delete",
+          ],
+          title: "员工管理",
+          icon: "user",
+          noCache: true,
+        },
+      },
+      {
+        path: "company",
+        component: () => import("@/views/enterprise/company"),
+        name: "company",
+        meta: {
+          perms: [
+            "GET /admin/company/list",
+            "POST /admin/company/create",
+            "POST /admin/company/update",
+            "POST /admin/company/delete",
+          ],
+          title: "公司管理",
+          icon: "nested",
+          noCache: true,
+        },
+      },
+      {
+        path: "information",
+        component: () => import("@/views/enterprise/information"),
+        name: "information",
+        meta: {
+          perms: [
+            "GET /admin/information/list",
+            "POST /admin/information/create",
+            "POST /admin/information/update",
+            "POST /admin/information/delete",
+          ],
+          title: "信息管理",
+          icon: "nested",
+          noCache: true,
+        },
+      },
+    ],
+  },
+  /**数据中心*/
+  {
+    path: "/stat",
+    component: Layout,
+    redirect: "noredirect",
+    alwaysShow: true,
+    name: "analysis-center",
+    meta: {
+      title: "数据中心",
+      icon: "data",
+    },
+    children: [
+      {
+        path: "user",
+        component: () => import("@/views/stat/user"),
+        name: "statUser",
+        meta: {
+          perms: ["GET /admin/stat/user"],
+          title: "会员统计",
+          icon: "bussiness-card",
+          noCache: true,
+        },
+      },
+      {
+        path: "order",
+        component: () => import("@/views/stat/order"),
+        name: "statOrder",
+        meta: {
+          perms: ["GET /admin/stat/order"],
+          title: "订单统计",
+          icon: "chart",
+          noCache: true,
+        },
+      },
+      {
+        path: "goods",
+        component: () => import("@/views/stat/goods"),
+        name: "statGoods",
+        meta: {
+          perms: ["GET /admin/stat/goods"],
+          title: "商品统计",
+          icon: "excel",
+          noCache: true,
+        },
+      },
+    ],
   },
   /* {
     path: '/monitor',
@@ -711,20 +767,20 @@ export const asyncRouterMap = [
     ]
   },*/
   {
-    path: '/profile',
+    path: "/profile",
     component: Layout,
-    redirect: 'noredirect',
+    redirect: "noredirect",
     alwaysShow: true,
     children: [
       {
-        path: 'password',
-        component: () => import('@/views/profile/password'),
-        name: 'password',
-        meta: { title: '修改密码', noCache: true }
-      }
+        path: "password",
+        component: () => import("@/views/profile/password"),
+        name: "password",
+        meta: { title: "修改密码", noCache: true },
+      },
     ],
-    hidden: true
+    hidden: true,
   },
 
-  { path: '*', redirect: '/404', hidden: true }
-]
+  { path: "*", redirect: "/404", hidden: true },
+];

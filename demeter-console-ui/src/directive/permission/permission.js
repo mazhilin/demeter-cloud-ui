@@ -1,29 +1,30 @@
+import store from "@/store";
 
-import store from '@/store'
-
-export default{
+export default {
   inserted(el, binding, vnode) {
-    const { value } = binding
-    const perms = store.getters && store.getters.perms
+    const { value } = binding;
+    const perms = store.getters && store.getters.perms;
 
     if (value && value instanceof Array && value.length > 0) {
-      const permissions = value
+      const permissions = value;
 
-      var hasPermission = false
+      var hasPermission = false;
 
-      if (perms.indexOf('*') >= 0) {
-        hasPermission = true
+      if (perms.indexOf("*") >= 0) {
+        hasPermission = true;
       } else {
-        hasPermission = perms.some(perm => {
-          return permissions.includes(perm)
-        })
+        hasPermission = perms.some((perm) => {
+          return permissions.includes(perm);
+        });
       }
 
       if (!hasPermission) {
-        el.parentNode && el.parentNode.removeChild(el)
+        el.parentNode && el.parentNode.removeChild(el);
       }
     } else {
-      throw new Error(`need perms! Like v-permission="['GET /aaa','POST /bbb']"`)
+      throw new Error(
+        `need perms! Like v-permission="['GET /aaa','POST /bbb']"`
+      );
     }
-  }
-}
+  },
+};
