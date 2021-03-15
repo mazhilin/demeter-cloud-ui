@@ -8,6 +8,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入管理员账户"
+        prefix-icon="el-icon-search"
       />
       <el-input
         v-model="listQuery.name"
@@ -15,6 +16,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入管理员名称"
+        prefix-icon="el-icon-edit"
       />
       <el-button
         v-permission="['GET /admin/user/list']"
@@ -22,7 +24,7 @@
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
-        >查询</el-button
+      >查询</el-button
       >
       <el-button
         v-permission="['POST /admin/user/create']"
@@ -30,7 +32,7 @@
         type="primary"
         icon="el-icon-edit"
         @click="handleCreate"
-        >添加</el-button
+      >添加</el-button
       >
       <el-button
         :loading="downloadLoading"
@@ -38,7 +40,7 @@
         type="primary"
         icon="el-icon-download"
         @click="handleDownload"
-        >导出</el-button
+      >导出</el-button
       >
     </div>
 
@@ -67,7 +69,7 @@
             v-lazy="scope.row.profilePicture"
             v-if="scope.row.profilePicture"
             width="30"
-          />
+          >
         </template>
       </el-table-column>
 
@@ -117,14 +119,14 @@
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
-            >编辑</el-button
+          >编辑</el-button
           >
           <el-button
             v-permission="['POST /admin/user/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
-            >删除</el-button
+          >删除</el-button
           >
         </template>
       </el-table-column>
@@ -175,7 +177,7 @@
               v-if="dataForm.profilePicture"
               :src="dataForm.profilePicture"
               class="avatar"
-            />
+            >
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
@@ -196,7 +198,7 @@
           v-if="dialogStatus == 'create'"
           type="primary"
           @click="createData"
-          >确定</el-button
+        >确定</el-button
         >
         <el-button v-else type="primary" @click="updateData">确定</el-button>
       </div>
@@ -231,35 +233,35 @@
 </style>
 
 <script>
-import { list, create, update, remove, edit } from "@/api/admin";
-import { options } from "@/api/role";
-import { uploadPath } from "@/api/storage";
-import { getToken } from "@/utils/auth";
-import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+import { list, create, update, remove, edit } from '@/api/admin'
+import { options } from '@/api/role'
+import { uploadPath } from '@/api/storage'
+import { getToken } from '@/utils/auth'
+import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const defaultAdminTypeOptions = [
   {
-    label: "管理人员",
-    value: 0,
+    label: '管理人员',
+    value: 0
   },
   {
-    label: "内部员工",
-    value: 1,
-  },
-];
+    label: '内部员工',
+    value: 1
+  }
+]
 
 export default {
-  name: "Admin",
+  name: 'Admin',
   components: { Pagination },
   filters: {
     formatAdminType(type) {
       for (let i = 0; i < defaultAdminTypeOptions.length; i++) {
         if (type === defaultAdminTypeOptions[i].value) {
-          return defaultAdminTypeOptions[i].label;
+          return defaultAdminTypeOptions[i].label
         }
       }
-      return "";
-    },
+      return ''
+    }
   },
   data() {
     return {
@@ -273,8 +275,8 @@ export default {
         limit: 20,
         name: undefined,
         nickname: undefined,
-        sort: "create_time",
-        order: "desc",
+        sort: 'create_time',
+        order: 'desc'
       },
       dataForm: {
         id: undefined,
@@ -283,67 +285,67 @@ export default {
         nickname: undefined,
         password: undefined,
         profilePicture: undefined,
-        roleIds: [],
+        roleIds: []
       },
       dialogFormVisible: false,
-      dialogStatus: "",
+      dialogStatus: '',
       textMap: {
-        update: "编辑",
-        create: "创建",
+        update: '编辑',
+        create: '创建'
       },
       rules: {
         account: [
-          { required: true, message: "管理员账户不能为空", trigger: "blur" },
+          { required: true, message: '管理员账户不能为空', trigger: 'blur' }
         ],
         username: [
-          { required: true, message: "管理员名称不能为空", trigger: "blur" },
+          { required: true, message: '管理员名称不能为空', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: "密码不能为空", trigger: "blur" },
-        ],
+          { required: true, message: '密码不能为空', trigger: 'blur' }
+        ]
       },
-      downloadLoading: false,
-    };
+      downloadLoading: false
+    }
   },
   computed: {
     headers() {
       return {
-        "X-Console-Web-Token": getToken(),
-      };
-    },
+        'X-Console-Web-Token': getToken()
+      }
+    }
   },
   created() {
-    this.getList();
+    this.getList()
     options().then((response) => {
-      this.options = response.data.data;
-    });
+      this.options = response.data.data
+    })
   },
   methods: {
     formatRole(roleId) {
       for (let i = 0; i < this.options.length; i++) {
         if (roleId === this.options[i].value) {
-          return this.options[i].label;
+          return this.options[i].label
         }
       }
-      return "";
+      return ''
     },
     getList() {
-      this.listLoading = true;
+      this.listLoading = true
       list(this.listQuery)
         .then((response) => {
-          this.list = response.data.data.items;
-          this.total = response.data.data.total;
-          this.listLoading = false;
+          this.list = response.data.data.items
+          this.total = response.data.data.total
+          this.listLoading = false
         })
         .catch(() => {
-          this.list = [];
-          this.total = 0;
-          this.listLoading = false;
-        });
+          this.list = []
+          this.total = 0
+          this.listLoading = false
+        })
     },
     handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
+      this.listQuery.page = 1
+      this.getList()
     },
     resetForm() {
       this.dataForm = {
@@ -352,142 +354,142 @@ export default {
         username: undefined,
         password: undefined,
         profilePicture: undefined,
-        roleIds: [],
-      };
+        roleIds: []
+      }
     },
-    uploadAvatar: function (response) {
-      this.dataForm.profilePicture = response.data.url;
+    uploadAvatar: function(response) {
+      this.dataForm.profilePicture = response.data.url
     },
     handleCreate() {
-      this.resetForm();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
+      this.resetForm()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     createData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           create(this.dataForm)
             .then((response) => {
-              this.list.unshift(response.data.data);
-              this.dialogFormVisible = false;
+              this.list.unshift(response.data.data)
+              this.dialogFormVisible = false
               this.$notify.success({
-                title: "成功",
-                message: "添加成功",
-              });
+                title: '成功',
+                message: '添加成功'
+              })
             })
             .catch((response) => {
               this.$notify.error({
-                title: "失败",
-                message: response.data.message,
-              });
-            });
+                title: '失败',
+                message: response.data.message
+              })
+            })
         }
-      });
+      })
     },
     handleUpdate(row) {
-      this.dataForm = Object.assign({}, row);
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
+      this.dataForm = Object.assign({}, row)
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     updateStatus(status, row) {
       const data = {
         status: status,
-        id: row.id,
-      };
+        id: row.id
+      }
       if (status === 1) {
         update(data)
           .then((response) => {
             this.$notify.success({
-              title: "温馨提示",
-              message: "启用成功",
-            });
+              title: '温馨提示',
+              message: '启用成功'
+            })
           })
           .catch((response) => {
             this.$notify.error({
-              title: "温馨提示",
-              message: response.message,
-            });
-          });
+              title: '温馨提示',
+              message: response.message
+            })
+          })
       } else {
         update(data)
           .then((response) => {
             this.$notify.success({
-              title: "温馨提示",
-              message: "禁用成功",
-            });
+              title: '温馨提示',
+              message: '禁用成功'
+            })
           })
           .catch((response) => {
             this.$notify.error({
-              title: "温馨提示",
-              message: response.data.message,
-            });
-          });
+              title: '温馨提示',
+              message: response.data.message
+            })
+          })
       }
     },
     updateData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           edit(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
-                  const index = this.list.indexOf(v);
-                  this.list.splice(index, 1, this.dataForm);
-                  break;
+                  const index = this.list.indexOf(v)
+                  this.list.splice(index, 1, this.dataForm)
+                  break
                 }
               }
-              this.dialogFormVisible = false;
+              this.dialogFormVisible = false
               this.$notify.success({
-                title: "温馨提示",
-                message: "更新成功",
-              });
+                title: '温馨提示',
+                message: '更新成功'
+              })
             })
             .catch((response) => {
               this.$notify.error({
-                title: "温馨提示",
-                message: response.data.message,
-              });
-            });
+                title: '温馨提示',
+                message: response.data.message
+              })
+            })
         }
-      });
+      })
     },
     handleDelete(row) {
       remove(row)
         .then((response) => {
           this.$notify.success({
-            title: "温馨提示",
-            message: "删除成功",
-          });
-          const index = this.list.indexOf(row);
-          this.list.splice(index, 1);
+            title: '温馨提示',
+            message: '删除成功'
+          })
+          const index = this.list.indexOf(row)
+          this.list.splice(index, 1)
         })
         .catch((response) => {
           this.$notify.error({
-            title: "温馨提示",
-            message: response.data.message,
-          });
-        });
+            title: '温馨提示',
+            message: response.data.message
+          })
+        })
     },
     handleDownload() {
-      this.downloadLoading = true;
-      import("@/vendor/Export2Excel").then((excel) => {
-        const tHeader = ["管理员ID", "管理员名称", "管理员头像"];
-        const filterVal = ["id", "username", "avatar"];
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then((excel) => {
+        const tHeader = ['管理员ID', '管理员名称', '管理员头像']
+        const filterVal = ['id', 'username', 'avatar']
         excel.export_json_to_excel2(
           tHeader,
           this.list,
           filterVal,
-          "管理员信息"
-        );
-        this.downloadLoading = false;
-      });
-    },
-  },
-};
+          '管理员信息'
+        )
+        this.downloadLoading = false
+      })
+    }
+  }
+}
 </script>

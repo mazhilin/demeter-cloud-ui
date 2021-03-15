@@ -8,6 +8,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入对象KEY"
+        prefix-icon="el-icon-search"
       />
       <el-input
         v-model="listQuery.name"
@@ -15,6 +16,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入对象名称"
+        prefix-icon="el-icon-edit"
       />
       <el-button
         v-permission="['GET /admin/storage/list']"
@@ -22,7 +24,7 @@
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
-        >查找</el-button
+      >查找</el-button
       >
       <el-button
         v-permission="['POST /admin/storage/create']"
@@ -30,7 +32,7 @@
         type="primary"
         icon="el-icon-edit"
         @click="handleCreate"
-        >添加</el-button
+      >添加</el-button
       >
       <el-button
         :loading="downloadLoading"
@@ -38,7 +40,7 @@
         type="primary"
         icon="el-icon-download"
         @click="handleDownload"
-        >导出</el-button
+      >导出</el-button
       >
     </div>
 
@@ -66,7 +68,7 @@
 
       <el-table-column align="center" label="文件资源" property="url">
         <template slot-scope="scope">
-          <img :src="scope.row.url" width="40" />
+          <img :src="scope.row.url" width="40" >
         </template>
       </el-table-column>
 
@@ -88,14 +90,14 @@
             size="mini"
             type="primary"
             @click="handleUpdate(scope.row)"
-            >编辑
+          >编辑
           </el-button>
           <el-button
             v-permission="['POST /admin/storage/delete']"
             size="mini"
             type="danger"
             @click="handleDelete(scope.row)"
-            >删除
+          >删除
           </el-button>
         </template>
       </el-table-column>
@@ -146,11 +148,11 @@
 </template>
 
 <script>
-import { create, list, remove, update } from "@/api/storage";
-import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+import { create, list, remove, update } from '@/api/storage'
+import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
-  name: "Storage",
+  name: 'Storage',
   components: { Pagination },
   data() {
     return {
@@ -162,142 +164,142 @@ export default {
         limit: 20,
         key: undefined,
         name: undefined,
-        sort: "create_time",
-        order: "desc",
+        sort: 'create_time',
+        order: 'desc'
       },
       createDialogVisible: false,
       dataForm: {
         id: undefined,
-        name: "",
+        name: ''
       },
       updateDialogVisible: false,
       rules: {
         name: [
-          { required: true, message: "对象名称不能为空", trigger: "blur" },
-        ],
+          { required: true, message: '对象名称不能为空', trigger: 'blur' }
+        ]
       },
-      downloadLoading: false,
-    };
+      downloadLoading: false
+    }
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getList() {
-      this.listLoading = true;
+      this.listLoading = true
       list(this.listQuery)
         .then((response) => {
-          this.list = response.data.data.items;
-          this.total = response.data.data.total;
-          this.listLoading = false;
+          this.list = response.data.data.items
+          this.total = response.data.data.total
+          this.listLoading = false
         })
         .catch(() => {
-          this.list = [];
-          this.total = 0;
-          this.listLoading = false;
-        });
+          this.list = []
+          this.total = 0
+          this.listLoading = false
+        })
     },
     handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
+      this.listQuery.page = 1
+      this.getList()
     },
     resetForm() {
       this.dataForm = {
         id: undefined,
-        name: "",
-      };
+        name: ''
+      }
     },
     handleCreate() {
-      this.createDialogVisible = true;
+      this.createDialogVisible = true
     },
     handleUpload(item) {
-      const formData = new FormData();
-      formData.append("file", item.file);
+      const formData = new FormData()
+      formData.append('file', item.file)
       create(formData)
         .then((response) => {
-          this.list.unshift(response.data.data);
-          this.createDialogVisible = false;
+          this.list.unshift(response.data.data)
+          this.createDialogVisible = false
           this.$notify.success({
-            title: "成功",
-            message: "上传成功",
-          });
+            title: '成功',
+            message: '上传成功'
+          })
         })
         .catch(() => {
-          this.$message.error("上传失败，请重新上传");
-        });
+          this.$message.error('上传失败，请重新上传')
+        })
     },
     handleUpdate(row) {
-      this.dataForm = Object.assign({}, row);
-      this.updateDialogVisible = true;
+      this.dataForm = Object.assign({}, row)
+      this.updateDialogVisible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     updateData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           update(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
-                  const index = this.list.indexOf(v);
-                  this.list.splice(index, 1, this.dataForm);
-                  break;
+                  const index = this.list.indexOf(v)
+                  this.list.splice(index, 1, this.dataForm)
+                  break
                 }
               }
-              this.updateDialogVisible = false;
+              this.updateDialogVisible = false
               this.$notify.success({
-                title: "成功",
-                message: "更新成功",
-              });
+                title: '成功',
+                message: '更新成功'
+              })
             })
             .catch((response) => {
               this.$notify.error({
-                title: "失败",
-                message: response.data.message,
-              });
-            });
+                title: '失败',
+                message: response.data.message
+              })
+            })
         }
-      });
+      })
     },
     handleDelete(row) {
       remove(row)
         .then((response) => {
           this.$notify.success({
-            title: "成功",
-            message: "删除成功",
-          });
-          const index = this.list.indexOf(row);
-          this.list.splice(index, 1);
+            title: '成功',
+            message: '删除成功'
+          })
+          const index = this.list.indexOf(row)
+          this.list.splice(index, 1)
         })
         .catch((response) => {
           this.$notify.error({
-            title: "失败",
-            message: response.data.message,
-          });
-        });
+            title: '失败',
+            message: response.data.message
+          })
+        })
     },
     handleDownload() {
-      this.downloadLoading = true;
-      import("@/vendor/Export2Excel").then((excel) => {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then((excel) => {
         const tHeader = [
-          "ID",
-          "对象KEY",
-          "对象名称",
-          "对象类型",
-          "对象大小",
-          "访问链接",
-        ];
-        const filterVal = ["id", "key", "name", "type", "size", "url"];
+          'ID',
+          '对象KEY',
+          '对象名称',
+          '对象类型',
+          '对象大小',
+          '访问链接'
+        ]
+        const filterVal = ['id', 'key', 'name', 'type', 'size', 'url']
         excel.export_json_to_excel2(
           tHeader,
           this.list,
           filterVal,
-          "对象存储信息"
-        );
-        this.downloadLoading = false;
-      });
-    },
-  },
-};
+          '对象存储信息'
+        )
+        this.downloadLoading = false
+      })
+    }
+  }
+}
 </script>

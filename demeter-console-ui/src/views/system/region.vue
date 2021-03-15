@@ -8,6 +8,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入行政区域名称"
+        prefix-icon="el-icon-search"
       />
       <el-input
         v-model="listQuery.code"
@@ -15,13 +16,14 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入行政区域编码"
+        prefix-icon="el-icon-edit"
       />
       <el-button
         class="filter-item"
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
-        >查找</el-button
+      >查找</el-button
       >
       <el-button
         :loading="downloadLoading"
@@ -29,7 +31,7 @@
         type="primary"
         icon="el-icon-download"
         @click="handleDownload"
-        >导出</el-button
+      >导出</el-button
       >
     </div>
 
@@ -111,29 +113,29 @@
 </template>
 
 <script>
-import { listRegion } from "@/api/region";
-import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+import { listRegion } from '@/api/region'
+import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
-  name: "Region",
+  name: 'Region',
   components: { Pagination },
   filters: {
     typeFilter(status) {
       const typeMap = {
-        1: "省",
-        2: "市",
-        3: "区",
-      };
-      return typeMap[status];
+        1: '省',
+        2: '市',
+        3: '区'
+      }
+      return typeMap[status]
     },
     sourceTypeFilter(sourceType) {
       const sourceTypeMap = {
-        0: "系统设置",
-        1: "系统新增",
-        2: "接口拉取",
-      };
-      return sourceTypeMap[sourceType];
-    },
+        0: '系统设置',
+        1: '系统新增',
+        2: '接口拉取'
+      }
+      return sourceTypeMap[sourceType]
+    }
   },
   data() {
     return {
@@ -144,53 +146,53 @@ export default {
         page: 1,
         limit: 20,
         name: undefined,
-        code: undefined,
+        code: undefined
       },
-      downloadLoading: false,
-    };
+      downloadLoading: false
+    }
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getList() {
-      this.listLoading = true;
+      this.listLoading = true
       listRegion(this.listQuery)
         .then((response) => {
-          this.list = response.data.data.items;
-          this.total = response.data.data.total;
-          this.listLoading = false;
+          this.list = response.data.data.items
+          this.total = response.data.data.total
+          this.listLoading = false
         })
         .catch(() => {
-          this.list = [];
-          this.total = 0;
-          this.listLoading = false;
-        });
+          this.list = []
+          this.total = 0
+          this.listLoading = false
+        })
     },
     handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
+      this.listQuery.page = 1
+      this.getList()
     },
     handleDownload() {
-      this.downloadLoading = true;
-      import("@/vendor/Export2Excel").then((excel) => {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then((excel) => {
         const tHeader = [
-          "区域ID",
-          "区域父ID",
-          "区域名称",
-          "区域类型",
-          "区域编码",
-        ];
-        const filterVal = ["id", "pid", "name", "type", "code"];
+          '区域ID',
+          '区域父ID',
+          '区域名称',
+          '区域类型',
+          '区域编码'
+        ]
+        const filterVal = ['id', 'pid', 'name', 'type', 'code']
         excel.export_json_to_excel2(
           tHeader,
           this.list,
           filterVal,
-          "行政区域信息"
-        );
-        this.downloadLoading = false;
-      });
-    },
-  },
-};
+          '行政区域信息'
+        )
+        this.downloadLoading = false
+      })
+    }
+  }
+}
 </script>
