@@ -8,6 +8,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入配置Code"
+        prefix-icon="el-icon-search"
       />
       <el-input
         v-model="listQuery.name"
@@ -15,6 +16,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入配置名称"
+        prefix-icon="el-icon-edit"
       />
       <el-button
         v-permission="['GET /admin/config/list']"
@@ -22,7 +24,7 @@
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
-        >查找
+      >查找
       </el-button>
       <el-button
         v-permission="['POST /admin/config/create']"
@@ -30,7 +32,7 @@
         type="primary"
         icon="el-icon-edit"
         @click="handleCreate"
-        >添加
+      >添加
       </el-button>
       <!--
             <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
@@ -75,14 +77,14 @@
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
-            >编辑
+          >编辑
           </el-button>
           <el-button
             v-permission="['POST /admin/config/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
-            >删除
+          >删除
           </el-button>
         </template>
       </el-table-column>
@@ -128,7 +130,7 @@
           v-if="dialogStatus == 'create'"
           type="primary"
           @click="createData"
-          >确定</el-button
+        >确定</el-button
         >
         <el-button v-else type="primary" @click="updateData">确定</el-button>
       </div>
@@ -143,13 +145,13 @@ import {
   createConfig,
   deleteConfig,
   listConfig,
-  updateConfig,
-} from "@/api/config";
-import { getToken } from "@/utils/auth";
-import Pagination from "@/components/Pagination";
+  updateConfig
+} from '@/api/config'
+import { getToken } from '@/utils/auth'
+import Pagination from '@/components/Pagination'
 
 export default {
-  name: "Config",
+  name: 'Config',
   components: { Pagination },
   data() {
     return {
@@ -161,8 +163,8 @@ export default {
         limit: 20,
         code: undefined,
         name: undefined,
-        sort: "create_time",
-        order: "desc",
+        sort: 'create_time',
+        order: 'desc'
       },
       createDialogVisible: false,
       dataForm: {
@@ -170,60 +172,60 @@ export default {
         name: undefined,
         code: undefined,
         message: undefined,
-        value: undefined,
+        value: undefined
       },
       updateDialogVisible: false,
       dialogFormVisible: false,
-      dialogStatus: "",
+      dialogStatus: '',
       textMap: {
-        update: "编辑",
-        create: "创建",
+        update: '编辑',
+        create: '创建'
       },
       rules: {
         code: [
-          { required: true, message: "参数编码不能为空", trigger: "blur" },
+          { required: true, message: '参数编码不能为空', trigger: 'blur' }
         ],
         name: [
-          { required: true, message: "参数名称不能为空", trigger: "blur" },
+          { required: true, message: '参数名称不能为空', trigger: 'blur' }
         ],
         message: [
-          { required: true, message: "参数描述不能为空", trigger: "blur" },
+          { required: true, message: '参数描述不能为空', trigger: 'blur' }
         ],
         value: [
-          { required: true, message: "参数码值不能为空", trigger: "blur" },
-        ],
+          { required: true, message: '参数码值不能为空', trigger: 'blur' }
+        ]
       },
-      downloadLoading: false,
-    };
+      downloadLoading: false
+    }
   },
   computed: {
     headers() {
       return {
-        "X-Console-Web-Token": getToken(),
-      };
-    },
+        'X-Console-Web-Token': getToken()
+      }
+    }
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getList() {
-      this.listLoading = true;
+      this.listLoading = true
       listConfig(this.listQuery)
         .then((response) => {
-          this.list = response.data.data.items;
-          this.total = response.data.data.total;
-          this.listLoading = false;
+          this.list = response.data.data.items
+          this.total = response.data.data.total
+          this.listLoading = false
         })
         .catch(() => {
-          this.list = [];
-          this.total = 0;
-          this.listLoading = false;
-        });
+          this.list = []
+          this.total = 0
+          this.listLoading = false
+        })
     },
     handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
+      this.listQuery.page = 1
+      this.getList()
     },
     resetForm() {
       this.dataForm = {
@@ -231,90 +233,90 @@ export default {
         name: undefined,
         code: undefined,
         message: undefined,
-        value: undefined,
-      };
+        value: undefined
+      }
     },
     handleCreate() {
-      this.resetForm();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
+      this.resetForm()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     createData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           createConfig(this.dataForm)
             .then((response) => {
-              this.list.unshift(response.data.data);
-              this.dialogFormVisible = false;
+              this.list.unshift(response.data.data)
+              this.dialogFormVisible = false
               this.$notify.success({
-                title: "成功",
-                message: "添加成功",
-              });
+                title: '成功',
+                message: '添加成功'
+              })
             })
             .catch((response) => {
               this.$notify.error({
-                title: "失败",
-                message: response.data.errmsg,
-              });
-            });
+                title: '失败',
+                message: response.data.errmsg
+              })
+            })
         }
-      });
+      })
     },
     handleUpdate(row) {
-      this.dataForm = Object.assign({}, row);
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
+      this.dataForm = Object.assign({}, row)
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     updateData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           updateConfig(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
-                  const index = this.list.indexOf(v);
-                  this.list.splice(index, 1, this.dataForm);
-                  break;
+                  const index = this.list.indexOf(v)
+                  this.list.splice(index, 1, this.dataForm)
+                  break
                 }
               }
-              this.dialogFormVisible = false;
+              this.dialogFormVisible = false
               this.$notify.success({
-                title: "成功",
-                message: "更新成功",
-              });
+                title: '成功',
+                message: '更新成功'
+              })
             })
             .catch((response) => {
               this.$notify.error({
-                title: "失败",
-                message: response.data.errmsg,
-              });
-            });
+                title: '失败',
+                message: response.data.errmsg
+              })
+            })
         }
-      });
+      })
     },
     handleDelete(row) {
       deleteConfig(row)
         .then((response) => {
           this.$notify.success({
-            title: "成功",
-            message: "删除成功",
-          });
-          const index = this.list.indexOf(row);
-          this.list.splice(index, 1);
+            title: '成功',
+            message: '删除成功'
+          })
+          const index = this.list.indexOf(row)
+          this.list.splice(index, 1)
         })
         .catch((response) => {
           this.$notify.error({
-            title: "失败",
-            message: response.data.errmsg,
-          });
-        });
-    },
-  },
-};
+            title: '失败',
+            message: response.data.errmsg
+          })
+        })
+    }
+  }
+}
 </script>

@@ -1,49 +1,57 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 
-export function listTemplate(query) {
+export function list(query) {
   return request({
-    url: "/template/list",
-    method: "get",
-    params: query,
-  });
+    url: '/template/list',
+    method: 'get',
+    params: query
+  })
 }
 
-export function createTemplate(data) {
+export function create(data) {
   return request({
-    url: "/template/create",
-    method: "post",
-    data,
-  });
+    url: '/template/create',
+    method: 'post',
+    data
+  })
 }
 
-export function readTemplate(data) {
+export function show(data) {
   return request({
-    url: "/template/read",
-    method: "get",
-    data,
-  });
+    url: '/template/show',
+    method: 'post',
+    data
+  })
 }
 
-export function updateTemplate(data) {
+export function edit(data) {
   return request({
-    url: "/template/update",
-    method: "post",
-    data,
-  });
+    url: '/template/update',
+    method: 'post',
+    data
+  })
 }
 
-export function deleteTemplate(data) {
+export function update(data) {
   return request({
-    url: "/template/delete",
-    method: "post",
-    data,
-  });
+    url: '/template/update',
+    method: 'post',
+    data
+  })
+}
+
+export function remove(data) {
+  return request({
+    url: '/template/delete',
+    method: 'post',
+    data
+  })
 }
 
 export function templateList(data) {
   return request({
-    url: "/template/templateList",
-    method: "get",
-    data,
-  });
+    url: '/template/templateList',
+    method: 'get',
+    data
+  })
 }

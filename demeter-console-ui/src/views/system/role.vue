@@ -8,6 +8,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入角色编码"
+        prefix-icon="el-icon-search"
       />
       <el-input
         v-model="listQuery.name"
@@ -15,6 +16,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入角色名称"
+        prefix-icon="el-icon-edit"
       />
       <el-button
         v-permission="['GET /admin/role/list']"
@@ -22,7 +24,7 @@
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
-        >查找
+      >查找
       </el-button>
       <el-button
         v-permission="['POST /admin/role/create']"
@@ -30,7 +32,7 @@
         type="primary"
         icon="el-icon-edit"
         @click="handleCreate"
-        >添加
+      >添加
       </el-button>
     </div>
 
@@ -65,21 +67,21 @@
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
-            >编辑
+          >编辑
           </el-button>
           <el-button
             v-permission="['POST /admin/role/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
-            >删除
+          >删除
           </el-button>
           <el-button
             v-permission="['GET /admin/permission/list']"
             type="primary"
             size="mini"
             @click="handlePermission(scope.row)"
-            >授权
+          >授权
           </el-button>
         </template>
       </el-table-column>
@@ -128,7 +130,7 @@
           v-if="dialogStatus == 'create'"
           type="primary"
           @click="createData"
-          >确定</el-button
+        >确定</el-button
         >
         <el-button v-else type="primary" @click="updateData">确定</el-button>
       </div>
@@ -160,12 +162,12 @@
 </template>
 
 <script>
-import { create, list, remove, update } from "@/api/role";
-import { permissionList, updatePermission } from "@/api/permission";
-import Pagination from "@/components/Pagination";
+import { create, list, remove, update } from '@/api/role'
+import { permissionList, updatePermission } from '@/api/permission'
+import Pagination from '@/components/Pagination'
 
 export default {
-  name: "Role",
+  name: 'Role',
   components: { Pagination },
   data() {
     return {
@@ -178,176 +180,176 @@ export default {
         id: undefined,
         code: undefined,
         name: undefined,
-        sort: "create_time",
-        order: "desc",
+        sort: 'create_time',
+        order: 'desc'
       },
       dataForm: {
         id: undefined,
         code: undefined,
         name: undefined,
-        desc: undefined,
+        desc: undefined
       },
       dialogFormVisible: false,
-      dialogStatus: "",
+      dialogStatus: '',
       textMap: {
-        update: "编辑",
-        create: "创建",
+        update: '编辑',
+        create: '创建'
       },
       rules: {
         code: [
-          { required: true, message: "角色编码不能为空!", trigger: "blur" },
+          { required: true, message: '角色编码不能为空!', trigger: 'blur' }
         ],
         name: [
-          { required: true, message: "角色名称不能为空!", trigger: "blur" },
+          { required: true, message: '角色名称不能为空!', trigger: 'blur' }
         ],
         desc: [
-          { required: true, message: "角色描述不能为空!", trigger: "blur" },
-        ],
+          { required: true, message: '角色描述不能为空!', trigger: 'blur' }
+        ]
       },
       permissionDialogFormVisible: false,
       systemPermissions: null,
       assignedPermissions: null,
       permissionForm: {
         roleId: undefined,
-        permissions: [],
-      },
-    };
+        permissions: []
+      }
+    }
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getList() {
-      this.listLoading = true;
+      this.listLoading = true
       list(this.listQuery)
         .then((response) => {
-          this.list = response.data.data.items;
-          this.total = response.data.data.total;
-          this.listLoading = false;
+          this.list = response.data.data.items
+          this.total = response.data.data.total
+          this.listLoading = false
         })
         .catch(() => {
-          this.list = [];
-          this.total = 0;
-          this.listLoading = false;
-        });
+          this.list = []
+          this.total = 0
+          this.listLoading = false
+        })
     },
     handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
+      this.listQuery.page = 1
+      this.getList()
     },
     resetForm() {
       this.dataForm = {
         id: undefined,
         name: undefined,
-        desc: undefined,
-      };
+        desc: undefined
+      }
     },
     handleCreate() {
-      this.resetForm();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
+      this.resetForm()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     createData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           create(this.dataForm)
             .then((response) => {
-              this.list.unshift(response.data.data);
-              this.dialogFormVisible = false;
+              this.list.unshift(response.data.data)
+              this.dialogFormVisible = false
               this.$notify.success({
-                title: "成功",
-                message: "添加成功",
-              });
+                title: '成功',
+                message: '添加成功'
+              })
             })
             .catch((response) => {
               this.$notify.error({
-                title: "失败",
-                message: response.data.message,
-              });
-            });
+                title: '失败',
+                message: response.data.message
+              })
+            })
         }
-      });
+      })
     },
     handleUpdate(row) {
-      this.dataForm = Object.assign({}, row);
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
+      this.dataForm = Object.assign({}, row)
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     updateData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           update(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
-                  const index = this.list.indexOf(v);
-                  this.list.splice(index, 1, this.dataForm);
-                  break;
+                  const index = this.list.indexOf(v)
+                  this.list.splice(index, 1, this.dataForm)
+                  break
                 }
               }
-              this.dialogFormVisible = false;
+              this.dialogFormVisible = false
               this.$notify.success({
-                title: "成功",
-                message: "更新成功",
-              });
+                title: '成功',
+                message: '更新成功'
+              })
             })
             .catch((response) => {
               this.$notify.error({
-                title: "失败",
-                message: response.data.message,
-              });
-            });
+                title: '失败',
+                message: response.data.message
+              })
+            })
         }
-      });
+      })
     },
     handleDelete(row) {
       remove(row)
         .then((response) => {
           this.$notify.success({
-            title: "成功",
-            message: "删除成功",
-          });
-          const index = this.list.indexOf(row);
-          this.list.splice(index, 1);
+            title: '成功',
+            message: '删除成功'
+          })
+          const index = this.list.indexOf(row)
+          this.list.splice(index, 1)
         })
         .catch((response) => {
           this.$notify.error({
-            title: "失败",
-            message: response.data.message,
-          });
-        });
+            title: '失败',
+            message: response.data.message
+          })
+        })
     },
     handlePermission(row) {
-      this.permissionDialogFormVisible = true;
-      this.permissionForm.roleId = row.id;
+      this.permissionDialogFormVisible = true
+      this.permissionForm.roleId = row.id
       permissionList({ roleId: row.id }).then((response) => {
-        this.systemPermissions = response.data.data.systemPermissions;
-        this.assignedPermissions = response.data.data.assignedPermissions;
-      });
+        this.systemPermissions = response.data.data.systemPermissions
+        this.assignedPermissions = response.data.data.assignedPermissions
+      })
     },
     updatePermission() {
-      this.permissionForm.permissions = this.$refs.tree.getCheckedKeys(true);
+      this.permissionForm.permissions = this.$refs.tree.getCheckedKeys(true)
       updatePermission(this.permissionForm)
         .then((response) => {
-          this.permissionDialogFormVisible = false;
+          this.permissionDialogFormVisible = false
           this.$notify.success({
-            title: "成功",
-            message: response.data.message,
-          });
+            title: '成功',
+            message: response.data.message
+          })
         })
         .catch((response) => {
           this.$notify.error({
-            title: "失败",
-            message: response.data.message,
-          });
-        });
-    },
-  },
-};
+            title: '失败',
+            message: response.data.message
+          })
+        })
+    }
+  }
+}
 </script>

@@ -1,48 +1,56 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 
-export function listCategory(query) {
+export function list(query) {
   return request({
-    url: "/category/list",
-    method: "get",
-    params: query,
-  });
+    url: '/category/list',
+    method: 'get',
+    params: query
+  })
 }
 
 export function listCatL1() {
   return request({
-    url: "/category/l1",
-    method: "get",
-  });
+    url: '/category/l1',
+    method: 'get'
+  })
 }
 
-export function createCategory(data) {
+export function create(data) {
   return request({
-    url: "/category/create",
-    method: "post",
-    data,
-  });
+    url: '/category/create',
+    method: 'post',
+    data
+  })
 }
 
-export function readCategory(data) {
+export function show(data) {
   return request({
-    url: "/category/read",
-    method: "get",
-    data,
-  });
+    url: '/category/show',
+    method: 'post',
+    data
+  })
 }
 
-export function updateCategory(data) {
+export function edit(data) {
   return request({
-    url: "/category/update",
-    method: "post",
-    data,
-  });
+    url: '/category/edit',
+    method: 'post',
+    data
+  })
 }
 
-export function deleteCategory(data) {
+export function update(data) {
   return request({
-    url: "/category/delete",
-    method: "post",
-    data,
-  });
+    url: '/category/update',
+    method: 'post',
+    data
+  })
+}
+
+export function remove(data) {
+  return request({
+    url: '/category/delete',
+    method: 'post',
+    data
+  })
 }

@@ -8,6 +8,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入员工账户"
+        prefix-icon="el-icon-search"
       />
       <el-input
         v-model="listQuery.username"
@@ -15,6 +16,7 @@
         class="filter-item"
         style="width: 200px"
         placeholder="请输入员工名称"
+        prefix-icon="el-icon-edit"
       />
       <el-button
         v-permission="['GET /admin/employee/list']"
@@ -22,7 +24,7 @@
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
-        >查询</el-button
+      >查询</el-button
       >
       <el-button
         v-permission="['POST /admin/employee/create']"
@@ -30,7 +32,7 @@
         type="primary"
         icon="el-icon-edit"
         @click="handleCreate"
-        >添加</el-button
+      >添加</el-button
       >
       <el-button
         :loading="downloadLoading"
@@ -38,7 +40,7 @@
         type="primary"
         icon="el-icon-download"
         @click="handleDownload"
-        >导出</el-button
+      >导出</el-button
       >
     </div>
 
@@ -64,7 +66,7 @@
       <el-table-column align="center" label="员工名称" prop="username" />
       <el-table-column align="center" label="员工头像" prop="avatar">
         <template slot-scope="scope">
-          <img v-if="scope.row.avatar" :src="scope.row.avatar" width="30" />
+          <img v-if="scope.row.avatar" :src="scope.row.avatar" width="30" >
         </template>
       </el-table-column>
 
@@ -112,14 +114,14 @@
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
-            >编辑</el-button
+          >编辑</el-button
           >
           <el-button
             v-permission="['POST /admin/employee/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
-            >删除</el-button
+          >删除</el-button
           >
         </template>
       </el-table-column>
@@ -166,7 +168,7 @@
             class="avatar-uploader"
             accept=".jpg,.jpeg,.png,.gif"
           >
-            <img v-if="dataForm.avatar" :src="dataForm.avatar" class="avatar" />
+            <img v-if="dataForm.avatar" :src="dataForm.avatar" class="avatar" >
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
@@ -187,7 +189,7 @@
           v-if="dialogStatus == 'create'"
           type="primary"
           @click="createData"
-          >确定</el-button
+        >确定</el-button
         >
         <el-button v-else type="primary" @click="updateData">确定</el-button>
       </div>
@@ -226,36 +228,36 @@ import {
   listEmployee,
   createEmployee,
   updateEmployee,
-  deleteEmployee,
-} from "@/api/employee";
-import { roleOptions } from "@/api/role";
-import { uploadPath } from "@/api/storage";
-import { getToken } from "@/utils/auth";
-import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+  deleteEmployee
+} from '@/api/employee'
+import { roleOptions } from '@/api/role'
+import { uploadPath } from '@/api/storage'
+import { getToken } from '@/utils/auth'
+import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const defaultAdminTypeOptions = [
   {
-    label: "管理人员",
-    value: 0,
+    label: '管理人员',
+    value: 0
   },
   {
-    label: "内部员工",
-    value: 1,
-  },
-];
+    label: '内部员工',
+    value: 1
+  }
+]
 
 export default {
-  name: "Admin",
+  name: 'Admin',
   components: { Pagination },
   filters: {
     formatAdminType(type) {
       for (let i = 0; i < defaultAdminTypeOptions.length; i++) {
         if (type === defaultAdminTypeOptions[i].value) {
-          return defaultAdminTypeOptions[i].label;
+          return defaultAdminTypeOptions[i].label
         }
       }
-      return "";
-    },
+      return ''
+    }
   },
   data() {
     return {
@@ -268,8 +270,8 @@ export default {
         page: 1,
         limit: 20,
         username: undefined,
-        sort: "create_time",
-        order: "desc",
+        sort: 'create_time',
+        order: 'desc'
       },
       dataForm: {
         id: undefined,
@@ -277,68 +279,68 @@ export default {
         username: undefined,
         password: undefined,
         avatar: undefined,
-        roleIds: [],
+        roleIds: []
       },
       dialogFormVisible: false,
-      dialogStatus: "",
+      dialogStatus: '',
       textMap: {
-        update: "编辑",
-        create: "创建",
+        update: '编辑',
+        create: '创建'
       },
       rules: {
         account: [
-          { required: true, message: "员工名称不能为空", trigger: "blur" },
+          { required: true, message: '员工名称不能为空', trigger: 'blur' }
         ],
         username: [
-          { required: true, message: "员工名称不能为空", trigger: "blur" },
+          { required: true, message: '员工名称不能为空', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: "密码不能为空", trigger: "blur" },
-        ],
+          { required: true, message: '密码不能为空', trigger: 'blur' }
+        ]
       },
-      downloadLoading: false,
-    };
+      downloadLoading: false
+    }
   },
   computed: {
     headers() {
       return {
-        "X-Console-Web-Token": getToken(),
-      };
-    },
+        'X-Console-Web-Token': getToken()
+      }
+    }
   },
   created() {
-    this.getList();
+    this.getList()
 
     roleOptions().then((response) => {
-      this.roleOptions = response.data.data;
-    });
+      this.roleOptions = response.data.data
+    })
   },
   methods: {
     formatRole(roleId) {
       for (let i = 0; i < this.roleOptions.length; i++) {
         if (roleId === this.roleOptions[i].value) {
-          return this.roleOptions[i].label;
+          return this.roleOptions[i].label
         }
       }
-      return "";
+      return ''
     },
     getList() {
-      this.listLoading = true;
+      this.listLoading = true
       listEmployee(this.listQuery)
         .then((response) => {
-          this.list = response.data.data.items;
-          this.total = response.data.data.total;
-          this.listLoading = false;
+          this.list = response.data.data.items
+          this.total = response.data.data.total
+          this.listLoading = false
         })
         .catch(() => {
-          this.list = [];
-          this.total = 0;
-          this.listLoading = false;
-        });
+          this.list = []
+          this.total = 0
+          this.listLoading = false
+        })
     },
     handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
+      this.listQuery.page = 1
+      this.getList()
     },
     resetForm() {
       this.dataForm = {
@@ -347,102 +349,102 @@ export default {
         username: undefined,
         password: undefined,
         avatar: undefined,
-        roleIds: [],
-      };
+        roleIds: []
+      }
     },
-    uploadAvatar: function (response) {
-      this.dataForm.avatar = response.data.url;
+    uploadAvatar: function(response) {
+      this.dataForm.avatar = response.data.url
     },
     handleCreate() {
-      this.resetForm();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
+      this.resetForm()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     createData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           createEmployee(this.dataForm)
             .then((response) => {
-              this.list.unshift(response.data.data);
-              this.dialogFormVisible = false;
+              this.list.unshift(response.data.data)
+              this.dialogFormVisible = false
               this.$notify.success({
-                title: "成功",
-                message: "添加员工成功",
-              });
+                title: '成功',
+                message: '添加员工成功'
+              })
             })
             .catch((response) => {
               this.$notify.error({
-                title: "失败",
-                message: response.data.errmsg,
-              });
-            });
+                title: '失败',
+                message: response.data.errmsg
+              })
+            })
         }
-      });
+      })
     },
     handleUpdate(row) {
-      this.dataForm = Object.assign({}, row);
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
+      this.dataForm = Object.assign({}, row)
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     updateData() {
-      this.$refs["dataForm"].validate((valid) => {
+      this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           updateEmployee(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
-                  const index = this.list.indexOf(v);
-                  this.list.splice(index, 1, this.dataForm);
-                  break;
+                  const index = this.list.indexOf(v)
+                  this.list.splice(index, 1, this.dataForm)
+                  break
                 }
               }
-              this.dialogFormVisible = false;
+              this.dialogFormVisible = false
               this.$notify.success({
-                title: "成功",
-                message: "更新员工成功",
-              });
+                title: '成功',
+                message: '更新员工成功'
+              })
             })
             .catch((response) => {
               this.$notify.error({
-                title: "失败",
-                message: response.data.errmsg,
-              });
-            });
+                title: '失败',
+                message: response.data.errmsg
+              })
+            })
         }
-      });
+      })
     },
     handleDelete(row) {
       deleteEmployee(row)
         .then((response) => {
           this.$notify.success({
-            title: "成功",
-            message: "删除员工成功",
-          });
-          const index = this.list.indexOf(row);
-          this.list.splice(index, 1);
+            title: '成功',
+            message: '删除员工成功'
+          })
+          const index = this.list.indexOf(row)
+          this.list.splice(index, 1)
         })
         .catch((response) => {
           this.$notify.error({
-            title: "失败",
-            message: response.data.errmsg,
-          });
-        });
+            title: '失败',
+            message: response.data.errmsg
+          })
+        })
     },
     handleDownload() {
-      this.downloadLoading = true;
-      import("@/vendor/Export2Excel").then((excel) => {
-        const tHeader = ["员工ID", "员工名称", "员工头像"];
-        const filterVal = ["id", "username", "avatar"];
-        excel.export_json_to_excel2(tHeader, this.list, filterVal, "员工信息");
-        this.downloadLoading = false;
-      });
-    },
-  },
-};
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then((excel) => {
+        const tHeader = ['员工ID', '员工名称', '员工头像']
+        const filterVal = ['id', 'username', 'avatar']
+        excel.export_json_to_excel2(tHeader, this.list, filterVal, '员工信息')
+        this.downloadLoading = false
+      })
+    }
+  }
+}
 </script>
