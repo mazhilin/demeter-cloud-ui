@@ -3,11 +3,11 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input
-        v-model="listQuery.id"
+        v-model="listQuery.code"
         clearable
         class="filter-item"
         style="width: 200px"
-        placeholder="请输入类目ID"
+        placeholder="请输入商品编码"
         prefix-icon="el-icon-search"
       />
       <el-input
@@ -15,7 +15,7 @@
         clearable
         class="filter-item"
         style="width: 200px"
-        placeholder="请输入类目名称"
+        placeholder="请输入商品名称"
         prefix-icon="el-icon-edit"
       />
       <el-button
@@ -54,52 +54,53 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="系统ID" prop="id" />
+      <el-table-column align="center" label="商品ID" prop="id" sortable="true"/>
 
-      <el-table-column align="center" label="来源ID" prop="sourceCategoryId" />
+      <el-table-column align="center" label="商品编码" prop="code"/>
 
-      <el-table-column align="center" label="分类来源" prop="sourceType">
+      <el-table-column align="center" label="商品类型" prop="goodsType">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.sourceType ? '1' : '0'">{{
-            scope.row.sourceType === "1" ? "API接口" : "系统新增"
-          }}</el-tag>
+          <el-tag :type="scope.row.goodsType ? '1' : '0'">{{
+            scope.row.goodsType === "1" ? "虚拟商品" : "实物商品"
+          }}
+          </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="类目名称" prop="name" />
+      <el-table-column align="center" label="商品名称" prop="name"/>
 
-      <el-table-column align="center" property="iconUrl" label="类目图标">
+      <el-table-column align="center" label="商品类目" prop="categoryName"/>
+
+      <el-table-column align="center" label="类目图标" property="categoryPicture">
         <template slot-scope="scope">
-          <img v-if="scope.row.iconUrl" :src="scope.row.iconUrl" width="40" >
+          <img v-if="scope.row.categoryPicture" :src="scope.row.categoryPicture" width="80">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" property="picUrl" label="类目图片">
-        <template slot-scope="scope">
-          <img v-if="scope.row.picUrl" :src="scope.row.picUrl" width="80" >
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="关键字" prop="keywords" />
+      <el-table-column align="center" label="关键字" prop="keywords"/>
 
       <el-table-column
         align="center"
         min-width="100"
-        label="简介"
-        prop="desc"
+        label="商品描述"
+        prop="content"
       />
 
-      <el-table-column align="center" label="分类层级" prop="level">
+      <el-table-column align="center" label="商品图标" property="productPicture">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.level === 'L1' ? 'primary' : 'info'">{{
-            scope.row.level === "L1" ? "一级类目" : "二级类目"
-          }}</el-tag>
+          <img v-if="scope.row.productPicture" :src="scope.row.productPicture" width="40">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="类目排序" prop="sortOrder" />
+      <el-table-column align="center" label="关键字" prop="keywords"/>
 
-      <el-table-column align="center" label="父类目ID" prop="pid" />
+      <el-table-column align="center" label="零售价格" prop="retailPrice"/>
+
+      <el-table-column align="center" label="销售价格" prop="salePrice"/>
+
+      <el-table-column align="center" label="商品库存" prop="inventory"/>
+
+      <el-table-column align="center" label="商品单位" prop="unit"/>
 
       <el-table-column
         align="center"
@@ -249,14 +250,7 @@
 </style>
 
 <script>
-import {
-  list,
-  listCatL1,
-  create,
-  edit,
-  update,
-  remove
-} from '@/api/category'
+import { create, list, listCatL1, update } from '@/api/category'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination

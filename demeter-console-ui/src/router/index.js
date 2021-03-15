@@ -156,24 +156,6 @@ export const asyncRouterMap = [
       icon: 'operation-center'
     },
     children: [
-      /*     {
-             path: "comment",
-             component: () => import("@/views/operation/comment"),
-             name: "comment",
-             meta: {
-               perms: [
-                 "GET /admin/comment/list",
-                 "POST /admin/comment/create",
-                 "POST /admin/comment/show",
-                 "POST /admin/comment/edit",
-                 "POST /admin/comment/update",
-                 "POST /admin/comment/delete"
-               ],
-               title: "评论管理",
-               icon: "product-comment",
-               noCache: true,
-             },
-           },*/
       {
         path: 'browse',
         component: () => import('@/views/operation/browse'),

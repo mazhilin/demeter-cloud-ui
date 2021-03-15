@@ -7,7 +7,7 @@
         clearable
         class="filter-item"
         style="width: 200px"
-        placeholder="请输入模板名称"
+        placeholder="请输入模板编号"
         prefix-icon="el-icon-search"
       />
       <el-input
@@ -49,55 +49,17 @@
       fit
       highlight-current-row
     >
-      <el-table-column
-        align="center"
-        label="序号"
-        prop="id"
-        sortable
-        show-overflow-tooltip="true"
-      />
-      <el-table-column
-        align="center"
-        label="产品名称"
-        prop="name"
-        show-overflow-tooltip="true"
-      />
-      <el-table-column
-        align="center"
-        label="官网地址"
-        prop="portalUrl"
-        show-overflow-tooltip="true"
-      />
-      <el-table-column
-        align="center"
-        label="公司名称"
-        prop="company"
-        show-overflow-tooltip="true"
-      />
-      <el-table-column
-        align="center"
-        label="联系人"
-        prop="contacts"
-        show-overflow-tooltip="true"
-      />
-      <el-table-column
-        align="center"
-        label="联系电话"
-        prop="mobile"
-        show-overflow-tooltip="true"
-      />
-      <el-table-column
-        align="center"
-        label="详细地址"
-        prop="address"
-        show-overflow-tooltip="true"
-      />
-      <el-table-column
-        align="center"
-        label="版权声明"
-        prop="copyright"
-        show-overflow-tooltip="true"
-      />
+      <el-table-column align="center" label="序号" prop="id" sortable/>
+
+      <el-table-column align="center" label="模板编号" prop="code"/>
+
+      <el-table-column align="center" label="模板名称" prop="name"/>
+
+      <el-table-column align="center" label="模板描述" prop="content"/>
+
+      <el-table-column align="center" label="封面图" prop="coverPicture"/>
+
+      <el-table-column align="center" label="背景音乐" prop="backgroundMusic"/>
 
       <el-table-column
         align="center"
@@ -142,58 +104,22 @@
         label-width="100px"
         style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="产品名称" prop="name">
+        <el-form-item label="模板名称" prop="name">
           <el-input v-model="dataForm.name" />
         </el-form-item>
-        <el-form-item label="官网地址" prop="portalUrl">
-          <el-input v-model="dataForm.portalUrl" />
-        </el-form-item>
-        <el-form-item label="公司名称" prop="company">
-          <el-input v-model="dataForm.company" />
-        </el-form-item>
-        <el-form-item label="企业简介" prop="introduction">
+
+        <el-form-item label="模板描述" prop="content">
           <el-input
             :autosize="{ minRows: 2, maxRows: 10 }"
             :rows="10"
-            v-model="dataForm.introduction"
+            v-model="dataForm.content"
             type="textarea"
             maxlength="256"
             show-word-limit
-            placeholder="请输入内容"
+            placeholder="请输入模板描述"
           />
         </el-form-item>
-        <el-form-item label="联系人" prop="contacts">
-          <el-input v-model="dataForm.contacts" />
-        </el-form-item>
-        <el-form-item label="联系电话" prop="mobile">
-          <el-input v-model="dataForm.mobile" />
-        </el-form-item>
-        <el-form-item label="详细地址" prop="address">
-          <el-input v-model="dataForm.address" />
-        </el-form-item>
-        <el-form-item label="经度" prop="longitude">
-          <el-input v-model="dataForm.longitude" />
-        </el-form-item>
-        <el-form-item label="纬度" prop="latitude">
-          <el-input v-model="dataForm.latitude" />
-        </el-form-item>
-        <el-form-item label="QQ" prop="tencent">
-          <el-input v-model="dataForm.tencent" />
-        </el-form-item>
-        <el-form-item label="版本号" prop="version">
-          <el-input v-model="dataForm.version" />
-        </el-form-item>
-        <el-form-item label="版权声明" prop="copyright">
-          <el-input
-            :autosize="{ minRows: 2, maxRows: 10 }"
-            :rows="10"
-            v-model="dataForm.copyright"
-            type="textarea"
-            maxlength="256"
-            show-word-limit
-            placeholder="请输入内容"
-          />
-        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
