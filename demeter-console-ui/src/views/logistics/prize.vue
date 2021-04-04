@@ -20,7 +20,7 @@
       />
 
       <el-button
-        v-permission="['GET /admin/category/list']"
+        v-permission="['GET /admin/prize/list']"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -28,7 +28,7 @@
       >查找</el-button
       >
       <el-button
-        v-permission="['POST /admin/category/create']"
+        v-permission="['POST /admin/prize/create']"
         class="filter-item"
         type="primary"
         icon="el-icon-edit"
@@ -55,15 +55,17 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="奖项ID" prop="id" sortable="true"/>
+      <el-table-column align="center" label="奖项规则ID" prop="id" sortable="true"/>
 
-      <el-table-column align="center" label="奖项编码" prop="code"/>
+      <el-table-column align="center" label="奖项规则编码" prop="code"/>
+
+      <el-table-column align="center" label="奖项规则名称" prop="name"/>
 
       <el-table-column align="center" label="奖项名称" prop="prizeItemName"/>
 
-      <el-table-column align="center" label="奖品名称" prop="prizeItemName"/>
+      <el-table-column align="center" label="奖品名称" prop="prizeAwardName"/>
 
-      <el-table-column align="center" label="奖品组ID" prop="prizeGroupId"/>
+      <el-table-column align="center" label="奖品组ID" prop="batchGroupId"/>
 
       <el-table-column
         align="center"
@@ -73,14 +75,14 @@
       >
         <template slot-scope="scope">
           <el-button
-            v-permission="['POST /admin/category/update']"
+            v-permission="['POST /admin/prize/update']"
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
           >编辑</el-button
           >
           <el-button
-            v-permission="['POST /admin/category/delete']"
+            v-permission="['POST /admin/prize/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
@@ -95,7 +97,7 @@
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
-      @pagination="getList"
+      @pagination="queryPrizeRulesList"
     />
 
     <!-- 添加或修改对话框 -->
@@ -109,68 +111,33 @@
         label-width="100px"
         style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="类目名称" prop="name">
-          <el-input v-model="dataForm.name" />
+
+        <el-form-item label="规则名称" prop="name">
+          <el-input v-model="dataForm.name"/>
         </el-form-item>
-        <el-form-item label="关键字" prop="keywords">
-          <el-input v-model="dataForm.keywords" />
-        </el-form-item>
-        <el-form-item label="排序" prop="sortOrder">
-          <el-input v-model="dataForm.sortOrder" />
-        </el-form-item>
-        <el-form-item label="级别" prop="level">
-          <el-select
-            v-model="dataForm.level"
-            filterable
-            @change="onLevelChange"
-          >
-            <el-option label="一级类目" value="L1" />
-            <el-option label="二级类目" value="L2" />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="pid">
-          <el-select v-model="dataForm.pid" filterable>
+
+        <el-form-item label="奖品Id" prop="prizeAwardId">
+          <el-select v-model="dataForm.prizeAwardId" filterable>
             <el-option
-              v-for="item in catL1"
+              v-for="item in prizeAwardList"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="类目图标" prop="iconUrl">
-          <el-upload
-            :headers="headers"
-            :action="uploadPath"
-            :show-file-list="false"
-            :on-success="uploadIconUrl"
-            class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif"
-          >
-            <img
-              v-if="dataForm.iconUrl"
-              :src="dataForm.iconUrl"
-              class="avatar"
-            >
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
-          </el-upload>
+
+        <el-form-item label="奖项Id" prop="prizeItemId">
+          <el-select v-model="dataForm.prizeItemId" filterable>
+            <el-option
+              v-for="item in prizeItemList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="类目图片" prop="picUrl">
-          <el-upload
-            :headers="headers"
-            :action="uploadPath"
-            :show-file-list="false"
-            :on-success="uploadPicUrl"
-            class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif"
-          >
-            <img v-if="dataForm.picUrl" :src="dataForm.picUrl" class="avatar" >
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="类目简介" prop="desc">
-          <el-input v-model="dataForm.desc" />
-        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -213,13 +180,14 @@
 </style>
 
 <script>
-import { create, list, listCatL1, update } from '@/api/category'
+import { create, list, update, remove } from '@/api/prize'
+import { prizeAwardList, prizeItemList } from '@/api/component'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
-  name: 'Category',
+  name: 'Prize',
   components: { Pagination },
   data() {
     return {
@@ -232,21 +200,15 @@ export default {
         limit: 20,
         id: undefined,
         name: undefined,
-        sortOrder: undefined,
-        sort: 'add_time',
+        code: undefined,
+        sort: 'create_time',
         order: 'desc'
       },
-      catL1: {},
       dataForm: {
         id: undefined,
-        name: '',
-        keywords: '',
-        sortOrder: '',
-        level: 'L2',
-        pid: undefined,
-        desc: '',
-        iconUrl: undefined,
-        picUrl: undefined
+        name: undefined,
+        prizeItemId: undefined,
+        prizeAwardId: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -255,9 +217,13 @@ export default {
         create: '创建'
       },
       rules: {
-        name: [{ required: true, message: '类目名不能为空', trigger: 'blur' }]
+        name: [{ required: true, message: '奖品规则名称不能为空', trigger: 'blur' }],
+        prizeItemId: [{ required: true, message: '奖品奖项不能为空', trigger: 'blur' }],
+        prizeAwardId: [{ required: true, message: '奖品不能不能为空', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      prizeAwardList: [],
+      prizeItemList: []
     }
   },
   computed: {
@@ -268,11 +234,12 @@ export default {
     }
   },
   created() {
-    this.getList()
-    this.getCatL1()
+    this.queryPrizeRulesList()
+    this.queryPrizeAwardList()
+    this.queryPrizeItemList()
   },
   methods: {
-    getList() {
+    queryPrizeRulesList() {
       this.listLoading = true
       list(this.listQuery)
         .then((response) => {
@@ -286,31 +253,28 @@ export default {
           this.listLoading = false
         })
     },
-    getCatL1() {
-      listCatL1().then((response) => {
-        this.catL1 = response.data.data
+    queryPrizeAwardList() {
+      prizeAwardList().then((response) => {
+        this.prizeAwardList = response.data.data
+      })
+    },
+    queryPrizeItemList() {
+      prizeItemList().then((response) => {
+        this.prizeItemList = response.data.data
       })
     },
     handleFilter() {
       this.listQuery.page = 1
-      this.getList()
+      this.queryPrizeRulesList()
+      this.queryPrizeAwardList()
+      this.queryPrizeItemList()
     },
     resetForm() {
       this.dataForm = {
         id: undefined,
-        name: '',
-        keywords: '',
-        sortOrder: '',
-        level: 'L2',
-        pid: undefined,
-        desc: '',
-        iconUrl: undefined,
-        picUrl: undefined
-      }
-    },
-    onLevelChange: function(value) {
-      if (value === 'L1') {
-        this.pid = undefined
+        name: undefined,
+        prizeItemId: undefined,
+        prizeAwardId: undefined
       }
     },
     handleCreate() {
@@ -321,20 +285,12 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    uploadIconUrl: function(response) {
-      this.dataForm.iconUrl = response.data.url
-    },
-    uploadPicUrl: function(response) {
-      this.dataForm.picUrl = response.data.url
-    },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           create(this.dataForm)
             .then((response) => {
               this.list.unshift(response.data.data)
-              // 更新L1目录
-              this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -344,7 +300,7 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
@@ -370,8 +326,6 @@ export default {
                   break
                 }
               }
-              // 更新L1目录
-              this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -381,17 +335,15 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
       })
     },
     handleDelete(row) {
-      delete (row)
+      remove(row)
         .then((response) => {
-          // 更新L1目录
-          this.getCatL1()
           this.$notify.success({
             title: '成功',
             message: '删除成功'
@@ -402,7 +354,7 @@ export default {
         .catch((response) => {
           this.$notify.error({
             title: '失败',
-            message: response.data.errmsg
+            message: response.data.message
           })
         })
     },

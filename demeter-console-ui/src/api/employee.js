@@ -1,41 +1,49 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 
-export function listEmployee(query) {
+export function list(query) {
   return request({
-    url: "/employee/list",
-    method: "get",
-    params: query,
-  });
+    url: '/employee/list',
+    method: 'get',
+    params: query
+  })
 }
 
-export function createEmployee(data) {
+export function create(data) {
   return request({
-    url: "/employee/create",
-    method: "post",
-    data,
-  });
+    url: '/employee/create',
+    method: 'post',
+    data
+  })
 }
 
-export function readEmployee(data) {
+export function show(data) {
   return request({
-    url: "/employee/read",
-    method: "get",
-    data,
-  });
+    url: '/employee/read',
+    method: 'get',
+    data
+  })
 }
 
-export function updateEmployee(data) {
+export function edit(data) {
   return request({
-    url: "/employee/update",
-    method: "post",
-    data,
-  });
+    url: '/employee/edit',
+    method: 'post',
+    data
+  })
 }
 
-export function deleteEmployee(data) {
+export function update(data) {
   return request({
-    url: "/employee/delete",
-    method: "post",
-    data,
-  });
+    url: '/employee/update',
+    method: 'post',
+    data
+  })
+}
+
+export function remove(data) {
+  return request({
+    url: '/employee/delete',
+    method: 'post',
+    data
+  })
 }

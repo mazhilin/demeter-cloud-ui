@@ -46,3 +46,19 @@ export function remove(data) {
   })
 }
 
+export function bound(data) {
+  return request({
+    url: '/works/bound',
+    method: 'post',
+    data
+  })
+}
+
+export function detail(data) {
+  return request({
+    url: '/works/detail',
+    method: 'post',
+    data
+  })
+}
+

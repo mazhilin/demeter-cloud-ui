@@ -396,40 +396,6 @@ export const asyncRouterMap = [
           noCache: true
         }
       }
-      /*      {
-        path: "lottery",
-        component: () => import("@/views/logistics/lottery"),
-        name: "lottery",
-        meta: {
-          perms: [
-            "GET /admin/topic/list",
-            "POST /admin/topic/create",
-            "GET /admin/topic/read",
-            "POST /admin/topic/update",
-            "POST /admin/topic/delete",
-          ],
-          title: "开奖管理",
-          icon: "libra",
-          noCache: true,
-        },
-      },
-      {
-        path: "distribute",
-        component: () => import("@/views/logistics/distribute"),
-        name: "distribute",
-        meta: {
-          perms: [
-            "GET /admin/topic/list",
-            "POST /admin/topic/create",
-            "GET /admin/topic/read",
-            "POST /admin/topic/update",
-            "POST /admin/topic/delete",
-          ],
-          title: "颁奖管理",
-          icon: "libra",
-          noCache: true,
-        },
-      },*/
     ]
   },
   /** 活动中心*/
@@ -473,7 +439,8 @@ export const asyncRouterMap = [
             'POST /admin/activity/show',
             'POST /admin/activity/edit',
             'POST /admin/activity/update',
-            'POST /admin/activity/delete'
+            'POST /admin/activity/delete',
+            'POST /admin/activity/bound'
           ],
           title: '活动管理',
           icon: 'libra',
@@ -698,76 +665,6 @@ export const asyncRouterMap = [
       }
     ]
   },
-  /* {
-    path: '/monitor',
-    component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'monitorCenter',
-    meta: {
-      title: '监控中心',
-      icon: 'set'
-    },
-    children: [
-      {
-        path: 'admin',
-        component: () => import('@/views/monitor/journal'),
-        name: 'journal',
-        meta: {
-          perms: ['GET /admin/journal/list', 'POST /admin/journal/create', 'POST /admin/journal/update', 'POST /admin/journal/delete'],
-          title: '日志管理',
-          icon: 'user',
-          noCache: true
-        }
-      },
-      {
-        path: 'role',
-        component: () => import('@/views/monitor/interview'),
-        name: 'role',
-        meta: {
-          perms: ['GET /admin/interview/list', 'POST /admin/interview/create', 'POST /admin/interview/update', 'POST /admin/interview/delete'],
-          title: '访问管理',
-          icon: 'team',
-          noCache: true
-        }
-      }
-    ]
-  },*/
-  /* {
-    path: '/help',
-    component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'helpCenter',
-    meta: {
-      title: '帮助中心',
-      icon: 'set'
-    },
-    children: [
-      {
-        path: 'manual',
-        component: () => import('@/views/help/manual'),
-        name: 'manual',
-        meta: {
-          perms: ['GET /admin/manual/list', 'POST /admin/manual/create', 'POST /admin/manual/update', 'POST /admin/manual/delete'],
-          title: '操作手册',
-          icon: 'user',
-          noCache: true
-        }
-      },
-      {
-        path: 'role',
-        component: () => import('@/views/help/manual'),
-        name: 'role',
-        meta: {
-          perms: ['GET /admin/manual/list', 'POST /admin/manual/create', 'POST /admin/manual/update', 'POST /admin/manual/delete'],
-          title: '使用手册',
-          icon: 'team',
-          noCache: true
-        }
-      }
-    ]
-  },*/
   {
     path: '/profile',
     component: Layout,

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.10/lib/index.css">
+  <link rel="stylesheet" href="./css/common.css">
+  <link rel="stylesheet" href="./css/pay.css">
+  <title>Document</title>
+</head>
+<body>
+  <div class="pay-wrap" id="app">
+    <div class="main">
+      <div class="text">请付款</div>
+      <div class="price">￥{{cash}}</div>
+    </div>
+    <div class="text-main">
+      <van-cell-group>
+        <van-field v-model="name" label="文本" placeholder="请输入用户名" />
+      </van-cell-group>
+      <van-cell-group>
+        <van-field v-model="name2" label="文本2" placeholder="请输入用户名" />
+      </van-cell-group>
+    </div>
+    <van-radio-group v-model="radio">
+      <van-cell-group>
+        <van-cell title="微信支付" clickable @click="radio = 0">
+          <template #right-icon>
+            <van-radio :name="0" />
+          </template>
+        </van-cell>
+        <van-cell title="银联支付" clickable @click="radio = 1">
+          <template #right-icon>
+            <van-radio :name="1" />
+          </template>
+        </van-cell>
+      </van-cell-group>
+    </van-radio-group>
+    <button class="big-btn common-disabled" @click="onPay">立即支付</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vant@2.10/lib/vant.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="./js/layer-v3.3.0/layer/layer.js"></script>
+  <script src="./js/common/utils.js"></script>
+  <script>
+    var app = new Vue({
+		  el: '#app',
+		  data() {
+		  	return {
+          name: '',
+          name2: '',
+          cash: 0,
+          radio: 0
+		  	}
+		  },
+		  methods: {
+        onPay() {
+          this.$toast({
+            message: '支付成功',
+            onClose: (() => {
+              window.location.href = './index.html'
+            })
+          })
+        }
+		  }
+		})
+  </script>
+</body>
+</html>

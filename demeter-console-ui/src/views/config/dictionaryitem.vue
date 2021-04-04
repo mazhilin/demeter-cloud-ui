@@ -34,9 +34,7 @@
         @click="handleCreate"
       >添加
       </el-button>
-      <!--
-            <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
-      -->
+
     </div>
 
     <!-- 查询结果 -->
@@ -73,12 +71,12 @@
 
       <el-table-column align="center" label="字典项码值" prop="value" />
 
-      <el-table-column align="center" label="字典项描述" prop="message" />
+      <el-table-column align="center" label="字典项描述" prop="content" />
 
       <el-table-column
         align="center"
         label="操作列表"
-        width="400"
+        width="200"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
@@ -119,17 +117,23 @@
         label-width="100px"
         style="width: 400px; margin-left: 50px"
       >
+
         <el-form-item label="数据字典ID" prop="dictionaryId">
-          <el-input
-            v-model="dataForm.dictionaryId"
-            placeholder="请输入对应数据字典ID"
-          />
+          <el-select v-model="dataForm.dictionaryId" placeholder="请选择">
+            <el-option
+              v-for="item in dictionaryList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
+
         <el-form-item label="字典项名称" prop="name">
-          <el-input v-model="dataForm.name" placeholder="请输入字典项名称" />
+          <el-input v-model="dataForm.name" placeholder="请输入字典项名称"/>
         </el-form-item>
         <el-form-item label="字典项标签" prop="label">
-          <el-input v-model="dataForm.label" placeholder="请输入字典项标签" />
+          <el-input v-model="dataForm.label" placeholder="请输入字典项标签"/>
         </el-form-item>
         <!--        <el-form-item label="字典项图标" prop="icon">
           <el-upload
@@ -146,9 +150,19 @@
         <el-form-item label="字典项码值" prop="value">
           <el-input v-model="dataForm.value" placeholder="请输入字典项码值" />
         </el-form-item>
-        <el-form-item label="字典项描述" prop="message">
-          <el-input v-model="dataForm.message" placeholder="请输入字典项描述" />
+
+        <el-form-item label="字典项描述" prop="content">
+          <el-input
+            :autosize="{ minRows: 2, maxRows: 10 }"
+            :rows="10"
+            v-model="dataForm.content"
+            type="textarea"
+            maxlength="256"
+            show-word-limit
+            placeholder="请输入字典项描述"
+          />
         </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -194,13 +208,9 @@
 </style>
 
 <script>
-import {
-  createDictionaryItem,
-  deleteDictionaryItem,
-  listDictionaryItem,
-  updateDictionaryItem
-} from '@/api/dictionaryitem'
+import { create, list, remove, update } from '@/api/dictionaryitem'
 import { uploadPath } from '@/api/storage'
+import { dictionaryList } from '@/api/component'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination'
 
@@ -227,7 +237,6 @@ export default {
         dictionaryId: undefined,
         name: undefined,
         label: undefined,
-        /*          icon: undefined,*/
         value: undefined,
         message: undefined
       },
@@ -242,7 +251,6 @@ export default {
         dictionaryId: [
           { required: true, message: '数据字典ID不能为空', trigger: 'blur' }
         ],
-        /*          icon: [{required: true, message: '字典项图标不能为空', trigger: 'blur'}],*/
         label: [
           { required: true, message: '字典项标签不能为空', trigger: 'blur' }
         ],
@@ -256,7 +264,8 @@ export default {
           { required: true, message: '字典项码值不能为空', trigger: 'blur' }
         ]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      dictionaryList: []
     }
   },
   computed: {
@@ -268,11 +277,12 @@ export default {
   },
   created() {
     this.getList()
+    this.queryDictionaryList()
   },
   methods: {
     getList() {
       this.listLoading = true
-      listDictionaryItem(this.listQuery)
+      list(this.listQuery)
         .then((response) => {
           this.list = response.data.data.items
           this.total = response.data.data.total
@@ -284,9 +294,15 @@ export default {
           this.listLoading = false
         })
     },
+    queryDictionaryList() {
+      dictionaryList().then((response) => {
+        this.dictionaryList = response.data.data
+      })
+    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+      this.queryDictionaryList()
     },
     resetForm() {
       this.dataForm = {
@@ -313,7 +329,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createDictionaryItem(this.dataForm)
+          create(this.dataForm)
             .then((response) => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
@@ -325,7 +341,7 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
@@ -342,7 +358,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          updateDictionaryItem(this.dataForm)
+          update(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
@@ -360,14 +376,14 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
       })
     },
     handleDelete(row) {
-      deleteDictionaryItem(row)
+      remove(row)
         .then((response) => {
           this.$notify.success({
             title: '成功',
@@ -379,7 +395,7 @@ export default {
         .catch((response) => {
           this.$notify.error({
             title: '失败',
-            message: response.data.errmsg
+            message: response.data.message
           })
         })
     }

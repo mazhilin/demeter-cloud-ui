@@ -1,10 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta content="IE=edge" http-equiv="X-UA-Compatible">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="on" http-equiv="x-dns-prefetch-control">
+  <link href="https://cdn.jsdelivr.net/npm/vant@2.10/lib/index.css" rel="stylesheet">
+  <link href="./css/common.css" rel="stylesheet">
+  <link href="./css/index.css" rel="stylesheet">
+  <title>Document</title>
 </head>
 <body>
+<div class="index-wrapper" id="app">
+  <div class="common-swiper-main">
+    <van-swipe :show-indicators="false" class="my-swipe">
+      <van-swipe-item :key="index" v-for="(item, index) in banner">
+        <img :src="item.img" alt="" class="img">
+      </van-swipe-item>
+    </van-swipe>
+    <img :class="{'play': play}" @click="onPlay" class="btn music-btn" src="./images/music-btn.png">
+    <img @click="onPoster" class="btn poster-btn" src="./images/poster-btn.png">
+  </div>
+  <div class="common-num-main">
+    <div class="box">
+      <div class="num">
+        <div class="value" v-model="activity.enrollTotal">{{activity.enrollTotal}}</div>
+        <div class="text">已报名</div>
+      </div>
+      <div class="num">
+        <div class="value" v-model="activity.voteTotal">{{activity.voteTotal}}</div>
+        <div class="text">总投票</div>
+      </div>
+      <div class="num">
+        <div class="value" v-model="activity.browseTotal">{{activity.browseTotal}}</div>
+        <div class="text">浏览量</div>
+      </div>
+    </div>
+    <van-count-down :time="time" class="countdown" format="结束倒计时 DD 天 HH 时 mm 分 ss 秒"/>
+  </div>
+  <div class="rule-main">
+    <div class="rule-title">活动信息</div>
+    <div class="rule-content">
+      <div class="rule-desc">
+        <p style="color: red;font-weight:bold" v-model="activity.name">活动名称： <span
+                style="color:black">{{activity.name}}</span></p>
+        <p style="color: red;font-weight:bold" v-model="activity.beginTime">活动开始： <span style="color:black">{{activity.beginTime}}</span>
+        </p>
+        <p style="color: red;font-weight:bold" v-model="activity.endTime">活动结束： <span style="color:black">{{activity.endTime}}</span>
+        </p>
+        <p style="color: red;font-weight:bold">活动规则：</p>
+        <p style="color: black;" v-model="activity.regulation"><span style="color:black">{{activity.regulation}}</span>
+        </p>
+        <p style="color: red;font-weight:bold">活动介绍: </p>
+        <p style="color: black;" v-model="activity.introduction"><span
+                style="color:black">{{activity.introduction}}</span></p>
+        <p style="color: black;" v-model="activity.content"><span style="color:black">{{activity.content}}</span></p>
+        <p style="color: red;font-weight:bold">奖品说明: </p>
+        <p style="color: black;font-weight:bold" v-model="activity.prizeLevel1">
+          {{activity.prizeLevel1.prizeName}}： {{activity.prizeLevel1.prizeNumber}}
+          <span style="color:black">奖励{{activity.prizeLevel1.awardName}}{{activity.prizeLevel1.awardNumber}}</span>
+        </p>
+        <p style="color: black;font-weight:bold" v-model="activity.prizeLevel2">
+          {{activity.prizeLevel2.prizeName}}： {{activity.prizeLevel2.prizeNumber}}
+          <span style="color:black">奖励{{activity.prizeLevel2.awardName}}{{activity.prizeLevel2.awardNumber}}</span></p>
+        <p style="color: black;font-weight:bold" v-model="activity.prizeLevel3">
+          {{activity.prizeLevel3.prizeName}}： {{activity.prizeLevel3.prizeNumber}}
+          <span style="color:black">奖励{{activity.prizeLevel3.awardName}}{{activity.prizeLevel3.awardNumber}}</span>
+        </p>
+        <p style="color: red;font-weight:bold">主办单位:</p>
+        <p style="color: black;font-weight:bold" v-model="activity.company">主办方: <span style="color:black">{{activity.company}}</span>
+        </p>
+        <p style="color: black;font-weight:bold" v-model="activity.address">地址: <span style="color:black">{{activity.address}}</span>
+        </p>
+        <p style="color: black;font-weight:bold" v-model="activity.mobile">电话: <span style="color:black">{{activity.mobile}}</span>
+        </p>
+        <p style="color: red;font-weight:bold;position: center" v-model="activity.company">本次活动最终解释权归<span
+                style="color:black">{{activity.company}}</span>所有!</p>
+      </div>
+      <a class="sign-btn" href="javascript:;"><img class="icon" src="./images/btn-icon.png">在线报名</a>
+    </div>
+  </div>
+  <div class="list-main">
+    <div class="search-box">
+      <div class="search-inner">
+        <input class="search-input" type="text"/>
+        <button class="search-btn"><img class="icon" src="./images/search-icon.png">搜索</button>
+      </div>
+    </div>
+    <div class="list-box">
+      <ul v-for="works in worksList">
+        <li class="list-item">
+          <div class="img">
+            <img :src="works.image" height="32px" v-model="works.image" width="40px">
+            <span v-model="works.code">{{works.code}}</span>
+          </div>
+          <div class="text">
+            <div class="name" v-model="works.name">{{works.name}}</div>
+            <div class="num" v-model="works.voteTotal"><span>{{works.voteTotal}}</span>票</div>
+          </div>
+          <div class="btns">
+            <a class="btn active" href="./detail.html">投票</a>
+            <a class="btn" href="./detail.html">详情</a>
+          </div>
+          <div class="nums">
+            <div class="num" v-model="works.browseTotal"><img class="icon" src="./images/see.png">：{{works.browseTotal}}
+            </div>
+            <div class="num" v-model="works.likeTotal"><img class="icon" src="./images/like.png">：{{works.likeTotal}}
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="no-more">别拉了，我是有底线的</div>
+  </div>
+  <div class="footer-main">
+    <a class="link active" href="./index.html">
+      <img alt="" class="icon" src="./images/home.png">
+      <img alt="" class="icon active" src="./images/home-active.png">
+      <div class="text">首页</div>
+    </a>
+    <a class="link" href="./rank.html">
+      <img alt="" class="icon" src="./images/rank.png">
+      <img alt="" class="icon active" src="./images/rank-active.png">
+      <div class="text">排行榜</div>
+    </a>
+    <a class="link" href="./detail.html">
+      <img alt="" class="icon" src="./images/explain.png">
+      <img alt="" class="icon active" src="./images/explain-active.png">
+      <div class="text">说明</div>
+    </a>
+    <a class="link" href="./sign.html">
+      <img alt="" class="icon" src="./images/sign.png">
+      <img alt="" class="icon active" src="./images/sign-active.png">
+      <div class="text">报名</div>
+    </a>
+  </div>
+  <div class="common-capture" id="capture" v-show="showPoster">
+    <img alt="" class="img" src="./images/temp/banner.png" v-model="imgUrl">
+    <div class="title" v-model="name">活动名称:{{name}}</div>
+    <div class="desc" v-model="content">活动内容:{{content}}</div>
+    <div class="num">
+      <span v-model="enrollTotal">报名人数：{{enrollTotal}}</span>
+    </div>
+    <div class="num">
+      <span v-model="worksTotal">参赛作品数：{{worksTotal}}</span>
+    </div>
+  </div>
+  <van-popup v-model="show">
+    <img :src="imgUrl" alt="" style="width: 100%;">
+  </van-popup>
+  <audio id="bg-music" loop="loop" preload="auto" ref="music" src="/static/bgm.mp3"
+         style="display:none; height: 0;"></audio>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vant@2.10/lib/vant.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="./js/html2canvas.min.js"></script>
+<script src="./js/layer-v3.3.0/layer/layer.js"></script>
+<script src="./js/common/utils.js"></script>
+<script>
+  $(function() {
+    var app = new Vue({
+      el: "#app",
+      data() {
+        return {
+          enrollTotal: 1000,
+          voteTotal: 1000,
+          browseTotal: 1000,
+          worksTotal: 1000,
+          name: "活动",
+          content: "你好",
+          banner: [{
+            url: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.zhezhier.com%2Fthumb%2F100x100%2Fb%2Fc6%2Fbc6eb1ae059717a8cbf9cb34a607f1ba.jpg&refer=http%3A%2F%2Fpic.zhezhier.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1618767192&t=8e9e84782711fc420fc8c817f7f7fbe8",
+            img: "./images/temp/banner.png"
+          }],
+          template: {
+            enrollTotal: 1000,
+            voteTotal: 1000,
+            browseTotal: 1000,
+            worksTotal: 1000
+          },
+          worksList: [{
+            image: "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.zhezhier.com%2Fthumb%2F100x100%2Fb%2Fc6%2Fbc6eb1ae059717a8cbf9cb34a607f1ba.jpg&refer=http%3A%2F%2Fpic.zhezhier.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1618767192&t=8e9e84782711fc420fc8c817f7f7fbe8",
+            code: 20210320001,
+            name: "春秋·诗歌",
+            voteTotal: 100,
+            browseTotal: 100,
+            likeTotal: 100
+          }],
+          activity: {
+            enrollTotal: "",
+            voteTotal: "",
+            browseTotal: "",
+            worksTotal: "",
+            name: "春华·活动",
+            introduction: "丰富人民生活",
+            content: "诗歌 图片 文学作品",
+            regulation: "全民在线投稿参与",
+            prizeLevel1: {
+              prizeName: "一等奖",
+              prizeNumber: "一名",
+              awardName: "MacPro 笔记本 ",
+              awardNumber: "一台"
+            },
+            prizeLevel2: {
+              prizeName: "二等奖",
+              prizeNumber: "2名",
+              awardName: "iPad",
+              awardNumber: "一台"
+            },
+            prizeLevel3: {
+              prizeName: "三等奖",
+              prizeNumber: "3名",
+              awardName: "键盘",
+              awardNumber: "一个"
+            },
+            beginTime: "2021-03-01 00:00:00",
+            endTime: "2021-05-01 00:00:00",
+            company: "PivotalCloud",
+            address: "广东省珠海市香洲区珠海大剧院",
+            mobile: "15286774061"
+          },
+          time: 30 * 60 * 60 * 1000,
+          imgUrl: "",
+          showPoster: false,
+          show: false,
+          play: true
+        };
+      },
+      computed: {
+        created() {
+          this.queryActivity();
+        }
+      },
+      methods: {
+        onPoster() {
+          this.showPoster = true;
+          this.$nextTick(() => {
+            html2canvas(document.querySelector("#capture")).then(canvas => {
+              let dataURL = canvas.toDataURL("image/png");
+              this.imgUrl = dataURL;
+              this.showPoster = false;
+              this.show = true;
+            });
+          });
+        },
+        onPlay() {
+          if (this.play) {
+            this.$refs["music"].pause();
+            this.play = false;
+          } else {
+            this.$refs["music"].play();
+            this.play = true;
+          }
+        }
+      },
+    });
+    queryActivity();
+  });
+
+  function queryActivity() {
+            $.ajax({
+              url: utils.baseUrl + "/api/home/activity",
+              type: "post",
+              async: false,
+              success: function(response) {
+                app.data.activity.voteTotal = response.data.activity.voteTotal;
+              }
+            });
+
+  }
+
+
+</script>
 </body>
 </html>

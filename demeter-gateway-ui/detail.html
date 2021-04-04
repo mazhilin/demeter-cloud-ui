@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    <link href="https://cdn.jsdelivr.net/npm/vant@2.10/lib/index.css" rel="stylesheet">
+    <link href="./css/common.css" rel="stylesheet">
+    <link href="./css/detail.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+<div class="detail-wrapper" id="app">
+    <div class="common-swiper-main">
+        <van-swipe :show-indicators="false" class="my-swipe">
+            <van-swipe-item :key="index" v-for="(item, index) in banner">
+                <img :src="item.img" alt="" class="img">
+            </van-swipe-item>
+        </van-swipe>
+        <img :class="{'play': play}" @click="onPlay" class="btn music-btn" src="./images/music-btn.png">
+        <img class="btn poster-btn" src="./images/poster-btn.png">
+    </div>
+    <div class="common-num-main">
+        <div class="box">
+            <div class="num">
+                <div class="value" v-model="enrollTotal">{{enrollTotal}}</div>
+                <div class="text">已报名</div>
+            </div>
+            <div class="num">
+                <div class="value" v-model="voteTotal">{{voteTotal}}</div>
+                <div class="text">总投票</div>
+            </div>
+            <div class="num">
+                <div class="value" v-model="browseTotal">{{browseTotal}}</div>
+                <div class="text">浏览量</div>
+            </div>
+        </div>
+        <van-count-down :time="time" class="countdown" format="结束倒计时 DD 天 HH 时 mm 分 ss 秒"/>
+    </div>
+    <div class="info-main">
+        <div class="info-title">选手信息</div>
+        <div class="info-content">
+            <div class="info-desc">
+                <p style="color: red;font-weight:bold">选手编号：</p>
+                <p style="color: red;font-weight:bold">选手名称:</p>
+                <p style="color: red;font-weight:bold">选手简介：</p>
+                <p style="color: black;">  <span style="color:black">1.啊啊啊啊啊啊啊啊</span></p>
+                <p style="color: red;font-weight:bold">个人代表作品:</p>
+                <p style="color: black;font-weight:bold">个人代表作品1:</p>
+                <p style="color: black;font-weight:bold">个人代表作品2:</p>
+                <p style="color: red;font-weight:bold">其他信息: </p>
+                <span style="color:black">主办方:</span><BR>
+                <span style="color:black">地址：</span><BR>
+                <span style="color:black">联系电话：</span><BR>
+                <p style="color: red;font-weight:bold;position: center">所有参赛作品版权归属作者个人所有!</p>
+            </div>
+        </div>
+        <a class="vote-btn" href="./gift.html"><img class="icon" src="./images/btn-icon.png">投票
+            <div class="gift-btn"><img class="icon" src="./images/gift-icon.png">礼品</div>
+        </a>
+        <a class="vote-btn" href="javascript:;">点赞</a>
+    </div>
+    <div class="btn-main">
+        <a @click="onPoster" class="btn" href="javascript:;"><img class="icon" src="./images/poster-icon.png">生成海报</a>
+        <a class="btn" href="./index.html"><img class="icon" src="./images/home-icon.png">返回首页</a>
+    </div>
+    <div class="footer-main">
+        <a class="link" href="./index.html">
+            <img alt="" class="icon" src="./images/home.png">
+            <img alt="" class="icon active" src="./images/home-active.png">
+            <div class="text">首页</div>
+        </a>
+        <a class="link" href="./rank.html">
+            <img alt="" class="icon" src="./images/rank.png">
+            <img alt="" class="icon active" src="./images/rank-active.png">
+            <div class="text">排行榜</div>
+        </a>
+        <a class="link active" href="./detail.html">
+            <img alt="" class="icon" src="./images/explain.png">
+            <img alt="" class="icon active" src="./images/explain-active.png">
+            <div class="text">说明</div>
+        </a>
+        <a class="link" href="./sign.html">
+            <img alt="" class="icon" src="./images/sign.png">
+            <img alt="" class="icon active" src="./images/sign-active.png">
+            <div class="text">报名</div>
+        </a>
+    </div>
+    <div class="common-capture" id="capture" v-show="showPoster">
+        <img alt="" class="img" src="./images/temp/banner.png">
+        <div class="title">标题标题标题</div>
+        <div class="desc">描述描述描述</div>
+        <div class="num">
+            <span>票数：100</span>
+            <span>作品数：1000</span>
+        </div>
+    </div>
+    <van-popup v-model="show">
+        <img :src="imgUrl" alt="" style="width: 100%;">
+    </van-popup>
+    <audio id="bg-music" loop="loop" preload="auto" ref="music" src="/static/bgm.mp3"
+           style="display:none; height: 0;"></audio>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vant@2.10/lib/vant.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="./js/layer-v3.3.0/layer/layer.js"></script>
+<script src="./js/common/utils.js"></script>
+<script src="./js/html2canvas.min.js"></script>
+<script>
+  var app = new Vue({
+    el: "#app",
+    data() {
+      return {
+        banner: [{
+          url: "",
+          img: "./images/temp/banner.png"
+        }],
+        time: 30 * 60 * 60 * 1000,
+        imgUrl: "",
+        showPoster: false,
+        show: false,
+        play: true,
+        enrollTotal: 1000,
+        voteTotal: 1000,
+        browseTotal: 1000,
+      };
+    },
+    methods: {
+      onPoster() {
+        this.showPoster = true;
+        this.$nextTick(() => {
+          html2canvas(document.querySelector("#capture")).then(canvas => {
+            let dataURL = canvas.toDataURL("image/png");
+            this.imgUrl = dataURL;
+            this.showPoster = false;
+            this.show = true;
+          });
+        });
+      },
+      onPlay() {
+        if (this.play) {
+          this.$refs["music"].pause();
+          this.play = false;
+        } else {
+          this.$refs["music"].play();
+          this.play = true;
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

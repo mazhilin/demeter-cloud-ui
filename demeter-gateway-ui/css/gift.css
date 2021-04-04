@@ -1,0 +1,38 @@
+.gift-wrapper .list {
+	margin: 0.3rem;
+}
+.gift-wrapper .list .list-item {
+	display: flex;
+	height: 2.0rem;
+	padding: 0.2rem;
+	border: 0.01rem solid #eee;
+	margin-bottom: 0.3rem;
+}
+.gift-wrapper .list .list-item .img {
+	width: 2.0rem;
+	height: 2.0rem;
+	object-fit: cover;
+}
+.gift-wrapper .list .list-item .text {
+	position: relative;
+	width: 0;
+	flex: 1;
+	height: 2.0rem;
+	margin-left: 0.2rem;
+}
+.gift-wrapper .list .list-item .text .title {
+	margin-bottom: 0.2rem;
+}
+.gift-wrapper .list .list-item .text .btn {
+	display: block;
+	position: absolute;
+	right: 0.3rem;
+	bottom: 0.3rem;
+	border: 0.01rem solid #ddd;
+	width: 1.0rem;
+	line-height: 0.5rem;
+	text-align: center;
+	color: #333;
+	font-size: 0.24rem;
+	border-radius: 0.05rem;
+}

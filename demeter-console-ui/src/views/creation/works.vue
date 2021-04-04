@@ -59,12 +59,12 @@
           <el-tag>{{ scope.row.sourceType | formatSourceType }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="作品编号" prop="code" />
-      <el-table-column align="center" label="作品名称" prop="name" />
-      <el-table-column align="center" label="作品作者" prop="customerName" />
-      <el-table-column align="center" label="作品简介" prop="introduction" />
-      <el-table-column align="center" label="作品内容" prop="content" />
-      <el-table-column align="center" label="封面图" prop="coverPicture">
+      <el-table-column align="center" label="作品编号" prop="code"/>
+      <el-table-column align="center" label="作品名称" prop="name"/>
+      <el-table-column align="center" label="作品作者" prop="customerName"/>
+      <el-table-column align="center" label="作品简介" prop="introduction"/>
+
+      <el-table-column align="center" label="封面图" width="120px" prop="coverPicture">
         <template slot-scope="scope">
           <img
             v-if="scope.row.coverPicture"
@@ -75,7 +75,41 @@
           >
         </template>
       </el-table-column>
-      <el-table-column align="center" label="IP地址" prop="ipAddress" />
+
+      <el-table-column align="center" label="作品内容" prop="content">
+        <template slot-scope="scope">
+          <el-dialog :visible.sync="detailDialogVisible" title="作品内容" width="60%" style="position: center">
+            <div v-html="worksContent"/>
+          </el-dialog>
+          <el-button type="primary" size="mini" @click="showDetail(scope.row.content)">预览</el-button>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="作品投票数" align="center">
+        <template slot-scope="scope">
+          <p>虚拟：{{ scope.row.virtualVote }}</p>
+          <p>实际：{{ scope.row.actualVote }}</p>
+        </template>
+      </el-table-column>
+      <el-table-column label="作品点赞数" align="center">
+        <template slot-scope="scope">
+          <p>虚拟：{{ scope.row.virtualLike }}</p>
+          <p>实际：{{ scope.row.actualLike }}</p>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="IP地址" min-width="100px" prop="ipAddress"/>
+
+      <el-table-column align="center" label="详情" prop="detail">
+        <template slot-scope="scope">
+          <el-button
+            v-permission="['GET /admin/works/detail']"
+            type="primary"
+            size="mini"
+            @click="handleDetail(scope.row)">详情
+          </el-button>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="作品状态" prop="status">
         <template slot-scope="scope">
@@ -93,7 +127,7 @@
       <el-table-column
         align="center"
         label="操作"
-        width="150"
+        width="250"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
@@ -102,15 +136,23 @@
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
-          >编辑</el-button
+          >编辑
+          </el-button
           >
           <el-button
             v-permission="['POST /admin/works/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
-          >删除</el-button
-          >
+          >删除
+          </el-button>
+          <el-button
+            v-permission="['POST /admin/works/bound']"
+            type="success"
+            size="mini"
+            @click="handleBound(scope.row)"
+          >绑定
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -131,18 +173,18 @@
         :model="dataForm"
         status-icon
         label-position="left"
-        label-width="100px"
+        label-width="120px"
         style="width: 400px; margin-left: 50px"
       >
 
         <el-form-item label="作品名称" prop="name">
-          <el-input v-model="dataForm.name" />
+          <el-input v-model="dataForm.name"/>
         </el-form-item>
 
-        <el-form-item label="作品作者" prop="customerUserId">
-          <el-select v-model="dataForm.customerUserId">
+        <el-form-item label="作者姓名" prop="customerId">
+          <el-select v-model="dataForm.customerId" filterable>
             <el-option
-              v-for="item in userGenderOptions"
+              v-for="item in customers"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -163,15 +205,26 @@
         </el-form-item>
 
         <el-form-item label="作品内容" prop="content">
-          <el-input
-            :autosize="{ minRows: 2, maxRows: 10 }"
-            :rows="10"
-            v-model="dataForm.content"
-            type="textarea"
-            maxlength="1024"
-            show-word-limit
-            placeholder="请输入作品内容"
-          />
+          <editor :init="editorInit" v-model="dataForm.content" style="width: 220%"/>
+        </el-form-item>
+
+        <el-form-item label="虚拟投票数" prop="virtualVote">
+          <el-input v-model="dataForm.virtualVote" placeholder="0"/>
+        </el-form-item>
+
+        <el-form-item label="实际投票数" prop="actualVote">
+          <el-input v-model="dataForm.actualVote" placeholder="0" readonly="true"/>
+        </el-form-item>
+
+        <el-form-item label="虚拟点赞数" prop="virtualLike">
+          <el-input v-model="dataForm.virtualLike" placeholder="0"/>
+        </el-form-item>
+        <el-form-item label="实际点赞数" prop="actualLike">
+          <el-input v-model="dataForm.actualLike" placeholder="0" readonly="true"/>
+        </el-form-item>
+
+        <el-form-item label="作品名称" prop="name">
+          <el-input v-model="dataForm.name"/>
         </el-form-item>
 
         <el-form-item label="作品封面图" prop="coverPicture">
@@ -208,10 +261,90 @@
           v-if="dialogStatus == 'create'"
           type="primary"
           @click="createData"
-        >确定</el-button
+        >确定
+        </el-button
         >
         <el-button v-else type="primary" @click="updateData">确定</el-button>
       </div>
+    </el-dialog>
+
+    <!-- 绑定对话框 -->
+    <el-dialog :title="boundTextMap[boundDialogStatus]" :visible.sync="boundDialogFormVisible">
+      <el-form
+        ref="boundDataForm"
+        :rules="rules"
+        :model="boundDataForm"
+        status-icon
+        label-position="left"
+        label-width="100px"
+        style="width: 400px; margin-left: 50px"
+      >
+
+        <el-form-item label="作品ID" prop="worksId">
+          <el-input v-model="boundDataForm.worksId" readonly="true"/>
+        </el-form-item>
+
+        <el-form-item label="礼品列表" prop="goodsIds">
+          <el-select v-model="boundDataForm.goodsIds" multiple filterable placeholder="请选择">
+            <el-option
+              v-for="item in products"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="boundDialogFormVisible = false">取消</el-button>
+        <el-button
+          v-if="boundDialogStatus == 'bound'"
+          type="primary"
+          @click="boundData"
+        >确定
+        </el-button
+        >
+      </div>
+    </el-dialog>
+
+    <!-- 订单详情对话框 -->
+    <el-dialog :visible.sync="worksGoodsDialogVisible" title="详情" width="800">
+
+      <el-form :data="worksGoods" label-position="left">
+        <el-form-item label="作品编码">
+          <span>{{ worksGoods.works.code }}</span>
+        </el-form-item>
+
+        <el-form-item label="作品名称">
+          <span>{{ worksGoods.works.name }}</span>
+        </el-form-item>
+
+        <el-form-item label="作品作者">
+          <span>{{ worksGoods.works.customerName }}</span>
+        </el-form-item>
+
+        <el-form-item label="创建时间">
+          <span>{{ worksGoods.works.createTime }}</span>
+        </el-form-item>
+
+        <el-form-item label="商品信息">
+          <el-table
+            v-loading="dataListLoading"
+            :data="worksGoods.goods"
+            size="small"
+            border
+            fit
+            highlight-current-row>
+            <el-table-column align="center" label="商品编号" prop="code"/>
+            <el-table-column align="center" label="商品名称" prop="name"/>
+            <el-table-column align="center" label="货品图片" prop="productPicture">
+              <template slot-scope="scope">
+                <img :src="scope.row.productPicture" width="40">
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form-item>
+      </el-form>
     </el-dialog>
 
   </div>
@@ -271,14 +404,10 @@
   }
 </style>
 <script>
-import {
-  create,
-  remove,
-  list,
-  edit,
-  update
-} from '@/api/works'
-import { uploadPath } from '@/api/storage'
+import { bound, create, detail, edit, list, remove } from '@/api/works'
+import { customerList, productList } from '@/api/component'
+import { uploadEditor, uploadPath } from '@/api/storage'
+import Editor from '@tinymce/tinymce-vue'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
@@ -324,7 +453,7 @@ const defaultStatusOptions = [
 
 export default {
   name: 'Works',
-  components: { Pagination },
+  components: { Pagination, Editor },
   filters: {
     formatGenderType(gender) {
       for (let i = 0; i < defaultGenderOptions.length; i++) {
@@ -357,6 +486,7 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      dataListLoading: true,
       listQuery: {
         page: 1,
         limit: 20,
@@ -365,14 +495,25 @@ export default {
         sort: 'create_time',
         order: 'desc'
       },
+      dataListQuery: {
+        page: 1,
+        limit: 20,
+        worksId: undefined,
+        sort: 'create_time',
+        order: 'desc'
+      },
       dataForm: {
         id: undefined,
         name: undefined,
-        customerUserId: undefined,
+        customerId: undefined,
         introduction: undefined,
         content: undefined,
         rotatePictures: undefined,
         coverPicture: undefined,
+        virtualVote: undefined,
+        actualVote: undefined,
+        virtualLike: undefined,
+        actualLike: undefined,
         sourceType: undefined
       },
       dialogFormVisible: false,
@@ -384,6 +525,21 @@ export default {
       sourceTypeOptions: Object.assign({}, defaultSourceTypeOptions),
       userGenderOptions: Object.assign({}, defaultGenderOptions),
       detailDialogVisible: false,
+      boundDialogFormVisible: false,
+      worksGoodsDialogVisible: false,
+      worksGoods: {
+        works: {},
+        goods: [],
+        total: 0
+      },
+      boundDialogStatus: '',
+      boundDataForm: {
+        worksId: undefined,
+        goodsIds: undefined
+      },
+      boundTextMap: {
+        bound: '绑定'
+      },
       rules: {
         name: [
           { required: true, message: '作者名称不能为空', trigger: 'blur' }
@@ -400,11 +556,30 @@ export default {
         email: [
           { required: true, message: '会员邮箱不能为空', trigger: 'blur' }
         ],
-        userLevel: [
-          { required: true, message: '会员等级不能为空', trigger: 'blur' }
+        content: [
+          { required: true, message: '作品内容不能为空', trigger: 'blur' }
         ]
       },
-      downloadLoading: false
+      customers: [],
+      products: [],
+      goodList: [],
+      worksContent: '',
+      downloadLoading: false,
+      editorInit: {
+        language: 'zh_CN',
+        convert_urls: false,
+        plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
+        toolbar: ['searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample', 'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'],
+        images_upload_handler: function(blobInfo, success, failure) {
+          const formData = new FormData()
+          formData.append('file', blobInfo.blob())
+          uploadEditor(formData).then(res => {
+            success(res.data.data.url)
+          }).catch(() => {
+            failure('上传失败，请重新上传')
+          })
+        }
+      }
     }
   },
   computed: {
@@ -416,6 +591,8 @@ export default {
   },
   created() {
     this.getList()
+    this.getCustomerList()
+    this.getProductList()
   },
   methods: {
     getList() {
@@ -432,19 +609,55 @@ export default {
           this.listLoading = false
         })
     },
+    getCustomerList() {
+      customerList().then((response) => {
+        this.customers = response.data.data
+      })
+    },
+    getProductList() {
+      productList().then((response) => {
+        this.products = response.data.data
+      })
+    },
+    showDetail(content) {
+      this.worksContent = content
+      this.detailDialogVisible = true
+    },
+    handleDetail(row) {
+      this.dataListQuery.page = 1
+      this.dataListLoading = true
+      detail(row).then(response => {
+        this.worksGoods.goods = response.data.data.goods
+        this.worksGoods.total = response.data.data.total
+        this.worksGoods.works = response.data.data.works
+        this.dataListLoading = false
+      }).catch(() => {
+        this.worksGoods.goods = []
+        this.worksGoods.total = 0
+        this.worksGoods.works = undefined
+        this.dataListLoading = false
+      })
+      this.worksGoodsDialogVisible = true
+    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+      this.getCustomerList()
+      this.getProductList()
     },
     resetForm() {
       this.dataForm = {
         id: undefined,
         name: undefined,
-        customerUserId: undefined,
+        customerId: undefined,
         introduction: undefined,
         content: undefined,
         rotatePictures: undefined,
         coverPicture: undefined,
+        virtualVote: undefined,
+        actualVote: undefined,
+        virtualLike: undefined,
+        actualLike: undefined,
         sourceType: undefined
       }
     },
@@ -505,13 +718,13 @@ export default {
               }
               this.dialogFormVisible = false
               this.$notify.success({
-                title: '成功',
+                title: '温馨提示',
                 message: '更新成功'
               })
             })
             .catch((response) => {
               this.$notify.error({
-                title: '失败',
+                title: '温馨提示',
                 message: response.data.message
               })
             })
@@ -522,7 +735,7 @@ export default {
       remove(row)
         .then((response) => {
           this.$notify.success({
-            title: '成功',
+            title: '温馨提示',
             message: '删除成功'
           })
           const index = this.list.indexOf(row)
@@ -530,10 +743,41 @@ export default {
         })
         .catch((response) => {
           this.$notify.error({
-            title: '失败',
+            title: '温馨提示',
             message: response.data.message
           })
         })
+    },
+    handleBound(row) {
+      this.boundDataForm = Object.assign({}, row)
+      this.boundDataForm.worksId = row.id
+      this.boundDataForm.goodsIds = row.goodsIds
+      this.boundDialogStatus = 'bound'
+      this.boundDialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['boundDataForm'].clearValidate()
+      })
+    },
+    boundData() {
+      this.$refs['boundDataForm'].validate((valid) => {
+        if (valid) {
+          bound(this.boundDataForm)
+            .then((response) => {
+              this.list.unshift(response.data.data)
+              this.boundDialogFormVisible = false
+              this.$notify.success({
+                title: '温馨提示',
+                message: '绑定成功'
+              })
+            })
+            .catch((response) => {
+              this.$notify.error({
+                title: '温馨提示',
+                message: response.data.message
+              })
+            })
+        }
+      })
     },
     handleDownload() {
       this.downloadLoading = true

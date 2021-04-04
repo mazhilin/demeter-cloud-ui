@@ -34,9 +34,7 @@
         @click="handleCreate"
       >添加
       </el-button>
-      <!--
-            <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
-      -->
+
     </div>
 
     <!-- 查询结果 -->
@@ -68,12 +66,12 @@
 
       <el-table-column align="center" label="字典名称" prop="name" />
 
-      <el-table-column align="center" label="字典描述" prop="message" />
+      <el-table-column align="center" label="字典描述" prop="content" />
 
       <el-table-column
         align="center"
         label="操作列表"
-        width="400"
+        width="200"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
@@ -120,9 +118,19 @@
         <el-form-item label="字典名称" prop="name">
           <el-input v-model="dataForm.name" />
         </el-form-item>
-        <el-form-item label="字典描述" prop="message">
-          <el-input v-model="dataForm.message" />
+
+        <el-form-item label="字典描述" prop="content">
+          <el-input
+            :autosize="{ minRows: 2, maxRows: 10 }"
+            :rows="10"
+            v-model="dataForm.content"
+            type="textarea"
+            maxlength="256"
+            show-word-limit
+            placeholder="请输入字典描述"
+          />
         </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -142,10 +150,10 @@
 
 <script>
 import {
-  createDictionary,
-  deleteDictionary,
-  listDictionary,
-  updateDictionary
+  create,
+  remove,
+  list,
+  update
 } from '@/api/dictionary'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination'
@@ -211,7 +219,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      listDictionary(this.listQuery)
+      list(this.listQuery)
         .then((response) => {
           this.list = response.data.data.items
           this.total = response.data.data.total
@@ -247,7 +255,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createDictionary(this.dataForm)
+          create(this.dataForm)
             .then((response) => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
@@ -259,7 +267,7 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
@@ -276,7 +284,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          updateDictionary(this.dataForm)
+          update(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
@@ -294,14 +302,14 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
       })
     },
     handleDelete(row) {
-      deleteDictionary(row)
+      remove(row)
         .then((response) => {
           this.$notify.success({
             title: '成功',
@@ -313,7 +321,7 @@ export default {
         .catch((response) => {
           this.$notify.error({
             title: '失败',
-            message: response.data.errmsg
+            message: response.data.message
           })
         })
     }

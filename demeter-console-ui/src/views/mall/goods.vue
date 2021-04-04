@@ -19,7 +19,7 @@
         prefix-icon="el-icon-edit"
       />
       <el-button
-        v-permission="['GET /admin/category/list']"
+        v-permission="['GET /admin/goods/list']"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -27,7 +27,7 @@
       >查找</el-button
       >
       <el-button
-        v-permission="['POST /admin/category/create']"
+        v-permission="['POST /admin/goods/create']"
         class="filter-item"
         type="primary"
         icon="el-icon-edit"
@@ -71,12 +71,6 @@
 
       <el-table-column align="center" label="商品类目" prop="categoryName"/>
 
-      <el-table-column align="center" label="类目图标" property="categoryPicture">
-        <template slot-scope="scope">
-          <img v-if="scope.row.categoryPicture" :src="scope.row.categoryPicture" width="80">
-        </template>
-      </el-table-column>
-
       <el-table-column align="center" label="关键字" prop="keywords"/>
 
       <el-table-column
@@ -86,9 +80,14 @@
         prop="content"
       />
 
-      <el-table-column align="center" label="商品图标" property="productPicture">
+      <el-table-column align="center" min-width="100" label="商品图标" property="productPicture">
         <template slot-scope="scope">
-          <img v-if="scope.row.productPicture" :src="scope.row.productPicture" width="40">
+          <img
+            v-if="scope.row.productPicture"
+            :src="scope.row.productPicture"
+            style="width: 100%"
+            width="80"
+            height="100px">
         </template>
       </el-table-column>
 
@@ -110,14 +109,14 @@
       >
         <template slot-scope="scope">
           <el-button
-            v-permission="['POST /admin/category/update']"
+            v-permission="['POST /admin/goods/update']"
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
           >编辑</el-button
           >
           <el-button
-            v-permission="['POST /admin/category/delete']"
+            v-permission="['POST /admin/goods/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
@@ -143,39 +142,42 @@
         :model="dataForm"
         status-icon
         label-position="left"
-        label-width="100px"
+        label-width="128px"
         style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="类目名称" prop="name">
-          <el-input v-model="dataForm.name" />
+        <el-form-item label="商品名称" prop="name">
+          <el-input v-model="dataForm.name"/>
         </el-form-item>
         <el-form-item label="关键字" prop="keywords">
-          <el-input v-model="dataForm.keywords" />
+          <el-input v-model="dataForm.keywords"/>
         </el-form-item>
-        <el-form-item label="排序" prop="sortOrder">
-          <el-input v-model="dataForm.sortOrder" />
+
+        <el-form-item label="商品简介" prop="content">
+          <editor :init="editorInit" v-model="dataForm.content" style="width: 220%"/>
         </el-form-item>
-        <el-form-item label="级别" prop="level">
+
+        <el-form-item label="商品类型" prop="goodsType">
           <el-select
-            v-model="dataForm.level"
+            v-model="dataForm.goodsType"
             filterable
             @change="onLevelChange"
           >
-            <el-option label="一级类目" value="L1" />
-            <el-option label="二级类目" value="L2" />
+            <el-option label="虚拟商品" value="0"/>
+            <el-option label="实物商品" value="1"/>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="pid">
-          <el-select v-model="dataForm.pid" filterable>
-            <el-option
-              v-for="item in catL1"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+
+        <el-form-item label="所属分类" prop="categoryId">
+          <el-cascader
+            :options="categoryList"
+            v-model="dataForm.categoryId"
+            expand-trigger="hover"
+            filterable
+            @change="handleCategoryChange"
+          />
         </el-form-item>
-        <el-form-item label="类目图标" prop="iconUrl">
+
+        <el-form-item label="商品图片" prop="productPicture">
           <el-upload
             :headers="headers"
             :action="uploadPath"
@@ -185,14 +187,15 @@
             accept=".jpg,.jpeg,.png,.gif"
           >
             <img
-              v-if="dataForm.iconUrl"
-              :src="dataForm.iconUrl"
+              v-if="dataForm.productPicture"
+              :src="dataForm.productPicture"
               class="avatar"
             >
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
-        <el-form-item label="类目图片" prop="picUrl">
+
+        <el-form-item label="商品轮播" prop="galleryPictures">
           <el-upload
             :headers="headers"
             :action="uploadPath"
@@ -201,13 +204,27 @@
             class="avatar-uploader"
             accept=".jpg,.jpeg,.png,.gif"
           >
-            <img v-if="dataForm.picUrl" :src="dataForm.picUrl" class="avatar" >
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
+            <img v-if="dataForm.galleryPictures" :src="dataForm.galleryPictures" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
-        <el-form-item label="类目简介" prop="desc">
-          <el-input v-model="dataForm.desc" />
+
+        <el-form-item label="零售价格" prop="retailPrice">
+          <el-input v-model="dataForm.retailPrice"/>
         </el-form-item>
+
+        <el-form-item label="销售价格" prop="salePrice">
+          <el-input v-model="dataForm.salePrice"/>
+        </el-form-item>
+
+        <el-form-item label="库存数量" prop="inventory">
+          <el-input v-model="dataForm.inventory"/>
+        </el-form-item>
+
+        <el-form-item label="商品单位" prop="unit">
+          <el-input v-model="dataForm.unit"/>
+        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -250,14 +267,16 @@
 </style>
 
 <script>
-import { create, list, listCatL1, update } from '@/api/category'
-import { uploadPath } from '@/api/storage'
+import { create, list, update } from '@/api/goods'
+import { goodsCategoryList } from '@/api/component'
+import { uploadEditor, uploadPath } from '@/api/storage'
+import Editor from '@tinymce/tinymce-vue'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
-  name: 'Category',
-  components: { Pagination },
+  name: 'Goods',
+  components: { Pagination, Editor },
   data() {
     return {
       uploadPath,
@@ -269,21 +288,21 @@ export default {
         limit: 20,
         id: undefined,
         name: undefined,
-        sortOrder: undefined,
-        sort: 'add_time',
+        sort: 'create_time',
         order: 'desc'
       },
-      catL1: {},
       dataForm: {
-        id: undefined,
         name: '',
         keywords: '',
-        sortOrder: '',
-        level: 'L2',
-        pid: undefined,
-        desc: '',
-        iconUrl: undefined,
-        picUrl: undefined
+        goodsType: '1',
+        categoryId: undefined,
+        content: '',
+        productPicture: undefined,
+        galleryPictures: undefined,
+        retailPrice: undefined,
+        salePrice: undefined,
+        inventory: undefined,
+        unit: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -292,9 +311,27 @@ export default {
         create: '创建'
       },
       rules: {
-        name: [{ required: true, message: '类目名不能为空', trigger: 'blur' }]
+        name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }],
+        content: [{ required: true, message: '商品描述不能为空', trigger: 'blur' }]
       },
-      downloadLoading: false
+      categoryList: [],
+      categoryIds: [],
+      downloadLoading: false,
+      editorInit: {
+        language: 'zh_CN',
+        convert_urls: false,
+        plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
+        toolbar: ['searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample', 'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'],
+        images_upload_handler: function(blobInfo, success, failure) {
+          const formData = new FormData()
+          formData.append('file', blobInfo.blob())
+          uploadEditor(formData).then(res => {
+            success(res.data.data.url)
+          }).catch(() => {
+            failure('上传失败，请重新上传')
+          })
+        }
+      }
     }
   },
   computed: {
@@ -306,7 +343,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getCatL1()
+    this.getGoodsCategoryList()
   },
   methods: {
     getList() {
@@ -323,31 +360,38 @@ export default {
           this.listLoading = false
         })
     },
-    getCatL1() {
-      listCatL1().then((response) => {
-        this.catL1 = response.data.data
+    getGoodsCategoryList() {
+      goodsCategoryList().then((response) => {
+        this.categoryList = response.data.data.categoryList
       })
+    },
+    handleCategoryChange(value) {
+      this.dataForm.categoryId = value[value.length - 1]
     },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+      this.getGoodsCategoryList()
     },
     resetForm() {
       this.dataForm = {
         id: undefined,
         name: '',
         keywords: '',
-        sortOrder: '',
-        level: 'L2',
-        pid: undefined,
-        desc: '',
-        iconUrl: undefined,
-        picUrl: undefined
+        goodsType: '1',
+        categoryId: undefined,
+        content: '',
+        productPicture: undefined,
+        galleryPictures: undefined,
+        retailPrice: undefined,
+        salePrice: undefined,
+        inventory: undefined,
+        unit: undefined
       }
     },
     onLevelChange: function(value) {
-      if (value === 'L1') {
-        this.pid = undefined
+      if (value === '1') {
+        this.goodsType = undefined
       }
     },
     handleCreate() {
@@ -359,10 +403,10 @@ export default {
       })
     },
     uploadIconUrl: function(response) {
-      this.dataForm.iconUrl = response.data.url
+      this.dataForm.productPicture = response.data.url
     },
     uploadPicUrl: function(response) {
-      this.dataForm.picUrl = response.data.url
+      this.dataForm.galleryPictures = response.data.url
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -370,8 +414,6 @@ export default {
           create(this.dataForm)
             .then((response) => {
               this.list.unshift(response.data.data)
-              // 更新L1目录
-              this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -381,7 +423,7 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
@@ -407,8 +449,6 @@ export default {
                   break
                 }
               }
-              // 更新L1目录
-              this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -418,17 +458,15 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
       })
     },
     handleDelete(row) {
-      delete (row)
+      remove(row)
         .then((response) => {
-          // 更新L1目录
-          this.getCatL1()
           this.$notify.success({
             title: '成功',
             message: '删除成功'
@@ -439,7 +477,7 @@ export default {
         .catch((response) => {
           this.$notify.error({
             title: '失败',
-            message: response.data.errmsg
+            message: response.data.message
           })
         })
     },

@@ -19,7 +19,7 @@
         prefix-icon="el-icon-edit"
       />
       <el-button
-        v-permission="['GET /admin/category/list']"
+        v-permission="['GET /admin/order/list']"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -27,7 +27,7 @@
       >查找</el-button
       >
       <el-button
-        v-permission="['POST /admin/category/create']"
+        v-permission="['POST /admin/order/create']"
         class="filter-item"
         type="primary"
         icon="el-icon-edit"
@@ -96,14 +96,14 @@
       >
         <template slot-scope="scope">
           <el-button
-            v-permission="['POST /admin/category/update']"
+            v-permission="['POST /admin/order/update']"
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
           >编辑</el-button
           >
           <el-button
-            v-permission="['POST /admin/category/delete']"
+            v-permission="['POST /admin/order/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
@@ -236,13 +236,13 @@
 </style>
 
 <script>
-import { create, list, listCatL1, update } from '@/api/category'
+import { create, list, listCatL1, update } from '@/api/order'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
-  name: 'Category',
+  name: 'Order',
   components: { Pagination },
   data() {
     return {

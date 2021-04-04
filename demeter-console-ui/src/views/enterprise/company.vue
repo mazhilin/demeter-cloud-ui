@@ -58,10 +58,9 @@
       <el-table-column align="center" label="联系人" prop="contacts" />
       <el-table-column align="center" label="联系电话" prop="mobile" />
       <el-table-column align="center" label="公司简介" prop="introduction" />
-      <el-table-column align="center" label="省" prop="provinceName" />
-      <el-table-column align="center" label="市" prop="cityName" />
-      <el-table-column align="center" label="区/县" prop="districtName" />
       <el-table-column align="center" label="详细地址" prop="address" />
+      <el-table-column align="center" label="邮政编码" prop="zipCode" />
+      <el-table-column align="center" label="版权声明" prop="copyright" />
       <el-table-column
         align="center"
         label="操作列表"
@@ -103,13 +102,36 @@
         :model="dataForm"
         status-icon
         label-position="left"
-        label-width="100px"
-        style="width: 750px; margin-left: 40px"
+        label-width="128px"
+        style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="公司名称" prop="name">
           <el-input v-model="dataForm.name" auto-complete="off" />
         </el-form-item>
-        <el-form-item label="公司简介" prop="introduction">
+
+        <el-form-item label="公司层级" prop="level">
+          <el-select
+            v-model="dataForm.level"
+            filterable
+            @change="onLevelChange"
+          >
+            <el-option label="上级公司" value="L1" />
+            <el-option label="下级公司" value="L2" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="parentId">
+          <el-select v-model="dataForm.parentId" filterable>
+            <el-option
+              v-for="item in parentCompany"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <!--       <el-form-item label="公司简介" prop="introduction">
           <el-input
             :autosize="{ minRows: 2, maxRows: 10 }"
             :rows="10"
@@ -119,6 +141,10 @@
             show-word-limit
             placeholder="请输入公司简介"
           />
+        </el-form-item>-->
+
+        <el-form-item label="公司简介" prop="introduction">
+          <editor :init="editorInit" v-model="dataForm.introduction" style="width: 220%"/>
         </el-form-item>
 
         <el-form-item label="官网地址" prop="portaleWbsite">
@@ -137,52 +163,12 @@
           <el-input v-model="dataForm.account" auto-complete="off" />
         </el-form-item>
 
-        <el-form-item inline="true" label="省/市/区" prop="area">
-          <el-select
-            v-model="provinceId"
-            filterable
-            placeholder="请选择省"
-            @change="changeProvince"
-          >
-            <el-option
-              v-for="item in province"
-              :key="item.code"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-
-          <el-select
-            v-model="cityId"
-            filterable
-            placeholder="请选择市"
-            @change="changeCity"
-          >
-            <el-option
-              v-for="item in city"
-              :key="item.code"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-
-          <el-select
-            v-model="districtId"
-            filterable
-            placeholder="请选择区/县"
-            @change="changeDistrict"
-          >
-            <el-option
-              v-for="item in district"
-              :key="item.code"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-
         <el-form-item label="详细地址" prop="address">
           <el-input v-model="dataForm.address" auto-complete="off" />
+        </el-form-item>
+
+        <el-form-item label="邮政编码" prop="zipCode">
+          <el-input v-model="dataForm.zipCode" auto-complete="off" />
         </el-form-item>
 
         <el-form-item label="版权声明" prop="copyright">
@@ -214,14 +200,16 @@
 <style></style>
 
 <script>
-import { create, list, update } from '@/api/company'
-import { regionList } from '@/api/component'
+import { create, list, update, edit, remove } from '@/api/company'
+import { parentCompanyList } from '@/api/component'
+import { uploadEditor, uploadPath } from '@/api/storage'
+import Editor from '@tinymce/tinymce-vue'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
   name: 'Company',
-  components: { Pagination },
+  components: { Pagination, Editor },
   filters: {},
   data() {
     return {
@@ -241,13 +229,12 @@ export default {
         code: undefined,
         name: undefined,
         content: undefined,
-        provinceId: undefined,
-        provinceName: undefined,
-        cityId: undefined,
-        cityName: undefined,
-        districtId: undefined,
-        districtName: undefined,
-        sort: undefined
+        portaleWbsite: undefined,
+        contacts: undefined,
+        mobile: undefined,
+        account: undefined,
+        address: undefined,
+        zipCode: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -265,18 +252,27 @@ export default {
         portalWebsite: [
           { required: true, message: '公司简介不能为空!', trigger: 'blur' }
         ],
-        provinceId: [
-          { required: true, message: '省级不能为空', trigger: 'blur' }
-        ],
-        cityId: [{ required: true, message: '市级不能为空', trigger: 'blur' }],
-        districtId: [
-          { required: true, message: '市级不能为空', trigger: 'blur' }
-        ],
         address: [
           { required: true, message: '详细地址不能为空', trigger: 'blur' }
         ]
       },
       downloadLoading: false,
+      editorInit: {
+        language: 'zh_CN',
+        convert_urls: false,
+        plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
+        toolbar: ['searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample', 'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'],
+        images_upload_handler: function(blobInfo, success, failure) {
+          const formData = new FormData()
+          formData.append('file', blobInfo.blob())
+          uploadEditor(formData).then(res => {
+            success(res.data.data.url)
+          }).catch(() => {
+            failure('上传失败，请重新上传')
+          })
+        }
+      },
+      parentCompany: [],
       province: [],
       city: [],
       district: [],
@@ -297,7 +293,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getRegionList()
+    this.getParentCompanyList()
   },
   methods: {
     formatRole(roleId) {
@@ -307,6 +303,11 @@ export default {
         }
       }
       return ''
+    },
+    getParentCompanyList() {
+      parentCompanyList().then((response) => {
+        this.parentCompany = response.data.data
+      })
     },
     getList() {
       this.listLoading = true
@@ -341,9 +342,12 @@ export default {
         sort: undefined
       }
     },
+    onLevelChange: function(value) {
+      if (value === 'L1') {
+        this.parentId = undefined
+      }
+    },
     handleCreate() {
-      this.provinceId = ''
-      this.cityId = ''
       this.resetForm()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
@@ -357,6 +361,7 @@ export default {
           create(this.dataForm)
             .then((response) => {
               this.list.unshift(response.data.data)
+              this.getParentCompanyList()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -366,14 +371,13 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
       })
     },
     handleUpdate(row) {
-      this.updateSite(row)
       this.dataForm = Object.assign({}, row)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
@@ -393,6 +397,7 @@ export default {
                   break
                 }
               }
+              this.getParentCompanyList()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -402,15 +407,16 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
       })
     },
     handleDelete(row) {
-      delete row
+      remove(row)
         .then((response) => {
+          this.getParentCompanyList()
           this.$notify.success({
             title: '成功',
             message: '删除成功'
@@ -421,80 +427,9 @@ export default {
         .catch((response) => {
           this.$notify.error({
             title: '失败',
-            message: response.data.errmsg
+            message: response.data.message
           })
         })
-    },
-    getRegionList() {
-      regionList().then((response) => {
-        this.province = response.data.data
-      })
-    },
-    changeProvince(data, setDefault = true) {
-      const province = this.province.find((item) => {
-        return item.value == data
-      })
-      this.city = province.child
-      this.provinceName = province.label
-      if (setDefault) {
-        this.cityId = province.child[0].value
-        this.cityName = province.child[0].label
-      }
-
-      this.district = province.child[0].child
-      if (setDefault) {
-        this.districtId = province.child[0].child[0].value
-        this.districtName = province.child[0].child[0].label
-      }
-
-      this.dataForm.provinceId = this.provinceId
-      this.dataForm.provinceName = this.provinceName
-      this.dataForm.cityId = this.cityId
-      this.dataForm.cityName = this.cityName
-      this.dataForm.districtId = this.districtId
-      this.dataForm.districtName = this.districtName
-    },
-    changeCity(data, setDefault = true) {
-      const city = this.city.find((item) => {
-        return item.value == data
-      })
-      this.district = city.child
-      this.cityName = city.label
-      if (setDefault) {
-        this.districtId = city.child[0].value
-        this.districtName = city.child[0].label
-      }
-      this.dataForm.provinceId = this.provinceId
-      this.dataForm.provinceName = this.provinceName
-      this.dataForm.cityId = city
-      this.dataForm.cityName = city.label
-      this.dataForm.districtId = this.districtId
-      this.dataForm.districtName = this.districtName
-    },
-    changeDistrict(data, setDefault = true) {
-      const district = this.district.find((item) => {
-        return item.value == data
-      })
-      this.districtName = district.label
-      if (setDefault) {
-        this.districtId = district.value
-        this.districtName = district.label
-      }
-      this.dataForm.provinceId = this.provinceId
-      this.dataForm.provinceName = this.provinceName
-      this.dataForm.cityId = this.cityId
-      this.dataForm.cityName = this.cityName
-      this.dataForm.districtId = district
-      this.dataForm.districtName = district.label
-    },
-    updateSite(region) {
-      console.log('region', region)
-      this.provinceId = region.provinceId * 1
-      this.cityId = region.cityId * 1
-      this.districtId = region.districtId * 1
-      this.changeProvince(region.districtId, false)
-      this.changeCity(region.cityId, false)
-      this.changeDistrict(region.districtId, false)
     }
   }
 }

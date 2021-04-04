@@ -56,32 +56,19 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" width="100px" label="投票ID" prop="id" sortable/>
-      <el-table-column align="center" label="投票来源" prop="sourceType">
+      <el-table-column align="center" width="100px" label="浏览ID" prop="id" sortable/>
+      <el-table-column align="center" label="浏览来源" prop="sourceType">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.sourceType | formatSourceType }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="投票编号" prop="code"/>
-      <el-table-column align="center" label="投票主体" prop="subjectId"/>
-      <el-table-column align="center" label="投票作品" prop="subjectName"/>
-      <el-table-column align="center" label="封面图" prop="coverPicture">
-        <template slot-scope="scope">
-          <img
-            v-if="scope.row.coverPicture"
-            :src="scope.row.coverPicture"
-            style="width: 100%"
-            width="40px"
-            height="100px"
-          >
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="虚拟票数" prop="introduction"/>
-      <el-table-column align="center" label="虚拟倍数" prop="content"/>
-      <el-table-column align="center" label="实际票数" prop="content"/>
+      <el-table-column align="center" label="浏览编号" prop="code"/>
+      <el-table-column align="center" label="浏览名称" prop="name"/>
+      <el-table-column align="center" label="浏览主体" prop="subjectId"/>
+      <el-table-column align="center" label="浏览作品" prop="subjectName"/>
       <el-table-column align="center" label="IP地址" prop="ipAddress"/>
-
-      <el-table-column align="center" label="作品状态" prop="status">
+      <el-table-column align="center" label="浏览时间" prop="browseTime"/>
+      <el-table-column align="center" label="浏览状态" prop="status">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.status"

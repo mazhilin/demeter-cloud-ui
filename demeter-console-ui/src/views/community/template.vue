@@ -49,7 +49,7 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="序号" prop="id" sortable/>
+      <el-table-column align="center" label="序号" width="100px" prop="id" sortable/>
 
       <el-table-column align="center" label="模板编号" prop="code"/>
 
@@ -57,9 +57,32 @@
 
       <el-table-column align="center" label="模板描述" prop="content"/>
 
-      <el-table-column align="center" label="封面图" prop="coverPicture"/>
+      <el-table-column align="center" label="封面图" prop="coverPicture" width="120">
+        <template slot-scope="scope">
+          <img
+            v-if="scope.row.coverPicture"
+            :src="scope.row.coverPicture"
+            style="width: 100%"
+            width="40px"
+            height="100px"
+            onprogress="async"
+          >
+        </template>
+      </el-table-column>
 
-      <el-table-column align="center" label="背景音乐" prop="backgroundMusic"/>
+      <el-table-column align="center" label="背景音乐" prop="backgroundMusic">
+        <template slot-scope="scope">
+          <audio
+            v-if="scope.row.backgroundMusic"
+            :src="scope.row.backgroundMusic"
+            style="width: 100%"
+            width="40px"
+            height="100px"
+            controls="controls"
+            onprogress="async"
+          />
+        </template>
+      </el-table-column>
 
       <el-table-column
         align="center"
@@ -101,14 +124,14 @@
         :model="dataForm"
         status-icon
         label-position="left"
-        label-width="100px"
+        label-width="128px"
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="模板名称" prop="name">
           <el-input v-model="dataForm.name" />
         </el-form-item>
 
-        <el-form-item label="模板描述" prop="content">
+        <!--        <el-form-item label="模板描述" prop="content">
           <el-input
             :autosize="{ minRows: 2, maxRows: 10 }"
             :rows="10"
@@ -118,6 +141,55 @@
             show-word-limit
             placeholder="请输入模板描述"
           />
+        </el-form-item>-->
+
+        <el-form-item label="模板描述" prop="content">
+          <editor :init="editorInit" v-model="dataForm.content" style="width: 220%"/>
+        </el-form-item>
+
+        <el-form-item label="模板封面" prop="coverPicture">
+          <el-upload
+            :headers="headers"
+            :action="uploadPath"
+            :show-file-list="false"
+            :on-success="uploadAvatar"
+            class="avatar-uploader"
+            accept=".jpg,.jpeg,.png,.gif"
+          >
+            <img v-if="dataForm.coverPicture" :src="dataForm.coverPicture" onprogress="async" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"/>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="模板轮播" prop="rotatePictures">
+          <el-upload
+            :headers="headers"
+            :action="uploadPath"
+            :show-file-list="false"
+            :on-success="uploadLicense"
+            class="license-uploader"
+            accept=".jpg,.jpeg,.png,.gif">
+            <img v-if="dataForm.rotatePictures" :src="dataForm.rotatePictures" onprogress="async" class="license">
+            <i v-else class="el-icon-plus license-uploader-icon"/>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="背景音乐" prop="backgroundMusic">
+          <el-upload
+            :headers="headers"
+            :auto-upload="true"
+            :action="uploadPath"
+            :show-file-list="false"
+            :on-success="uploadAudio"
+            class="audio-uploader"
+            accept=".mp3,.flac,.acc,.wma">
+            <audio
+              v-if="dataForm.backgroundMusic"
+              :src="dataForm.backgroundMusic"
+              controls="controls"
+              class="audio"/>
+            <i v-else class="el-icon-plus audio-uploader-icon"/>
+          </el-upload>
         </el-form-item>
 
       </el-form>
@@ -135,14 +207,97 @@
   </div>
 </template>
 
-<style></style>
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 145px;
+    height: 145px;
+    display: block;
+  }
+
+  .license-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .license-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+
+  .license-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+
+  .license {
+    width: 145px;
+    height: 145px;
+    display: block;
+  }
+
+  .audio-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .audio-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+
+  .audio-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+
+  .audio {
+    width: 145px;
+    height: 145px;
+    display: block;
+  }
+</style>
 
 <script>
-import { createInformation, deleteInformation, listInformation, updateInformation } from '@/api/information'
+import { create, list, remove, update } from '@/api/template'
 import { roleOptions } from '@/api/role'
-import { uploadPath } from '@/api/storage'
+import { uploadEditor, uploadPath } from '@/api/storage'
+import Editor from '@tinymce/tinymce-vue'
 import { getToken } from '@/utils/auth'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
+// Secondary package based on el-pagination
 
 const defaultAdminTypeOptions = [
   {
@@ -157,7 +312,7 @@ const defaultAdminTypeOptions = [
 
 export default {
   name: 'Information',
-  components: { Pagination },
+  components: { Audio, Pagination, Editor },
   filters: {
     formatAdminType(type) {
       for (let i = 0; i < defaultAdminTypeOptions.length; i++) {
@@ -179,24 +334,17 @@ export default {
         page: 1,
         limit: 20,
         name: undefined,
-        company: undefined,
+        code: undefined,
         sort: 'create_time',
         order: 'desc'
       },
       dataForm: {
         id: undefined,
         name: undefined,
-        portalUrl: undefined,
-        company: undefined,
-        introduction: undefined,
-        contacts: undefined,
-        mobile: undefined,
-        address: undefined,
-        longitude: undefined,
-        latitude: undefined,
-        tencent: undefined,
-        version: undefined,
-        copyright: undefined
+        content: undefined,
+        coverPicture: undefined,
+        rotatePictures: undefined,
+        backgroundMusic: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -235,7 +383,22 @@ export default {
           { required: true, message: '版权声明不能为空', trigger: 'blur' }
         ]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      editorInit: {
+        language: 'zh_CN',
+        convert_urls: false,
+        plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
+        toolbar: ['searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample', 'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'],
+        images_upload_handler: function(blobInfo, success, failure) {
+          const formData = new FormData()
+          formData.append('file', blobInfo.blob())
+          uploadEditor(formData).then(res => {
+            success(res.data.data.url)
+          }).catch(() => {
+            failure('上传失败，请重新上传')
+          })
+        }
+      }
     }
   },
   computed: {
@@ -263,7 +426,7 @@ export default {
     },
     queryTemplateList() {
       this.listLoading = true
-      listInformation(this.listQuery)
+      list(this.listQuery)
         .then((response) => {
           this.list = response.data.data.items
           this.total = response.data.data.total
@@ -277,27 +440,26 @@ export default {
     },
     handleFilter() {
       this.listQuery.page = 1
-      this.getList()
+      this.queryTemplateList()
     },
     resetForm() {
       this.dataForm = {
         id: undefined,
         name: undefined,
-        portalUrl: undefined,
-        company: undefined,
-        introduction: undefined,
-        contacts: undefined,
-        mobile: undefined,
-        address: undefined,
-        longitude: undefined,
-        latitude: undefined,
-        tencent: undefined,
-        version: undefined,
-        copyright: undefined
+        content: undefined,
+        coverPicture: undefined,
+        rotatePictures: undefined,
+        backgroundMusic: undefined
       }
     },
     uploadAvatar: function(response) {
-      this.dataForm.avatar = response.data.url
+      this.dataForm.coverPicture = response.data.url
+    },
+    uploadLicense: function(response) {
+      this.dataForm.rotatePictures = response.data.url
+    },
+    uploadAudio: function(response) {
+      this.dataForm.backgroundMusic = response.data.url
     },
     handleCreate() {
       this.resetForm()
@@ -310,7 +472,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createInformation(this.dataForm)
+          create(this.dataForm)
             .then((response) => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
@@ -322,7 +484,7 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
@@ -339,7 +501,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          updateInformation(this.dataForm)
+          update(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
@@ -357,14 +519,14 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
       })
     },
     handleDelete(row) {
-      deleteInformation(row)
+      remove(row)
         .then((response) => {
           this.$notify.success({
             title: '成功',
@@ -376,7 +538,7 @@ export default {
         .catch((response) => {
           this.$notify.error({
             title: '失败',
-            message: response.data.errmsg
+            message: response.data.message
           })
         })
     }

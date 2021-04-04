@@ -34,9 +34,7 @@
         @click="handleCreate"
       >添加
       </el-button>
-      <!--
-            <el-button :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
-      -->
+
     </div>
 
     <!-- 查询结果 -->
@@ -212,12 +210,7 @@
 </style>
 
 <script>
-import {
-  createParameter,
-  deleteParameter,
-  listParameter,
-  updateParameter
-} from '@/api/parameter'
+import { create, remove, list, update } from '@/api/parameter'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination'
@@ -306,7 +299,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      listParameter(this.listQuery)
+      list(this.listQuery)
         .then((response) => {
           this.list = response.data.data.items
           this.total = response.data.data.total
@@ -351,7 +344,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createParameter(this.dataForm)
+          create(this.dataForm)
             .then((response) => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
@@ -380,7 +373,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          updateParameter(this.dataForm)
+          update(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
@@ -405,7 +398,7 @@ export default {
       })
     },
     handleDelete(row) {
-      deleteParameter(row)
+      remove(row)
         .then((response) => {
           this.$notify.success({
             title: '成功',

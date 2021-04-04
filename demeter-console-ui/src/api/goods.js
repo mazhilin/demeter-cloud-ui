@@ -1,63 +1,49 @@
-import request from "@/utils/request";
+import request from '@/utils/request'
 
-export function listGoods(query) {
+export function list(query) {
   return request({
-    url: "/goods/list",
-    method: "get",
-    params: query,
-  });
-}
-
-export function createGoods(data) {
-  return request({
-    url: "/goods/create",
-    method: "post",
-    data,
-  });
-}
-export function deleteGoods(data) {
-  return request({
-    url: "/goods/delete",
-    method: "post",
-    data,
-  });
+    url: '/goods/list',
+    method: 'get',
+    params: query
+  })
 }
 
-export function publishGoods(data) {
+export function create(data) {
   return request({
-    url: "/goods/create",
-    method: "post",
-    data,
-  });
+    url: '/goods/create',
+    method: 'post',
+    data
+  })
+}
+export function edit(data) {
+  return request({
+    url: '/goods/edit',
+    method: 'post',
+    data
+  })
 }
 
-export function detailGoods(id) {
+export function update(data) {
   return request({
-    url: "/goods/detail",
-    method: "get",
-    params: { id },
-  });
+    url: '/goods/update',
+    method: 'post',
+    data
+  })
 }
 
-export function editGoods(data) {
+export function show(data) {
   return request({
-    url: "/goods/update",
-    method: "post",
-    data,
-  });
+    url: '/goods/show',
+    method: 'post',
+    data
+  })
 }
 
-export function listCatAndBrand() {
+export function remove(data) {
   return request({
-    url: "/goods/catAndBrand",
-    method: "get",
-  });
+    url: '/goods/delete',
+    method: 'post',
+    data
+  })
 }
 
-export function boundTemplate(data) {
-  return request({
-    url: "/goods/boundTemplate",
-    method: "post",
-    data,
-  });
-}

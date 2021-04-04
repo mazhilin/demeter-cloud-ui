@@ -1,0 +1,81 @@
+.detail-wrapper .info-main {
+  padding-bottom: 0.2rem;
+  background-color: #fff0e9;
+}
+.detail-wrapper .info-main .info-title {
+  height: 2.5rem;
+  padding-top: 0.26rem;
+  box-sizing: border-box;
+  background-color: #f02f34;
+  text-align: center;
+  font-size: 0.4rem;
+  line-height: 0.4rem;
+  color: #fdd288;
+  background-image: url('../images/title-bg.png');
+  background-size: 100% 0.98rem;
+  background-repeat: no-repeat;
+}
+.detail-wrapper .info-main .info-content {
+  padding: 0.24rem;
+  margin: -1.5rem 0.26rem 0;
+  min-height: 1.2rem;
+  background-color: #fff;
+  border: 0.03rem solid #d9b988;
+  border-radius: 0.1rem;
+}
+.detail-wrapper .info-main .info-content　.info-desc {
+  font-size: 0.24rem;
+}
+.detail-wrapper .info-main .vote-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 0.8rem;
+  line-height: 0.8rem;
+  color: #fff;
+  background-color: #ee2f36;
+  border-radius: 0.1rem;
+  font-size: 0.24rem;
+  margin: 0.24rem 0.26rem 0;
+}
+.detail-wrapper .info-main .vote-btn .icon {
+  height: 0.22rem;
+  margin-right: 0.06rem;
+}
+.detail-wrapper .info-main .gift-btn {
+  position: absolute;
+  right: 0.22rem;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  display: flex;
+  align-items: center;
+}
+.detail-wrapper .info-main .gift-btn .icon {
+  height: 0.28rem;
+}
+.detail-wrapper .btn-main {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.24rem 0.26rem 0.96rem;
+  background-color: #fff0e9;
+}
+.detail-wrapper .btn-main .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 0.78rem;
+  line-height: 0.74rem;
+  border-radius: 0.1rem;
+  box-sizing: border-box;
+  border: 0.02rem solid #ea3137;
+  background-color: #fff0e9;
+  color: #ea3137;
+  font-size: 0.28rem;
+}
+.detail-wrapper .btn-main .btn .icon {
+  height: 0.22rem;
+  margin-right: 0.1rem;
+}

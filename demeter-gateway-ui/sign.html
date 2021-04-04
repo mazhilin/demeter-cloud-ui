@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="on" http-equiv="x-dns-prefetch-control">
+    <link href="https://cdn.jsdelivr.net/npm/vant@2.10/lib/index.css" rel="stylesheet">
+    <link href="./css/common.css" rel="stylesheet">
+    <link href="./css/sign.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<style>
+    .sign-wrapper {
+        width: 7.5rem;
+        height: 1rem;
+        background-color: red;
+    }
+</style>
+<body>
+<div class="sign-wrapper" id="app">
+    <div class="main">
+        <div class="main-title">在线报名</div>
+        <div class="main-content">
+            <div class="box">
+                <div class="title">参赛选手<span class="must">*</span></div>
+                <div class="input-box">
+                    <input placeholder="请输入选手名称" type="text">
+                </div>
+            </div>
+            <div class="box">
+                <div class="title">选手简介<span class="must">*</span></div>
+                <div class="input-box">
+                    <input placeholder="请输入选手简介" type="text">
+                </div>
+            </div>
+            <div class="box">
+                <div class="title">选手手机</div>
+                <div class="input-box">
+                    <input placeholder="请输入手机号" type="tel">
+                </div>
+            </div>
+            <div class="box">
+                <div class="title">选手地址</div>
+                <div class="input-box">
+                    <input placeholder="请输入选手地址" type="text">
+                </div>
+            </div>
+            <div class="box">
+                <div class="title">参赛作品</div>
+                <div class="input-box">
+                    <input placeholder="请输入作品名称" type="text">
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="title">投稿作品<span class="must">*</span><span class="sub">请上传1-9张照片，第一张作为封面</span></div>
+                <div class="upload-box">
+
+                    <van-uploader :accept="'image/*'" :after-read="afterRead" :max-count="9" multiple v-model="file">
+                        <div class="add-box">
+                            <img class="add-icon" src="./images/add.png">
+                            <div class="add-text">上传照片</div>
+                        </div>
+                    </van-uploader>
+                </div>
+            </div>
+            <div class="tips">请如实填写报名信息，获取参赛资格！</div>
+            <a class="submit-btn" href="javascript:;"><img alt="" class="icon" src="./images/btn-icon.png">提交</a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vant@2.10/lib/vant.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="./js/layer-v3.3.0/layer/layer.js"></script>
+<script src="./js/common/utils.js"></script>
+<script>
+  var app = new Vue({
+    el: "#app",
+    data() {
+      return {
+        file: []
+      };
+    },
+    methods: {
+      afterRead(file) {
+        // 此时可以自行将文件上传至服务器
+        this.loadshow = true;
+        if (file.length > 1) {
+          for (let index in file) {
+            this.storageFile(file[index]);
+          }
+        } else {
+          this.storageFile(file);
+        }
+      },
+      storageFile(file) {
+        //
+      }
+    },
+    created() {
+
+    }
+  });
+</script>
+</body>
+</html>

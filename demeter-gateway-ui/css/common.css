@@ -1,0 +1,159 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-size: 13.33vw;
+}
+body {
+  font-size: 0.28rem;
+}
+body {
+  padding-bottom: 0.98rem;
+}
+@keyframes move {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.common-swiper-main {
+  position: relative;
+}
+.common-swiper-main .img {
+  width: 100%;
+  height: 5.0rem;
+  object-fit: cover;
+}
+.common-swiper-main .btn {
+  position: absolute;
+  top: 0.46rem;
+  width: 0.96rem;
+  height: 0.96rem;
+}
+.common-swiper-main .btn.music-btn {
+  left: 0.38rem;
+}
+.common-swiper-main .btn.music-btn.play {
+  animation: move 40s infinite linear;
+}
+.common-swiper-main .btn.poster-btn {
+  right: 0.38rem;
+}
+.common-num-main {
+  position: relative;
+  height: 4.1rem;
+  padding-top: 0.96rem;
+  background-image: url('../images/num-bg.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.common-num-main .box {
+  display: flex;
+  justify-content: space-between;
+  width: 5.52rem;
+  margin: auto;
+}
+.common-num-main .box .num {
+  text-align: center;
+}
+.common-num-main .box .num .value {
+  color: #fff;
+  font-size: 0.26rem;
+  line-height: 0.26rem;
+  font-weight: bold;
+}
+.common-num-main .box .num .value:after {
+  display: block;
+  content: '';
+  width: 0.8rem;
+  height: 0.02rem;
+  margin: 0.2rem auto 0.15rem;
+  background-color: #ffd88d;
+}
+.common-num-main .box .num .text {
+  display: block;
+  width: 1.56rem;
+  height: 0.5rem;
+  margin: auto;
+  line-height: 0.5rem;
+  text-align: center;
+  background-color: #ffd88d;
+  color: #c33631;
+  font-size: 0.24rem;
+  border-radius: 0.3rem;
+}
+.common-num-main .countdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 2.75rem;
+  line-height: 0.5rem;
+  text-align: center;
+  color: #fff;
+  font-size: 0.28rem;
+}
+.footer-main {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  z-index: 100;
+  width: 100%;
+  background-color: #ea3137;
+}
+.footer-main .link {
+  width: 25%;
+  height: 1.0rem;
+  padding-top: 0.1rem;
+  box-sizing: border-box;
+  flex: 1;
+  text-align: center;
+}
+.footer-main .link .icon {
+  height: 0.4rem;
+}
+.footer-main .link .icon.active {
+  display: none;
+}
+.footer-main .link .text {
+  color: #fff;
+  font-size: 0.24rem;
+  line-height: 0.24rem;
+  margin-top: 0.1rem;
+}
+.footer-main .link.active {
+  background-color: #c60c19;
+}
+.footer-main .link.active .text {
+  color: #fed98d;
+}
+.footer-main .link.active .icon {
+  display: none;
+}
+.footer-main .link.active .icon.active {
+  display: inline-block;
+}
+.common-capture {
+  padding: 0.5rem;
+  font-size: 0.5rem;
+  color: #333;
+  width: 330px;
+  height: 600px;
+}
+.common-capture .img {
+  width: 100%;
+}
+.common-capture .title {
+  margin-top: 1rem;
+}
+.common-capture .desc {
+  margin-top: 1rem;
+}
+.common-capture .num {
+  margin-top: 1rem;
+}
+.common-capture .num span {
+  margin-right: 1rem;
+}

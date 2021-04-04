@@ -11,7 +11,7 @@
         prefix-icon="el-icon-search"
       />
       <el-input
-        v-model="listQuery.username"
+        v-model="listQuery.name"
         clearable
         class="filter-item"
         style="width: 200px"
@@ -55,18 +55,21 @@
       highlight-current-row
     >
       <el-table-column
-        width="100px"
         align="center"
         label="序号"
         prop="id"
         sortable
-        show-overflow-tooltip="true"
       />
-      <el-table-column align="center" label="员工账户" prop="account" />
-      <el-table-column align="center" label="员工名称" prop="username" />
-      <el-table-column align="center" label="员工头像" prop="avatar">
+      <el-table-column align="center" label="员工账户" prop="account"/>
+      <el-table-column align="center" label="员工名称" prop="name"/>
+      <el-table-column align="center" label="员工头像" prop="profilePicture">
         <template slot-scope="scope">
-          <img v-if="scope.row.avatar" :src="scope.row.avatar" width="30" >
+          <img
+            v-if="scope.row.profilePicture"
+            :src="scope.row.profilePicture"
+            style="width: 100%"
+            width="80"
+            height="100px">
         </template>
       </el-table-column>
 
@@ -89,23 +92,20 @@
       </el-table-column>
 
       <el-table-column
-        width="100px"
         align="center"
         label="上次登录"
         prop="lastLoginTime"
-        show-overflow-tooltip="true"
       />
       <el-table-column
-        width="100px"
         align="center"
         label="登录IP"
         prop="lastLoginIp"
-        show-overflow-tooltip="true"
       />
 
       <el-table-column
         align="center"
         label="操作列表"
+        width="200px"
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
@@ -147,10 +147,10 @@
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="员工账户" prop="account">
-          <el-input v-model="dataForm.account" />
+          <el-input v-model="dataForm.account"/>
         </el-form-item>
-        <el-form-item label="员工名称" prop="username">
-          <el-input v-model="dataForm.username" />
+        <el-form-item label="员工名称" prop="name">
+          <el-input v-model="dataForm.name"/>
         </el-form-item>
         <el-form-item label="员工密码" prop="password">
           <el-input
@@ -224,25 +224,28 @@
 </style>
 
 <script>
-import {
-  listEmployee,
-  createEmployee,
-  updateEmployee,
-  deleteEmployee
-} from '@/api/employee'
-import { roleOptions } from '@/api/role'
+import { create, list, remove, update } from '@/api/employee'
+import { options } from '@/api/role'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 const defaultAdminTypeOptions = [
   {
-    label: '管理人员',
+    label: '超级管理员',
     value: 0
   },
   {
-    label: '内部员工',
+    label: '系统管理员',
     value: 1
+  },
+  {
+    label: '公司管理员',
+    value: 2
+  },
+  {
+    label: '公司员工',
+    value: 3
   }
 ]
 
@@ -269,7 +272,8 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        username: undefined,
+        account: undefined,
+        name: undefined,
         sort: 'create_time',
         order: 'desc'
       },
@@ -278,7 +282,7 @@ export default {
         account: undefined,
         username: undefined,
         password: undefined,
-        avatar: undefined,
+        profilePicture: undefined,
         roleIds: []
       },
       dialogFormVisible: false,
@@ -310,8 +314,7 @@ export default {
   },
   created() {
     this.getList()
-
-    roleOptions().then((response) => {
+    options().then((response) => {
       this.roleOptions = response.data.data
     })
   },
@@ -326,7 +329,7 @@ export default {
     },
     getList() {
       this.listLoading = true
-      listEmployee(this.listQuery)
+      list(this.listQuery)
         .then((response) => {
           this.list = response.data.data.items
           this.total = response.data.data.total
@@ -348,7 +351,7 @@ export default {
         account: undefined,
         username: undefined,
         password: undefined,
-        avatar: undefined,
+        profilePicture: undefined,
         roleIds: []
       }
     },
@@ -366,19 +369,19 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createEmployee(this.dataForm)
+          create(this.dataForm)
             .then((response) => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
               this.$notify.success({
-                title: '成功',
+                title: '温馨提示',
                 message: '添加员工成功'
               })
             })
             .catch((response) => {
               this.$notify.error({
-                title: '失败',
-                message: response.data.errmsg
+                title: '温馨提示',
+                message: response.data.message
               })
             })
         }
@@ -395,7 +398,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          updateEmployee(this.dataForm)
+          update(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
@@ -406,33 +409,33 @@ export default {
               }
               this.dialogFormVisible = false
               this.$notify.success({
-                title: '成功',
+                title: '温馨提示',
                 message: '更新员工成功'
               })
             })
             .catch((response) => {
               this.$notify.error({
-                title: '失败',
-                message: response.data.errmsg
+                title: '温馨提示',
+                message: response.data.message
               })
             })
         }
       })
     },
     handleDelete(row) {
-      deleteEmployee(row)
+      remove(row)
         .then((response) => {
           this.$notify.success({
-            title: '成功',
-            message: '删除员工成功'
+            title: '温馨提示',
+            message: '删除成功'
           })
           const index = this.list.indexOf(row)
           this.list.splice(index, 1)
         })
         .catch((response) => {
           this.$notify.error({
-            title: '失败',
-            message: response.data.errmsg
+            title: '温馨提示',
+            message: response.data.message
           })
         })
     },

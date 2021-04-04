@@ -19,7 +19,7 @@
         prefix-icon="el-icon-edit"
       />
       <el-button
-        v-permission="['GET /admin/category/list']"
+        v-permission="['GET /admin/award/list']"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -27,7 +27,7 @@
       >查找</el-button
       >
       <el-button
-        v-permission="['POST /admin/category/create']"
+        v-permission="['POST /admin/award/create']"
         class="filter-item"
         type="primary"
         icon="el-icon-edit"
@@ -64,7 +64,12 @@
 
       <el-table-column align="center" label="奖品图片" property="prizePicture">
         <template slot-scope="scope">
-          <img v-if="scope.row.categoryPicture" :src="scope.row.categoryPicture" width="80">
+          <img
+            v-if="scope.row.prizePicture"
+            :src="scope.row.prizePicture"
+            style="width: 100%"
+            width="80"
+            height="100px">
         </template>
       </el-table-column>
 
@@ -82,14 +87,14 @@
       >
         <template slot-scope="scope">
           <el-button
-            v-permission="['POST /admin/category/update']"
+            v-permission="['POST /admin/award/update']"
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
           >编辑</el-button
           >
           <el-button
-            v-permission="['POST /admin/category/delete']"
+            v-permission="['POST /admin/award/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
@@ -118,36 +123,22 @@
         label-width="100px"
         style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="类目名称" prop="name">
-          <el-input v-model="dataForm.name" />
+        <el-form-item label="奖品名称" prop="name">
+          <el-input v-model="dataForm.name"/>
         </el-form-item>
-        <el-form-item label="关键字" prop="keywords">
-          <el-input v-model="dataForm.keywords" />
+        <el-form-item label="奖品描述" prop="content">
+          <el-input
+            :autosize="{ minRows: 2, maxRows: 10 }"
+            :rows="10"
+            v-model="dataForm.content"
+            type="textarea"
+            maxlength="256"
+            show-word-limit
+            placeholder="请输入奖品描述"
+          />
         </el-form-item>
-        <el-form-item label="排序" prop="sortOrder">
-          <el-input v-model="dataForm.sortOrder" />
-        </el-form-item>
-        <el-form-item label="级别" prop="level">
-          <el-select
-            v-model="dataForm.level"
-            filterable
-            @change="onLevelChange"
-          >
-            <el-option label="一级类目" value="L1" />
-            <el-option label="二级类目" value="L2" />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="pid">
-          <el-select v-model="dataForm.pid" filterable>
-            <el-option
-              v-for="item in catL1"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="类目图标" prop="iconUrl">
+
+        <el-form-item label="奖品图片" prop="prizePicture">
           <el-upload
             :headers="headers"
             :action="uploadPath"
@@ -157,29 +148,22 @@
             accept=".jpg,.jpeg,.png,.gif"
           >
             <img
-              v-if="dataForm.iconUrl"
-              :src="dataForm.iconUrl"
+              v-if="dataForm.prizePicture"
+              :src="dataForm.prizePicture"
               class="avatar"
             >
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
-        <el-form-item label="类目图片" prop="picUrl">
-          <el-upload
-            :headers="headers"
-            :action="uploadPath"
-            :show-file-list="false"
-            :on-success="uploadPicUrl"
-            class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif"
-          >
-            <img v-if="dataForm.picUrl" :src="dataForm.picUrl" class="avatar" >
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
-          </el-upload>
+
+        <el-form-item label="奖品数量" prop="prizeNumber">
+          <el-input v-model="dataForm.prizeNumber"/>
         </el-form-item>
-        <el-form-item label="类目简介" prop="desc">
-          <el-input v-model="dataForm.desc" />
+
+        <el-form-item label="奖品单位" prop="unit">
+          <el-input v-model="dataForm.unit"/>
         </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -222,14 +206,16 @@
 </style>
 
 <script>
-import { create, list, listCatL1, update } from '@/api/category'
-import { uploadPath } from '@/api/storage'
+import { create, list, update } from '@/api/award'
+import { uploadEditor, uploadPath } from '@/api/storage'
+import Editor from '@tinymce/tinymce-vue'
 import { getToken } from '@/utils/auth'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
+// Secondary package based on el-pagination
 
 export default {
-  name: 'Category',
-  components: { Pagination },
+  name: 'Award',
+  components: { Pagination, Editor },
   data() {
     return {
       uploadPath,
@@ -241,21 +227,17 @@ export default {
         limit: 20,
         id: undefined,
         name: undefined,
-        sortOrder: undefined,
-        sort: 'add_time',
+        sort: 'create_time',
         order: 'desc'
       },
-      catL1: {},
       dataForm: {
         id: undefined,
-        name: '',
-        keywords: '',
-        sortOrder: '',
-        level: 'L2',
-        pid: undefined,
-        desc: '',
-        iconUrl: undefined,
-        picUrl: undefined
+        name: undefined,
+        content: undefined,
+        prizePicture: undefined,
+        prizeNumber: undefined,
+        prizeSurplus: undefined,
+        unit: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -266,7 +248,22 @@ export default {
       rules: {
         name: [{ required: true, message: '类目名不能为空', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      editorInit: {
+        language: 'zh_CN',
+        convert_urls: false,
+        plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
+        toolbar: ['searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample', 'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'],
+        images_upload_handler: function(blobInfo, success, failure) {
+          const formData = new FormData()
+          formData.append('file', blobInfo.blob())
+          uploadEditor(formData).then(res => {
+            success(res.data.data.url)
+          }).catch(() => {
+            failure('上传失败，请重新上传')
+          })
+        }
+      }
     }
   },
   computed: {
@@ -278,7 +275,6 @@ export default {
   },
   created() {
     this.getList()
-    this.getCatL1()
   },
   methods: {
     getList() {
@@ -295,11 +291,6 @@ export default {
           this.listLoading = false
         })
     },
-    getCatL1() {
-      listCatL1().then((response) => {
-        this.catL1 = response.data.data
-      })
-    },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
@@ -307,14 +298,12 @@ export default {
     resetForm() {
       this.dataForm = {
         id: undefined,
-        name: '',
-        keywords: '',
-        sortOrder: '',
-        level: 'L2',
-        pid: undefined,
-        desc: '',
-        iconUrl: undefined,
-        picUrl: undefined
+        name: undefined,
+        content: undefined,
+        prizePicture: undefined,
+        prizeNumber: undefined,
+        prizeSurplus: undefined,
+        unit: undefined
       }
     },
     onLevelChange: function(value) {
@@ -331,7 +320,7 @@ export default {
       })
     },
     uploadIconUrl: function(response) {
-      this.dataForm.iconUrl = response.data.url
+      this.dataForm.prizePicture = response.data.url
     },
     uploadPicUrl: function(response) {
       this.dataForm.picUrl = response.data.url
@@ -342,8 +331,6 @@ export default {
           create(this.dataForm)
             .then((response) => {
               this.list.unshift(response.data.data)
-              // 更新L1目录
-              this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -353,7 +340,7 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
@@ -379,8 +366,6 @@ export default {
                   break
                 }
               }
-              // 更新L1目录
-              this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -390,7 +375,7 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
@@ -411,7 +396,7 @@ export default {
         .catch((response) => {
           this.$notify.error({
             title: '失败',
-            message: response.data.errmsg
+            message: response.data.message
           })
         })
     },

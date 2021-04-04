@@ -27,7 +27,7 @@
       </el-button
       >
       <el-button
-        v-permission="['POST /admin/works/create']"
+        v-permission="['POST /admin/vote/create']"
         class="filter-item"
         type="primary"
         icon="el-icon-edit"
@@ -63,36 +63,20 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="投票编号" prop="code"/>
-      <el-table-column align="center" label="投票主体" prop="subjectId"/>
       <el-table-column align="center" label="投票作品" prop="subjectName"/>
-      <el-table-column align="center" label="封面图" prop="coverPicture">
+      <el-table-column align="center" label="作品封面" prop="subjectPicture">
         <template slot-scope="scope">
           <img
-            v-if="scope.row.coverPicture"
-            :src="scope.row.coverPicture"
+            v-if="scope.row.subjectPicture"
+            :src="scope.row.subjectPicture"
             style="width: 100%"
             width="40px"
             height="100px"
           >
         </template>
       </el-table-column>
-      <el-table-column align="center" label="虚拟票数" prop="introduction"/>
-      <el-table-column align="center" label="虚拟倍数" prop="content"/>
-      <el-table-column align="center" label="实际票数" prop="content"/>
       <el-table-column align="center" label="IP地址" prop="ipAddress"/>
-
-      <el-table-column align="center" label="作品状态" prop="status">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.status"
-            :active-value="1"
-            :inactive-value="0"
-            active-color="#409eff"
-            inactive-color="#c0ccda"
-            @change="updateStatus($event, scope.row)"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column align="center" label="投票时间" prop="voteTime"/>
 
       <el-table-column
         align="center"
@@ -102,7 +86,7 @@
       >
         <template slot-scope="scope">
           <el-button
-            v-permission="['POST /admin/works/update']"
+            v-permission="['POST /admin/vote/update']"
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
@@ -110,7 +94,7 @@
           </el-button
           >
           <el-button
-            v-permission="['POST /admin/works/delete']"
+            v-permission="['POST /admin/vote/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
@@ -141,70 +125,8 @@
         style="width: 400px; margin-left: 50px"
       >
 
-        <el-form-item label="作品名称" prop="name">
-          <el-input v-model="dataForm.name"/>
-        </el-form-item>
-
-        <el-form-item label="作品作者" prop="customerUserId">
-          <el-select v-model="dataForm.customerUserId">
-            <el-option
-              v-for="item in userGenderOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="作品简介" prop="introduction">
-          <el-input
-            :autosize="{ minRows: 2, maxRows: 10 }"
-            :rows="10"
-            v-model="dataForm.introduction"
-            type="textarea"
-            maxlength="256"
-            show-word-limit
-            placeholder="作品简介"
-          />
-        </el-form-item>
-
-        <el-form-item label="作品内容" prop="content">
-          <el-input
-            :autosize="{ minRows: 2, maxRows: 10 }"
-            :rows="10"
-            v-model="dataForm.content"
-            type="textarea"
-            maxlength="1024"
-            show-word-limit
-            placeholder="请输入作品内容"
-          />
-        </el-form-item>
-
-        <el-form-item label="作品封面图" prop="coverPicture">
-          <el-upload
-            :headers="headers"
-            :action="uploadPath"
-            :show-file-list="false"
-            :on-success="uploadAvatar"
-            class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif"
-          >
-            <img v-if="dataForm.coverPicture" :src="dataForm.coverPicture" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"/>
-          </el-upload>
-        </el-form-item>
-
-        <el-form-item label="参赛作品图片" prop="rotatePictures">
-          <el-upload
-            :headers="headers"
-            :action="uploadPath"
-            :show-file-list="false"
-            :on-success="uploadLicense"
-            class="license-uploader"
-            accept=".jpg,.jpeg,.png,.gif">
-            <img v-if="dataForm.rotatePictures" :src="dataForm.rotatePictures" class="license">
-            <i v-else class="el-icon-plus license-uploader-icon"/>
-          </el-upload>
+        <el-form-item label="投票主体ID" prop="subjectId">
+          <el-input v-model="dataForm.subjectId"/>
         </el-form-item>
 
       </el-form>
@@ -280,7 +202,7 @@
   }
 </style>
 <script>
-import { create, edit, list, remove } from '@/api/works'
+import { create, edit, list, remove } from '@/api/vote'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -374,13 +296,7 @@ export default {
       },
       dataForm: {
         id: undefined,
-        name: undefined,
-        customerUserId: undefined,
-        introduction: undefined,
-        content: undefined,
-        rotatePictures: undefined,
-        coverPicture: undefined,
-        sourceType: undefined
+        subjectId: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -392,23 +308,8 @@ export default {
       userGenderOptions: Object.assign({}, defaultGenderOptions),
       detailDialogVisible: false,
       rules: {
-        name: [
+        subjectId: [
           { required: true, message: '作者名称不能为空', trigger: 'blur' }
-        ],
-        mobile: [
-          { required: true, message: '作者手机不能为空', trigger: 'blur' }
-        ],
-        profilePicture: [
-          { required: true, message: '作者头像不能为空', trigger: 'blur' }
-        ],
-        licenseUrl: [
-          { required: true, message: '营业执照不能为空', trigger: 'blur' }
-        ],
-        email: [
-          { required: true, message: '会员邮箱不能为空', trigger: 'blur' }
-        ],
-        userLevel: [
-          { required: true, message: '会员等级不能为空', trigger: 'blur' }
         ]
       },
       downloadLoading: false
@@ -446,13 +347,7 @@ export default {
     resetForm() {
       this.dataForm = {
         id: undefined,
-        name: undefined,
-        customerUserId: undefined,
-        introduction: undefined,
-        content: undefined,
-        rotatePictures: undefined,
-        coverPicture: undefined,
-        sourceType: undefined
+        subjectId: undefined
       }
     },
     uploadAvatar: function(response) {

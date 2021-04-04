@@ -59,7 +59,6 @@
           <el-tag>{{ scope.row.sourceType | formatSourceType }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="作者账户" prop="account" />
 
       <el-table-column align="center" label="作者编号" prop="customerNumber" />
 
@@ -76,6 +75,7 @@
           >
         </template>
       </el-table-column>
+
       <el-table-column align="center" label="作者性别" prop="gender">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.gender | formatGenderType }}</el-tag>
@@ -154,14 +154,14 @@
         :model="dataForm"
         status-icon
         label-position="left"
-        label-width="100px"
+        label-width="128px"
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="作者手机" prop="mobile">
           <el-input v-model="dataForm.mobile" />
         </el-form-item>
 
-        <el-form-item label="作者姓名" prop="name">
+        <el-form-item label="作者姓名" prop="customerId">
           <el-input v-model="dataForm.name" />
         </el-form-item>
 
@@ -203,15 +203,7 @@
         </el-form-item>
 
         <el-form-item label="作者简介" prop="personalProfile">
-          <el-input
-            :autosize="{ minRows: 2, maxRows: 10 }"
-            :rows="10"
-            v-model="dataForm.personalProfile"
-            type="textarea"
-            maxlength="256"
-            show-word-limit
-            placeholder="请输入公司简介"
-          />
+          <editor :init="editorInit" v-model="dataForm.personalProfile" style="width: 220%"/>
         </el-form-item>
 
         <el-form-item label="个人代表作" prop="personalWorks">
@@ -304,7 +296,8 @@ import {
   edit,
   update
 } from '@/api/customer'
-import { uploadPath } from '@/api/storage'
+import { uploadEditor, uploadPath } from '@/api/storage'
+import Editor from '@tinymce/tinymce-vue'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
@@ -350,7 +343,7 @@ const defaultStatusOptions = [
 
 export default {
   name: 'User',
-  components: { Pagination },
+  components: { Pagination, Editor },
   filters: {
     formatGenderType(gender) {
       for (let i = 0; i < defaultGenderOptions.length; i++) {
@@ -436,7 +429,23 @@ export default {
           { required: true, message: '会员等级不能为空', trigger: 'blur' }
         ]
       },
-      downloadLoading: false
+      customer: [],
+      downloadLoading: false,
+      editorInit: {
+        language: 'zh_CN',
+        convert_urls: false,
+        plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
+        toolbar: ['searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample', 'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'],
+        images_upload_handler: function(blobInfo, success, failure) {
+          const formData = new FormData()
+          formData.append('file', blobInfo.blob())
+          uploadEditor(formData).then(res => {
+            success(res.data.data.url)
+          }).catch(() => {
+            failure('上传失败，请重新上传')
+          })
+        }
+      }
     }
   },
   computed: {
@@ -448,6 +457,7 @@ export default {
   },
   created() {
     this.getList()
+    this.getCustomerList()
   },
   methods: {
     getList() {
@@ -463,6 +473,11 @@ export default {
           this.total = 0
           this.listLoading = false
         })
+    },
+    getCustomerList() {
+      customerList().then((response) => {
+        this.customer = response.data.data
+      })
     },
     handleFilter() {
       this.listQuery.page = 1

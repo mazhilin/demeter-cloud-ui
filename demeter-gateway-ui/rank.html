@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="on" http-equiv="x-dns-prefetch-control">
+    <link href="https://cdn.jsdelivr.net/npm/vant@2.10/lib/index.css" rel="dns-prefetch">
+    <link href="https://cdn.jsdelivr.net/npm/vant@2.10/lib/index.css" rel="stylesheet">
+    <link href="./css/weui.min.css" rel="stylesheet">
+    <link href="./css/style.min.css" rel="stylesheet">
+    <link href="./css/rank.css" rel="stylesheet">
+    <style>
+        .swiper-main .img {
+            width: 100%;
+            height: 188px;
+            object-fit: cover;
+        }
+
+        .swiper-main .van-swipe__indicators {
+            left: auto;
+            right: 0;
+            bottom: 5px;
+        }
+
+        .user_img {
+            margin: auto;
+            width: 40px;
+            height: 40px;
+        }
+
+        .user_img:before {
+            position: absolute;
+            content: "";
+        }
+
+        .user_img:before {
+            left: 6px;
+            top: -12px;
+            width: 28px;
+            height: 16px;
+            background-size: 100%;
+        }
+
+        .user_img img {
+            position: relative;
+            border-radius: 50%;
+        }
+
+        .user_first, .user_first img {
+            width: 60px;
+            height: 60px;
+        }
+
+        .user_first:before {
+            background-image: url(./images/hg_j.png);
+            width: 34px;
+            top: -14px;
+            left: 14px;
+        }
+
+        .user_first img {
+            box-shadow: 0 0 2px #f5c10c,
+            0 0 2px #f5c10c,
+            0 0 2px #f5c10c;
+        }
+
+        .rank_one {
+            color: #f5c10c;
+        }
+
+        .user_second:before {
+            background-image: url(./images/hg_y.png);
+        }
+
+        .user_second img {
+            box-shadow: 0 0 2px #78b9d9,
+            0 0 2px #78b9d9,
+            0 0 2px #78b9d9;
+        }
+
+        .rank_second {
+            color: #78b9d9;
+        }
+
+        .user_third:before {
+            background-image: url(./images/hg_t.png);
+        }
+
+        .user_third img {
+            box-shadow: 0 0 2px #936e34,
+            0 0 2px #936e34,
+            0 0 2px #936e34;
+        }
+
+        .user_third {
+            color: #936e34;
+        }
+
+        .votes_num {
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .vote_rank a:nth-child(2), .vote_rank a:nth-child(3) {
+            margin-top: 20px;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body id="content">
+<div id="app">
+
+    <div class="swiper-main">
+        <van-swipe class="my-swipe" indicator-color="red">
+            <van-swipe-item :key="index" v-for="(item, index) in banner">
+                <img :src="item.img" alt="" class="img">
+            </van-swipe-item>
+        </van-swipe>
+    </div>
+
+    <div class="vote_back">
+        <div class="text-center">
+            <img alt="" src="./images/phb.png" width="75%">
+        </div>
+        <div class="p-ten vote_rank">
+            <a class="dis-inline text-center " href="javascript:;" style="width: 33.333333%">
+                <p class="user_img rel user_first">
+                    <img alt="" class="dis-block back-setting" height="40" src="./images/phb.png" width="40">
+                </p>
+                <p class="m-t-five size-12 f-toe c-gray">松鹤</p>
+                <p class="m-b-five"><span class="size-18 c-theme">3454</span><span class="size-12 c-gray">票</span></p>
+            </a>
+            <a class="dis-inline text-center pull-left" href="javascript:;" style="width: 33.333333%">
+                <p class="user_img rel user_second">
+                    <img alt="" class="dis-block back-setting" height="40" src="./images/phb.png" width="40">
+                </p>
+                <p class="m-t-five size-12 f-toe c-gray">付树怀</p>
+                <p class="m-b-five"><span class="size-18 c-theme">3336</span><span class="size-12 c-gray">票</span></p>
+            </a>
+            <a class="dis-inline text-center pull-right" href="javascript:;" style="width: 33.333333%">
+                <p class="user_img rel user_third">
+                    <img alt="" class="dis-block back-setting" height="40" src="./images/phb.png" width="40">
+                </p>
+                <p class="m-t-five size-12 f-toe c-gray">卜建国</p>
+                <p class="m-b-five"><span class="size-18 c-theme">2534</span><span class="size-12 c-gray">票</span></p>
+            </a>
+            <a class="dis-block clear"></a>
+            <a class="weui-media-box_appmsg p-t-ten p-b-ten" href="javascript:;">
+                <p class="m-r-ten size-16 ">4</p>
+                <p class="m-r-ten user_img rel ">
+                    <img alt="" class="dis-block back-setting" height="40" src="./images/phb.png" width="40">
+                </p>
+                <p class="weui-media-box__bd f-toe p-l-five size-13">陆道勋</p>
+                <p class="size-12">总票数：</p><span class="votes_num c-theme">1337</span>
+            </a>
+        </div>
+        <p class="p-b-ten blessing_btn text-center dis-none" style="display: block;">查看更多↓</p>
+    </div>
+
+    <div id="front_html_content">
+        <div class="weui-media-box_appmsg intro-content_title">
+            <p class="intro-title_icon"></p>
+            <div class="intro-title_word more-create_txt_title create-txt_border rel">活动信息</div>
+            <p class="intro-title_icon"></p>
+        </div>
+        <div class="intro-content rel">
+            <p style="color: white;font-weight:bold" v-model="activity.name">活动名称： <span
+                    style="color:white">{{activity.name}}</span></p>
+            <p style="color: white;font-weight:bold" v-model="activity.beginTime">活动开始： <span style="color:white">{{activity.beginTime}}</span>
+            </p>
+            <p style="color: white;font-weight:bold" v-model="activity.endTime">活动结束： <span style="color:white">{{activity.endTime}}</span>
+            </p>
+            <p style="color: white;font-weight:bold">活动规则：</p>
+            <p style="color: white;" v-model="activity.regulation"><span
+                    style="color:white">{{activity.regulation}}</span>
+            </p>
+            <p style="color: white;font-weight:bold">活动介绍: </p>
+            <p style="color: white;" v-model="activity.introduction"><span
+                    style="color:white">{{activity.introduction}}</span></p>
+            <p style="color: white;" v-model="activity.content"><span style="color:white">{{activity.content}}</span>
+            </p>
+            <p style="color: white;font-weight:bold">奖品说明: </p>
+            <p style="color: white;font-weight:bold" v-model="activity.prizeLevel1">
+                {{activity.prizeLevel1.prizeName}}： {{activity.prizeLevel1.prizeNumber}}
+                <span style="color:white">奖励{{activity.prizeLevel1.awardName}}{{activity.prizeLevel1.awardNumber}}</span>
+            </p>
+            <p style="color: white;font-weight:bold" v-model="activity.prizeLevel2">
+                {{activity.prizeLevel2.prizeName}}： {{activity.prizeLevel2.prizeNumber}}
+                <span style="color:white">奖励{{activity.prizeLevel2.awardName}}{{activity.prizeLevel2.awardNumber}}</span>
+            </p>
+            <p style="color: white;font-weight:bold" v-model="activity.prizeLevel3">
+                {{activity.prizeLevel3.prizeName}}： {{activity.prizeLevel3.prizeNumber}}
+                <span style="color:white">奖励{{activity.prizeLevel3.awardName}}{{activity.prizeLevel3.awardNumber}}</span>
+            </p>
+            <p style="color: white;font-weight:bold">主办单位:</p>
+            <p style="color: white;font-weight:bold" v-model="activity.company">主办方: <span style="color:white">{{activity.company}}</span>
+            </p>
+            <p style="color: white;font-weight:bold" v-model="activity.address">地址: <span style="color:white">{{activity.address}}</span>
+            </p>
+            <p style="color: white;font-weight:bold" v-model="activity.mobile">电话: <span style="color:white">{{activity.mobile}}</span>
+            </p>
+            <p style="color: white;font-weight:bold;position: center" v-model="activity.company">本次活动最终解释权归<span
+                    style="color:white">{{activity.company}}</span>所有!</p>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vant@2.10/lib/vant.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="./js/layer-v3.3.0/layer/layer.js"></script>
+<script src="./js/common/utils.js"></script>
+<script>
+  var app = new Vue({
+    el: "#app",
+    data() {
+      return {
+        banner: [{
+          url: "",
+          img: "./images/temp/banner.jpg"
+        }, {
+          url: "",
+          img: "./images/temp/banner.jpg"
+        }],
+        activity: {
+          name: "春华·活动",
+          introduction: "丰富人民生活",
+          content: "诗歌 图片 文学作品",
+          regulation: "全民在线投稿参与",
+          prizeLevel1: {
+            prizeName: "一等奖",
+            prizeNumber: "一名",
+            awardName: "MacPro 笔记本 ",
+            awardNumber: "一台"
+          },
+          prizeLevel2: {
+            prizeName: "二等奖",
+            prizeNumber: "2名",
+            awardName: "iPad",
+            awardNumber: "一台"
+          },
+          prizeLevel3: {
+            prizeName: "三等奖",
+            prizeNumber: "3名",
+            awardName: "键盘",
+            awardNumber: "一个"
+          },
+          beginTime: "2021-03-01 00:00:00",
+          endTime: "2021-05-01 00:00:00",
+          company: "PivotalCloud",
+          address: "广东省珠海市香洲区珠海大剧院",
+          mobile: "15286774061"
+        }
+      };
+    },
+    methods: {},
+    created() {
+
+    }
+  });
+</script>
+</body>
+</html>

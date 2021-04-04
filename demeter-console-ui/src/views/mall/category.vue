@@ -56,27 +56,29 @@
     >
       <el-table-column align="center" label="系统ID" prop="id" />
 
-      <el-table-column align="center" label="来源ID" prop="sourceCategoryId" />
-
-      <el-table-column align="center" label="分类来源" prop="sourceType">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.sourceType ? '1' : '0'">{{
-            scope.row.sourceType === "1" ? "API接口" : "系统新增"
-          }}</el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column align="center" label="类目编号" prop="code"/>
 
       <el-table-column align="center" label="类目名称" prop="name" />
 
       <el-table-column align="center" property="iconUrl" label="类目图标">
         <template slot-scope="scope">
-          <img v-if="scope.row.iconUrl" :src="scope.row.iconUrl" width="40" >
+          <img
+            v-if="scope.row.iconUrl"
+            :src="scope.row.iconUrl"
+            style="width: 100%"
+            width="80"
+            height="100px">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" property="picUrl" label="类目图片">
+      <el-table-column align="center" property="pictureUrl" label="类目图片">
         <template slot-scope="scope">
-          <img v-if="scope.row.picUrl" :src="scope.row.picUrl" width="80" >
+          <img
+            v-if="scope.row.pictureUrl"
+            :src="scope.row.pictureUrl"
+            style="width: 100%"
+            width="80"
+            height="100px">
         </template>
       </el-table-column>
 
@@ -86,7 +88,7 @@
         align="center"
         min-width="100"
         label="简介"
-        prop="desc"
+        prop="content"
       />
 
       <el-table-column align="center" label="分类层级" prop="level">
@@ -97,9 +99,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="类目排序" prop="sortOrder" />
-
-      <el-table-column align="center" label="父类目ID" prop="pid" />
+      <el-table-column align="center" label="父类目ID" prop="parentId"/>
 
       <el-table-column
         align="center"
@@ -142,7 +142,7 @@
         :model="dataForm"
         status-icon
         label-position="left"
-        label-width="100px"
+        label-width="128px"
         style="width: 400px; margin-left: 50px"
       >
         <el-form-item label="类目名称" prop="name">
@@ -151,23 +151,21 @@
         <el-form-item label="关键字" prop="keywords">
           <el-input v-model="dataForm.keywords" />
         </el-form-item>
-        <el-form-item label="排序" prop="sortOrder">
-          <el-input v-model="dataForm.sortOrder" />
-        </el-form-item>
+
         <el-form-item label="级别" prop="level">
           <el-select
             v-model="dataForm.level"
             filterable
             @change="onLevelChange"
           >
-            <el-option label="一级类目" value="L1" />
-            <el-option label="二级类目" value="L2" />
+            <el-option label="一级类目" value="L1"/>
+            <el-option label="二级类目" value="L2"/>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="pid">
-          <el-select v-model="dataForm.pid" filterable>
+        <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="parentId">
+          <el-select v-model="dataForm.parentId" filterable>
             <el-option
-              v-for="item in catL1"
+              v-for="item in parentCategory"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -200,13 +198,31 @@
             class="avatar-uploader"
             accept=".jpg,.jpeg,.png,.gif"
           >
-            <img v-if="dataForm.pictureUrl" :src="dataForm.pictureUrl" class="avatar" >
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
+            <img v-if="dataForm.pictureUrl" :src="dataForm.pictureUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
-        <el-form-item label="类目简介" prop="desc">
-          <el-input v-model="dataForm.desc" />
+
+        <!--        <el-form-item label="类目简介" prop="content">
+                  <el-input v-model="dataForm.content"/>
+                </el-form-item>-->
+
+        <el-form-item label="类目简介" prop="content">
+          <el-input
+            :autosize="{ minRows: 2, maxRows: 10 }"
+            :rows="10"
+            v-model="dataForm.content"
+            type="textarea"
+            maxlength="256"
+            show-word-limit
+            placeholder="请输入类目简介"
+          />
         </el-form-item>
+
+        <!--        <el-form-item label="类目简介" prop="content">
+                  <editor :init="editorInit" v-model="dataForm.content" style="width: 220%"/>
+                </el-form-item>-->
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -249,22 +265,17 @@
 </style>
 
 <script>
-import {
-  list,
-  listCatL1,
-  create,
-  edit,
-  update,
-  remove
-} from '@/api/category'
-import { uploadPath } from '@/api/storage'
+import { create, list, update } from '@/api/category'
+import { parentCategoryList } from '@/api/component'
+import { uploadEditor, uploadPath } from '@/api/storage'
+import Editor from '@tinymce/tinymce-vue'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination'
 // Secondary package based on el-pagination
 
 export default {
   name: 'Category',
-  components: { Pagination },
+  components: { Pagination, Editor },
   data() {
     return {
       uploadPath,
@@ -285,10 +296,9 @@ export default {
         id: undefined,
         name: '',
         keywords: '',
-        sortOrder: '',
         level: 'L2',
-        pid: undefined,
-        desc: '',
+        parentId: undefined,
+        content: '',
         iconUrl: undefined,
         pictureUrl: undefined
       },
@@ -301,7 +311,23 @@ export default {
       rules: {
         name: [{ required: true, message: '类目名不能为空', trigger: 'blur' }]
       },
-      downloadLoading: false
+      parentCategory: [],
+      downloadLoading: false,
+      editorInit: {
+        language: 'zh_CN',
+        convert_urls: false,
+        plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
+        toolbar: ['searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample', 'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'],
+        images_upload_handler: function(blobInfo, success, failure) {
+          const formData = new FormData()
+          formData.append('file', blobInfo.blob())
+          uploadEditor(formData).then(res => {
+            success(res.data.data.url)
+          }).catch(() => {
+            failure('上传失败，请重新上传')
+          })
+        }
+      }
     }
   },
   computed: {
@@ -313,7 +339,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getCatL1()
+    this.getParentCategoryList()
   },
   methods: {
     getList() {
@@ -330,31 +356,31 @@ export default {
           this.listLoading = false
         })
     },
-    getCatL1() {
-      listCatL1().then((response) => {
-        this.catL1 = response.data.data
+    getParentCategoryList() {
+      parentCategoryList().then((response) => {
+        this.parentCategory = response.data.data
       })
     },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+      this.getParentCategoryList()
     },
     resetForm() {
       this.dataForm = {
         id: undefined,
         name: '',
         keywords: '',
-        sortOrder: '',
         level: 'L2',
-        pid: undefined,
-        desc: '',
+        parentId: undefined,
+        content: '',
         iconUrl: undefined,
-        picUrl: undefined
+        pictureUrl: undefined
       }
     },
     onLevelChange: function(value) {
       if (value === 'L1') {
-        this.pid = undefined
+        this.parentId = undefined
       }
     },
     handleCreate() {
@@ -369,7 +395,7 @@ export default {
       this.dataForm.iconUrl = response.data.url
     },
     uploadPicUrl: function(response) {
-      this.dataForm.picUrl = response.data.url
+      this.dataForm.pictureUrl = response.data.url
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -378,7 +404,7 @@ export default {
             .then((response) => {
               this.list.unshift(response.data.data)
               // 更新L1目录
-              this.getCatL1()
+              this.getParentCategoryList()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -388,7 +414,7 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
@@ -415,7 +441,7 @@ export default {
                 }
               }
               // 更新L1目录
-              this.getCatL1()
+              this.getParentCategoryList()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -425,7 +451,7 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
@@ -435,7 +461,7 @@ export default {
       delete (row)
         .then((response) => {
           // 更新L1目录
-          this.getCatL1()
+          this.getParentCategoryList()
           this.$notify.success({
             title: '成功',
             message: '删除成功'
@@ -446,7 +472,7 @@ export default {
         .catch((response) => {
           this.$notify.error({
             title: '失败',
-            message: response.data.errmsg
+            message: response.data.message
           })
         })
     },

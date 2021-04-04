@@ -20,7 +20,7 @@
       />
 
       <el-button
-        v-permission="['GET /admin/template/list']"
+        v-permission="['GET /admin/enroll/list']"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -29,7 +29,7 @@
       </el-button>
 
       <el-button
-        v-permission="['POST /admin/template/create']"
+        v-permission="['POST /admin/enroll/create']"
         class="filter-item"
         type="primary"
         icon="el-icon-edit"
@@ -55,13 +55,33 @@
 
       <el-table-column align="center" label="报名活动" prop="subjectName"/>
 
-      <el-table-column align="center" label="活动封面" prop="coverPicture"/>
+      <el-table-column align="center" label="活动封面" prop="subjectPicture">
+        <template slot-scope="scope">
+          <img
+            v-if="scope.row.subjectPicture"
+            :src="scope.row.subjectPicture"
+            style="width: 100%"
+            width="40px"
+            height="100px"
+          >
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="报名人" prop="enrollUserName"/>
 
       <el-table-column align="center" label="参赛作品" prop="worksName"/>
 
-      <el-table-column align="center" label="作品封面" prop="worksPicture"/>
+      <el-table-column align="center" label="活动封面" prop="worksPicture">
+        <template slot-scope="scope">
+          <img
+            v-if="scope.row.worksPicture"
+            :src="scope.row.worksPicture"
+            style="width: 100%"
+            width="40px"
+            height="100px"
+          >
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="报名IP" prop="ipAddress"/>
 
@@ -71,17 +91,18 @@
         align="center"
         label="操作列表"
         class-name="small-padding fixed-width"
+        width="180"
       >
         <template slot-scope="scope">
           <el-button
-            v-permission="['POST /admin/template/update']"
+            v-permission="['POST /admin/enroll/update']"
             type="primary"
             size="mini"
             @click="handleUpdate(scope.row)"
           >编辑
           </el-button>
           <el-button
-            v-permission="['POST /admin/template/delete']"
+            v-permission="['POST /admin/enroll/delete']"
             type="danger"
             size="mini"
             @click="handleDelete(scope.row)"
@@ -96,7 +117,7 @@
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
-      @pagination="queryTemplateList"
+      @pagination="queryEnrollList"
     />
 
     <!-- 添加或修改对话框 -->
@@ -110,20 +131,67 @@
         label-width="100px"
         style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="模板名称" prop="name">
-          <el-input v-model="dataForm.name"/>
+
+        <el-form-item label="报名主体" prop="subjectId">
+          <el-select v-model="dataForm.subjectId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in activities"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
 
-        <el-form-item label="模板描述" prop="content">
-          <el-input
-            :autosize="{ minRows: 2, maxRows: 10 }"
-            :rows="10"
-            v-model="dataForm.content"
-            type="textarea"
-            maxlength="256"
-            show-word-limit
-            placeholder="请输入模板描述"
-          />
+        <el-form-item label="参赛选手" prop="enrollUserName">
+          <el-input v-model="dataForm.enrollUserName"/>
+        </el-form-item>
+
+        <el-form-item label="选手地址" prop="profileAddress">
+          <el-input v-model="dataForm.profileAddress"/>
+        </el-form-item>
+
+        <el-form-item label="选手简介" prop="personalProfile">
+          <el-input v-model="dataForm.personalProfile"/>
+        </el-form-item>
+
+        <el-form-item label="选手手机" prop="mobile">
+          <el-input v-model="dataForm.mobile"/>
+        </el-form-item>
+
+        <el-form-item label="作品名称" prop="worksName">
+          <el-input v-model="dataForm.worksName"/>
+        </el-form-item>
+
+        <el-form-item label="作品内容" prop="worksContent">
+          <el-input v-model="dataForm.worksContent"/>
+        </el-form-item>
+
+        <el-form-item label="选手头像" prop="profilePicture">
+          <el-upload
+            :headers="headers"
+            :action="uploadPath"
+            :show-file-list="false"
+            :on-success="uploadAvatar"
+            class="avatar-uploader"
+            accept=".jpg,.jpeg,.png,.gif"
+          >
+            <img v-if="dataForm.profilePicture" :src="dataForm.profilePicture" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"/>
+          </el-upload>
+        </el-form-item>
+
+        <el-form-item label="选手作品" prop="worksPicture">
+          <el-upload
+            :headers="headers"
+            :action="uploadPath"
+            :show-file-list="false"
+            :on-success="uploadLicense"
+            class="license-uploader"
+            accept=".jpg,.jpeg,.png,.gif">
+            <img v-if="dataForm.worksPicture" :src="dataForm.worksPicture" class="license">
+            <i v-else class="el-icon-plus license-uploader-icon"/>
+          </el-upload>
         </el-form-item>
 
       </el-form>
@@ -142,14 +210,70 @@
   </div>
 </template>
 
-<style></style>
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 145px;
+    height: 145px;
+    display: block;
+  }
+
+  .license-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .license-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+
+  .license-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+
+  .license {
+    width: 145px;
+    height: 145px;
+    display: block;
+  }
+</style>
 
 <script>
-import { createInformation, deleteInformation, listInformation, updateInformation } from '@/api/information'
+import { create, list, remove, update } from '@/api/enroll'
 import { roleOptions } from '@/api/role'
+import { activityList } from '@/api/component'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+// Secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
 
 const defaultAdminTypeOptions = [
   {
@@ -192,18 +316,9 @@ export default {
       },
       dataForm: {
         id: undefined,
-        name: undefined,
-        portalUrl: undefined,
-        company: undefined,
-        introduction: undefined,
-        contacts: undefined,
-        mobile: undefined,
-        address: undefined,
-        longitude: undefined,
-        latitude: undefined,
-        tencent: undefined,
-        version: undefined,
-        copyright: undefined
+        subjectId: undefined,
+        enrollUserId: undefined,
+        worksId: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -212,36 +327,15 @@ export default {
         create: '创建'
       },
       rules: {
-        name: [
-          { required: true, message: '产品名称不能为空', trigger: 'blur' }
+        subjectId: [
+          { required: true, message: '报名主体ID不能为空', trigger: 'blur' }
         ],
-        portalUrl: [
-          { required: true, message: '官网地址不能为空', trigger: 'blur' }
+        enrollUserId: [
+          { required: true, message: '报名人ID不能为空', trigger: 'blur' }
         ],
-        company: [{ required: true, message: '公司不能为空', trigger: 'blur' }],
-        introduction: [
-          { required: true, message: '公司简介不能为空', trigger: 'blur' }
-        ],
-        contacts: [
-          { required: true, message: '联系人不能为空', trigger: 'blur' }
-        ],
-        mobile: [
-          { required: true, message: '联系电话不能为空', trigger: 'blur' }
-        ],
-        address: [
-          { required: true, message: '详细地址不能为空', trigger: 'blur' }
-        ],
-        longitude: [
-          { required: true, message: '经度不能为空', trigger: 'blur' }
-        ],
-        latitude: [
-          { required: true, message: '纬度不能为空', trigger: 'blur' }
-        ],
-        tencent: [{ required: true, message: 'QQ不能为空', trigger: 'blur' }],
-        copyright: [
-          { required: true, message: '版权声明不能为空', trigger: 'blur' }
-        ]
+        worksId: [{ required: true, message: '作品ID不能为空', trigger: 'blur' }]
       },
+      activities: [],
       downloadLoading: false
     }
   },
@@ -253,8 +347,8 @@ export default {
     }
   },
   created() {
-    this.queryTemplateList()
-
+    this.queryEnrollList()
+    this.queryActivityList()
     roleOptions().then((response) => {
       this.roleOptions = response.data.data
     })
@@ -268,9 +362,9 @@ export default {
       }
       return ''
     },
-    queryTemplateList() {
+    queryEnrollList() {
       this.listLoading = true
-      listInformation(this.listQuery)
+      list(this.listQuery)
         .then((response) => {
           this.list = response.data.data.items
           this.total = response.data.data.total
@@ -282,29 +376,35 @@ export default {
           this.listLoading = false
         })
     },
+    queryActivityList() {
+      activityList().then((response) => {
+        this.activities = response.data.data
+      })
+    },
     handleFilter() {
       this.listQuery.page = 1
-      this.getList()
+      this.queryEnrollList()
+      this.queryActivityList()
     },
     resetForm() {
       this.dataForm = {
         id: undefined,
-        name: undefined,
-        portalUrl: undefined,
-        company: undefined,
-        introduction: undefined,
-        contacts: undefined,
+        subjectId: undefined,
+        enrollUserName: undefined,
         mobile: undefined,
-        address: undefined,
-        longitude: undefined,
-        latitude: undefined,
-        tencent: undefined,
-        version: undefined,
-        copyright: undefined
+        profileAddress: undefined,
+        personalProfile: undefined,
+        worksName: undefined,
+        worksContent: undefined,
+        profilePicture: undefined,
+        worksPicture: undefined
       }
     },
     uploadAvatar: function(response) {
-      this.dataForm.avatar = response.data.url
+      this.dataForm.profilePicture = response.data.url
+    },
+    uploadLicense: function(response) {
+      this.dataForm.worksPicture = response.data.url
     },
     handleCreate() {
       this.resetForm()
@@ -317,7 +417,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createInformation(this.dataForm)
+          create(this.dataForm)
             .then((response) => {
               this.list.unshift(response.data.data)
               this.dialogFormVisible = false
@@ -329,7 +429,7 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
@@ -346,7 +446,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          updateInformation(this.dataForm)
+          update(this.dataForm)
             .then(() => {
               for (const v of this.list) {
                 if (v.id === this.dataForm.id) {
@@ -364,14 +464,14 @@ export default {
             .catch((response) => {
               this.$notify.error({
                 title: '失败',
-                message: response.data.errmsg
+                message: response.data.message
               })
             })
         }
       })
     },
     handleDelete(row) {
-      deleteInformation(row)
+      remove(row)
         .then((response) => {
           this.$notify.success({
             title: '成功',
@@ -383,7 +483,7 @@ export default {
         .catch((response) => {
           this.$notify.error({
             title: '失败',
-            message: response.data.errmsg
+            message: response.data.message
           })
         })
     }

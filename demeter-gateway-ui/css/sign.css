@@ -1,0 +1,103 @@
+html, body {
+	background-color: #fff0e9;
+}
+.sign-wrapper .main {
+	background-color: #fff;
+	border-radius: 10px;
+	margin: 0.5rem 0.32rem;
+}
+.sign-wrapper .main .main-title {
+	position: relative;
+	height: 0.88rem;
+	line-height: 0.88rem;
+	padding-left: 0.42rem;
+	font-size: 0.28rem;
+	color: #333;
+	box-sizing: border-box;
+	border-bottom: 0.01rem solid #d8d8d8;
+}
+.sign-wrapper .main .main-title:before {
+	position: absolute;
+	left: 0.28rem;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+	display: block;
+	width: 0.05rem;
+	height: 0.3rem;
+	background-color: #ee2f36;
+	content: '';
+}
+.sign-wrapper .main .main-content {
+	padding: 0 0.3rem 0.8rem;
+}
+.sign-wrapper .main .main-content .box {}
+.sign-wrapper .main .main-content .box .title {
+	line-height: 0.64rem;
+	font-size: 0.24rem;
+	color: #333;
+}
+.sign-wrapper .main .main-content .box .title .must {
+	color: #ee2f36;
+}
+.sign-wrapper .main .main-content .box .title .sub {
+	color: #d2c7c9;
+	font-size: 0.28rem;
+	margin-left: 0.15rem;
+}
+.sign-wrapper .main .main-content .box .input-box {
+	height: 0.64rem;
+}
+.sign-wrapper .main .main-content .box .input-box input {
+	width: 100%;
+	height: 100%;
+	border: 0.01rem solid #d8d8d8;
+	border-radius: 0.1rem;
+	padding: 0 0.25rem;
+	box-sizing: border-box;
+}
+.sign-wrapper .main .main-content .box .input-box input::-webkit-input-placeholder {
+	color: #baabaa;
+}
+.sign-wrapper .main .main-content .box .upload-box {}
+.sign-wrapper .main .main-content .box .upload-box .add-box {
+	width: 1.8rem;
+	height: 1.8rem;
+	text-align: center;
+	padding-top: 0.4rem;
+	box-sizing: border-box;
+	border-radius: 0.1rem;
+	border: 0.01rem solid #eaeaea;
+	background-color: #fafafa;
+}
+.sign-wrapper .main .main-content .box .upload-box .add-box .add-icon {
+	height: 0.48rem;
+	vertical-align: middle;
+}
+.sign-wrapper .main .main-content .box .upload-box .add-box .add-text {
+	margin-top: 0.35rem;
+	font-size: 0.28rem;
+	color: #707070;
+}
+.sign-wrapper .main .main-content .tips {
+	color: #ced0d7;
+	font-size: 0.28rem;
+	text-align: center;
+	margin-top: 0.55rem;
+	margin-bottom: 0.24rem;
+}
+.sign-wrapper .main .main-content .submit-btn {
+	display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 0.8rem;
+  line-height: 0.8rem;
+  color: #fff;
+  background-color: #ee2f36;
+  border-radius: 0.1rem;
+  font-size: 0.28rem;
+}
+.sign-wrapper .main .main-content .submit-btn .icon {
+	height: 0.22rem;
+  margin-right: 0.06rem;
+}

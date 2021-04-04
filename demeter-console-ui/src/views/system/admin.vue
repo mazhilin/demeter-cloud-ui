@@ -68,7 +68,9 @@
           <img
             v-lazy="scope.row.profilePicture"
             v-if="scope.row.profilePicture"
-            width="30"
+            style="width: 100%"
+            width="80"
+            height="100px"
           >
         </template>
       </el-table-column>
@@ -181,6 +183,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
+
         <el-form-item label="管理员角色" prop="roleIds">
           <el-select v-model="dataForm.roleIds" multiple placeholder="请选择">
             <el-option
@@ -191,6 +194,7 @@
             />
           </el-select>
         </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
